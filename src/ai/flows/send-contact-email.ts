@@ -12,7 +12,15 @@ import { z } from 'genkit';
 import { Resend } from 'resend';
 import { ContactEmail } from '@/ai/emails/contact-email';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+if (!process.env.RESEND_API_KEY) {
+  console.warn(
+    'RESEND_API_KEY is not set. Emails will not be sent. Please add it to your .env file.'
+  );
+}
+
+const resend = process.env.RESEND_API_KEY
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null;
 
 const SendContactEmailInputSchema = z.object({
   name: z.string().describe('The name of the person sending the message.'),
@@ -42,6 +50,11 @@ const sendContactEmailFlow = ai.defineFlow(
     outputSchema: SendContactEmailOutputSchema,
   },
   async (input) => {
+    if (!resend) {
+      const errorMessage = 'Resend is not configured. RESEND_API_KEY is missing.';
+      console.error(errorMessage);
+      return { success: false, error: errorMessage };
+    }
     try {
       await resend.emails.send({
         from: 'onboarding@resend.dev',
