@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useState, useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -41,7 +41,7 @@ export default function KnowledgeBase() {
     }
   };
   
-  const [state, formAction] = useFormState(action, null);
+  const [state, formAction] = useActionState(action, null);
 
   return (
     <section id="knowledge" className="py-12 md:py-24 bg-secondary">
