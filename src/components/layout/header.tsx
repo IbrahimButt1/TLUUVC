@@ -1,18 +1,55 @@
-import { Plane } from "lucide-react";
+import { Plane, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
+const navLinks = [
+  { href: "#services", label: "Services" },
+  { href: "#about", label: "About" },
+  { href: "#knowledge", label: "Knowledge Base" },
+  { href: "#testimonials", label: "Testimonials" },
+];
 
 export default function Header() {
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
-        <div className="mr-4 flex items-center">
-          <Plane className="h-6 w-6 mr-2 text-primary" />
-          <span className="font-bold font-headline text-lg">The LUU Visa Consultant</span>
+        <div className="mr-6 flex items-center">
+          <a href="#" className="flex items-center gap-2">
+            <Plane className="h-6 w-6 text-primary" />
+            <span className="font-bold font-headline text-lg">The LUU Visa Consultant</span>
+          </a>
         </div>
+        <nav className="hidden md:flex flex-1 items-center gap-6 text-sm">
+          {navLinks.map((link) => (
+            <a key={link.href} href={link.href} className="text-muted-foreground hover:text-foreground transition-colors">
+              {link.label}
+            </a>
+          ))}
+        </nav>
         <div className="flex flex-1 items-center justify-end space-x-2">
-          <Button asChild>
+          <Button asChild className="hidden md:inline-flex">
             <a href="#contact">Get a Consultation</a>
           </Button>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="md:hidden">
+                <Menu className="h-4 w-4" />
+                <span className="sr-only">Toggle navigation menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left">
+              <div className="flex flex-col gap-6 pt-10">
+                {navLinks.map((link) => (
+                  <a key={link.href} href={link.href} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
+                    {link.label}
+                  </a>
+                ))}
+                <Button asChild className="mt-4">
+                  <a href="#contact">Get a Consultation</a>
+                </Button>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>
