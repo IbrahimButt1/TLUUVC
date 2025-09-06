@@ -5,19 +5,72 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+import { useActionState, useState } from "react";
+import { sendContactEmail } from "@/ai/flows/send-contact-email";
+import { useFormStatus } from "react-dom";
+import { Loader2 } from "lucide-react";
+
+type FormState = {
+  success: boolean;
+  message: string;
+} | null;
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" disabled={pending} size="lg" className="w-full md:w-auto">
+      {pending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+      Send Inquiry
+    </Button>
+  );
+}
 
 export default function Contact() {
   const { toast } = useToast();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // In a real app, you would handle form submission to a backend here.
-    toast({
-      title: "Inquiry Sent!",
-      description: "Thank you for your message. We will get back to you shortly.",
-    });
-    e.currentTarget.reset();
+  const action = async (prevState: FormState, formData: FormData): Promise<FormState> => {
+    try {
+      const result = await sendContactEmail({
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        subject: formData.get('subject') as string,
+        message: formData.get('message') as string,
+      });
+
+      if (result.success) {
+        toast({
+          title: "Inquiry Sent!",
+          description: "Thank you for your message. We will get back to you shortly.",
+        });
+        setName('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+        return { success: true, message: "Email sent successfully" };
+      } else {
+        toast({
+          title: "Error",
+          description: result.error,
+          variant: "destructive",
+        });
+        return { success: false, message: result.error! };
+      }
+    } catch (e: any) {
+      console.error(e);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again later.",
+        variant: "destructive",
+      });
+      return { success: false, message: 'An unexpected error occurred.' };
+    }
   };
+
+  const [state, formAction] = useActionState(action, null);
 
   return (
     <section id="contact" className="py-12 md:py-24 bg-background">
@@ -30,29 +83,27 @@ export default function Contact() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <form className="space-y-6" action={formAction}>
               <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" name="name" placeholder="John Doe" required />
+                  <Input id="name" name="name" placeholder="John Doe" required value={name} onChange={e => setName(e.target.value)} />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" name="email" type="email" placeholder="john.doe@example.com" required />
+                  <Input id="email" name="email" type="email" placeholder="john.doe@example.com" required value={email} onChange={e => setEmail(e.target.value)}/>
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="subject">Subject</Label>
-                <Input id="subject" name="subject" placeholder="e.g., Inquiry about Student Visa" required />
+                <Input id="subject" name="subject" placeholder="e.g., Inquiry about Student Visa" required value={subject} onChange={e => setSubject(e.target.value)} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="message">Your Message</Label>
-                <Textarea id="message" name="message" placeholder="Please describe your situation and questions." rows={6} required />
+                <Textarea id="message" name="message" placeholder="Please describe your situation and questions." rows={6} required value={message} onChange={e => setMessage(e.target.value)} />
               </div>
               <div className="text-center">
-                <Button type="submit" size="lg" className="w-full md:w-auto">
-                  Send Inquiry
-                </Button>
+                <SubmitButton />
               </div>
             </form>
           </CardContent>
