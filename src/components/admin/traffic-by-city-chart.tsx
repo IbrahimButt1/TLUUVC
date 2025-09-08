@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts"
 
 const initialData = [
-    { name: 'New York', value: 15 },
-    { name: 'London', value: 12 },
-    { name: 'Bangalore', value: 10 },
-    { name: 'Toronto', value: 8 },
-    { name: 'Berlin', value: 7 },
-    { name: 'Sydney', value: 5 },
-    { name: 'Other', value: 43 },
+    { name: 'Karachi', value: 25 },
+    { name: 'Lahore', value: 20 },
+    { name: 'Islamabad', value: 15 },
+    { name: 'Faisalabad', value: 10 },
+    { name: 'Rawalpindi', value: 8 },
+    { name: 'Multan', value: 5 },
+    { name: 'Other', value: 17 },
 ];
 
 export default function TrafficByCityChart() {
