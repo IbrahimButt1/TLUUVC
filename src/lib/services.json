@@ -1,0 +1,22 @@
+[
+  {
+    "id": "student-visas",
+    "title": "Student Visas",
+    "description": "Comprehensive guidance for students aspiring to study abroad, from application to approval."
+  },
+  {
+    "id": "work-visas",
+    "title": "Work Visas",
+    "description": "Tailored support for professionals seeking employment opportunities in a new country."
+  },
+  {
+    "id": "family-partner-visas",
+    "title": "Family & Partner Visas",
+    "description": "Helping you reunite with your loved ones through dedicated family and partner visa services."
+  },
+  {
+    "id": "application-review",
+    "title": "Application Review",
+    "description": "Meticulous review of your visa application to maximize your chances of success."
+  }
+]
