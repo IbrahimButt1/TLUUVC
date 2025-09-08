@@ -1,9 +1,9 @@
-
 "use client"
 
+import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts"
 
-const data = [
+const initialData = [
     { name: 'New York', value: 15 },
     { name: 'London', value: 12 },
     { name: 'Bangalore', value: 10 },
@@ -11,9 +11,36 @@ const data = [
     { name: 'Berlin', value: 7 },
     { name: 'Sydney', value: 5 },
     { name: 'Other', value: 43 },
-]
+];
 
 export default function TrafficByCityChart() {
+  const [data, setData] = useState(initialData);
+
+  useEffect(() => {
+    // Simulate dynamic data fetching
+    const interval = setInterval(() => {
+        setData(prevData => {
+            const total = 100;
+            let remaining = total;
+            const newData = prevData.map((item, index) => {
+                if (index === prevData.length - 1) {
+                    return { ...item, value: remaining };
+                }
+                const change = Math.floor(Math.random() * 5) - 2; // -2 to +2
+                let newValue = item.value + change;
+                if (newValue < 3) newValue = 3; // Keep a base value
+                remaining -= newValue;
+                return { ...item, value: newValue };
+            });
+            // Adjust the 'Other' category to make the total 100
+            newData[newData.length - 1].value = Math.max(0, remaining);
+            return newData;
+        });
+    }, 5000); // Update every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="w-full h-[300px]">
         <ResponsiveContainer width="100%" height="100%">

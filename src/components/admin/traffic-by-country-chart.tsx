@@ -1,9 +1,9 @@
-
 "use client"
 
+import { useState, useEffect } from 'react';
 import { Pie, PieChart, ResponsiveContainer, Tooltip, Cell } from "recharts"
 
-const data = [
+const initialData = [
   { name: 'USA', value: 45, color: 'hsl(var(--chart-1))' },
   { name: 'India', value: 25, color: 'hsl(var(--chart-2))' },
   { name: 'UK', value: 15, color: 'hsl(var(--chart-3))' },
@@ -12,7 +12,8 @@ const data = [
 ]
 
 const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent, index }: any) => {
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percent }: any) => {
+  if (!percent) return null;
   const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
   const x = cx + radius * Math.cos(-midAngle * RADIAN);
   const y = cy + radius * Math.sin(-midAngle * RADIAN);
@@ -26,6 +27,33 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 
 export default function TrafficByCountryChart() {
+  const [data, setData] = useState(initialData);
+
+  useEffect(() => {
+    // Simulate dynamic data fetching
+    const interval = setInterval(() => {
+        setData(prevData => {
+            const total = 100;
+            let remaining = total;
+            const newData = prevData.map((item, index) => {
+                if (index === prevData.length - 1) {
+                    return { ...item, value: remaining };
+                }
+                const change = Math.floor(Math.random() * 6) - 3; // -3 to +3
+                let newValue = item.value + change;
+                if (newValue < 5) newValue = 5; // Keep a base value
+                remaining -= newValue;
+                return { ...item, value: newValue };
+            });
+            // Adjust 'Other' to make total 100
+            newData[newData.length - 1].value = Math.max(0, remaining);
+            return newData;
+        });
+    }, 5000); // Update every 5 seconds
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="w-full h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
