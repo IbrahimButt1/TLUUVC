@@ -56,8 +56,11 @@ export async function addService(formData: FormData) {
     };
 
     services.push(newService);
+    
+    // Revalidate all relevant paths
     revalidatePath('/');
     revalidatePath('/admin/services');
+
     redirect('/admin/services');
 }
 
@@ -71,9 +74,11 @@ export async function updateService(formData: FormData) {
         services[serviceIndex] = { ...services[serviceIndex], title, description };
     }
 
+    // Revalidate all relevant paths
     revalidatePath('/');
     revalidatePath('/admin/services');
     revalidatePath(`/admin/services/edit/${id}`);
+
     redirect('/admin/services');
 }
 
@@ -81,6 +86,10 @@ export async function deleteService(formData: FormData) {
     const id = formData.get('id') as string;
     if (!id) return;
     services = services.filter(s => s.id !== id);
+
+    // Revalidate all relevant paths
     revalidatePath('/');
     revalidatePath('/admin/services');
+    
+    redirect('/admin/services');
 }
