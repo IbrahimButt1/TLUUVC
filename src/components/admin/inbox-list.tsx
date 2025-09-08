@@ -3,7 +3,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { format } from 'date-fns';
 import { cn } from "@/lib/utils";
 import type { Email } from "@/lib/emails";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 function HighlightedText({ text, highlight }: { text: string; highlight: string }) {
     if (!highlight.trim()) {
@@ -28,6 +28,12 @@ function HighlightedText({ text, highlight }: { text: string; highlight: string 
 
 
 export default function InboxList({ emails, searchTerm }: { emails: Email[], searchTerm: string }) {
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
     return (
         <Card>
             <CardContent className="p-0">
@@ -48,13 +54,14 @@ export default function InboxList({ emails, searchTerm }: { emails: Email[], sea
                                             </span>
                                         </div>
                                         <span className="text-sm text-muted-foreground">
-                                            {format(new Date(email.receivedAt), "PPpp")}
+                                            {isClient ? format(new Date(email.receivedAt), "PPpp") : ''}
                                         </span>
                                     </div>
                                 </AccordionTrigger>
                                 <AccordionContent className="p-6 pt-0">
                                     <div className="space-y-4">
                                         <p><strong>From:</strong> <HighlightedText text={email.email} highlight={searchTerm} /></p>
+
                                         <p className="whitespace-pre-wrap bg-muted p-4 rounded-md">
                                             <HighlightedText text={email.message} highlight={searchTerm} />
                                         </p>
