@@ -32,7 +32,7 @@ export default function AdminDashboard() {
           <CardHeader>
             <CardTitle>Website Traffic</CardTitle>
             <CardDescription>A look at your website's traffic over the last 6 months.</CardDescription>
-          </Header>
+          </CardHeader>
           <CardContent>
             <TrafficChart />
           </CardContent>
