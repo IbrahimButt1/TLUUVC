@@ -1,13 +1,12 @@
 import AdminSidebar from '@/components/layout/admin-sidebar';
-import { getEmails } from '@/lib/emails';
+import { getUnreadEmailCount } from '@/lib/emails';
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const emails = await getEmails();
-  const emailCount = emails.length;
+  const emailCount = await getUnreadEmailCount();
 
   return (
     <div className="flex min-h-screen">

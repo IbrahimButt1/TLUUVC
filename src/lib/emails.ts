@@ -11,6 +11,7 @@ export interface Email {
     subject: string;
     message: string;
     receivedAt: string;
+    read: boolean;
 }
 
 const dataPath = path.join(process.cwd(), 'src', 'lib', 'emails.json');
@@ -38,11 +39,18 @@ export async function getEmails(): Promise<Email[]> {
     return emails.sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime());
 }
 
+export async function getUnreadEmailCount(): Promise<number> {
+    const emails = await readEmails();
+    return emails.filter(email => !email.read).length;
+}
+
+
 export async function addEmail(emailData: { name: string; email: string; subject: string, message: string }) {
     const newEmail: Email = {
         id: `${new Date().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
         ...emailData,
         receivedAt: new Date().toISOString(),
+        read: false,
     };
 
     const emails = await readEmails();
@@ -50,4 +58,12 @@ export async function addEmail(emailData: { name: string; email: string; subject
     await writeEmails(emails);
     
     revalidatePath('/admin/inbox');
+    revalidatePath('/admin');
+}
+
+export async function markAllEmailsAsRead() {
+    const emails = await readEmails();
+    const updatedEmails = emails.map(email => ({ ...email, read: true }));
+    await writeEmails(updatedEmails);
+    revalidatePath('/admin');
 }

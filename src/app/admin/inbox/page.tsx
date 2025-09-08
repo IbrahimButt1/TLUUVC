@@ -1,9 +1,12 @@
-import { getEmails } from "@/lib/emails";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import { getEmails, markAllEmailsAsRead } from "@/lib/emails";
+import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { format } from 'date-fns';
+import { cn } from "@/lib/utils";
 
 export default async function InboxPage() {
+    // Mark all emails as read when the page is visited
+    await markAllEmailsAsRead();
     const emails = await getEmails();
 
     return (
@@ -19,7 +22,7 @@ export default async function InboxPage() {
                                 <AccordionItem value={email.id} key={email.id}>
                                     <AccordionTrigger className="p-6 hover:no-underline">
                                         <div className="flex justify-between w-full items-center">
-                                            <div className="flex flex-col text-left">
+                                            <div className={cn("flex flex-col text-left", !email.read && "font-bold")}>
                                                 <span className="font-medium">{email.name}</span>
                                                 <span className="text-sm text-muted-foreground">{email.subject}</span>
                                             </div>
