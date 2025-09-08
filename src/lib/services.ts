@@ -83,4 +83,5 @@ export async function deleteService(formData: FormData) {
     services = services.filter(s => s.id !== id);
     revalidatePath('/');
     revalidatePath('/admin/services');
+    redirect('/admin/services');
 }
