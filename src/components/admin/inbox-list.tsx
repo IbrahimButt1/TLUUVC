@@ -6,6 +6,22 @@ import type { Email } from "@/lib/emails";
 import type { GroupedEmails } from "./inbox-client";
 import React, { useState, useEffect } from "react";
 import { Separator } from "../ui/separator";
+import { Button } from "../ui/button";
+import { Trash2 } from "lucide-react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { deleteEmail } from "@/lib/emails";
+import { DeleteButton } from "./delete-button";
+
 
 function HighlightedText({ text, highlight }: { text: string; highlight: string }) {
     if (!highlight.trim()) {
@@ -62,6 +78,31 @@ function EmailGroup({ title, emails, searchTerm, isClient }: { title: string; em
                             <p className="whitespace-pre-wrap text-sm leading-relaxed">
                                 <HighlightedText text={email.message} highlight={searchTerm} />
                             </p>
+                            <div className="flex justify-end pt-2">
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button variant="outline" size="sm">
+                                            <Trash2 className="mr-2 h-4 w-4" />
+                                            Move to Trash
+                                        </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                            <AlertDialogDescription>
+                                                This will move the email to the trash. You can permanently delete it from there.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+                                        <AlertDialogFooter>
+                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                            <form action={deleteEmail}>
+                                                <input type="hidden" name="id" value={email.id} />
+                                                <Button type="submit">Continue</Button>
+                                            </form>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </div>
                         </div>
                     </AccordionContent>
                 </AccordionItem>
