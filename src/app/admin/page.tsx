@@ -1,4 +1,5 @@
-import { Card, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import TrafficChart from "@/components/admin/traffic-chart";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 
 export default function AdminDashboard() {
@@ -16,6 +17,18 @@ export default function AdminDashboard() {
             </CardHeader>
             </Card>
         </Link>
+      </div>
+
+      <div className="mt-8">
+        <Card>
+          <CardHeader>
+            <CardTitle>Website Traffic</CardTitle>
+            <CardDescription>A look at your website's traffic over the last 6 months.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <TrafficChart />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
