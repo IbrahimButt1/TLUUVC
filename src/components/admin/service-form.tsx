@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Service } from "@/lib/services";
-import { Loader2, University, Briefcase, Users, FileText, Landmark, Plane, Ship, Hotel, Home, Globe, Award } from 'lucide-react';
+import { Loader2, University, Briefcase, Users, FileText, Landmark, Plane, Ship, Hotel, Home, Globe, Award, ThumbsUp } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import * as LucideIcons from "lucide-react";
 
