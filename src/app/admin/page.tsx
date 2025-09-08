@@ -1,4 +1,5 @@
-import TrafficChart from "@/components/admin/traffic-chart";
+import TrafficByCountryChart from "@/components/admin/traffic-by-country-chart";
+import TrafficByCityChart from "@/components/admin/traffic-by-city-chart";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LayoutDashboard } from "lucide-react";
@@ -27,14 +28,23 @@ export default function AdminDashboard() {
         </Link>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-8 grid gap-8 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Website Traffic</CardTitle>
-            <CardDescription>A look at your website's traffic over the last 6 months.</CardDescription>
+            <CardTitle>Traffic by Country</CardTitle>
+            <CardDescription>Top countries visiting your website.</CardDescription>
           </CardHeader>
           <CardContent>
-            <TrafficChart />
+            <TrafficByCountryChart />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Traffic by City</CardTitle>
+            <CardDescription>Top cities visiting your website.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <TrafficByCityChart />
           </CardContent>
         </Card>
       </div>
