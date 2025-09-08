@@ -15,6 +15,7 @@ import {
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
 import { getServices, deleteService } from "@/lib/services";
+import { DeleteButton } from "@/components/admin/delete-button";
 
 
 export default async function ManageServices() {
@@ -65,7 +66,7 @@ export default async function ManageServices() {
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                                                 <form action={deleteService}>
                                                     <input type="hidden" name="id" value={service.id} />
-                                                    <Button variant="destructive" type="submit">Delete</Button>
+                                                    <DeleteButton />
                                                 </form>
                                             </AlertDialogFooter>
                                         </AlertDialogContent>
