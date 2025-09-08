@@ -9,6 +9,7 @@ export interface Service {
     id: string;
     title: string;
     description: string;
+    icon: string;
 }
 
 // Path to the JSON file that acts as our database
@@ -44,8 +45,9 @@ export async function getServiceById(id: string): Promise<Service | undefined> {
 export async function addService(formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
+    const icon = formData.get('icon') as string;
 
-    if (!title || !description) {
+    if (!title || !description || !icon) {
         return;
     }
 
@@ -53,6 +55,7 @@ export async function addService(formData: FormData) {
         id: title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
         title,
         description,
+        icon,
     };
 
     const services = await readServices();
@@ -70,12 +73,13 @@ export async function updateService(formData: FormData) {
     const id = formData.get('id') as string;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
+    const icon = formData.get('icon') as string;
     
     const services = await readServices();
     const serviceIndex = services.findIndex(s => s.id === id);
 
     if (serviceIndex !== -1) {
-        services[serviceIndex] = { ...services[serviceIndex], title, description };
+        services[serviceIndex] = { ...services[serviceIndex], title, description, icon };
         await writeServices(services);
     }
 

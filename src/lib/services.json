@@ -2,21 +2,31 @@
   {
     "id": "student-visas",
     "title": "Student Visas",
-    "description": "Comprehensive guidance for students aspiring to study abroad, from application to approval."
+    "description": "Comprehensive guidance for students aspiring to study abroad, from application to approval.",
+    "icon": "University"
   },
   {
     "id": "work-visas",
     "title": "Work Visas",
-    "description": "Tailored support for professionals seeking employment opportunities in a new country."
+    "description": "Tailored support for professionals seeking employment opportunities in a new country.",
+    "icon": "Briefcase"
   },
   {
     "id": "family-partner-visas",
     "title": "Family & Partner Visas",
-    "description": "Helping you reunite with your loved ones through dedicated family and partner visa services."
+    "description": "Helping you reunite with your loved ones through dedicated family and partner visa services.",
+    "icon": "Users"
   },
   {
     "id": "application-review",
     "title": "Application Review",
-    "description": "Meticulous review of your visa application to maximize your chances of success."
+    "description": "Meticulous review of your visa application to maximize your chances of success.",
+    "icon": "FileText"
+  },
+  {
+    "id": "ok",
+    "title": "OK HA",
+    "description": "Good",
+    "icon": "ThumbsUp"
   }
 ]

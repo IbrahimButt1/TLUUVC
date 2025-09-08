@@ -39,6 +39,7 @@ export default async function ManageServices() {
                         <TableRow>
                             <TableHead>Title</TableHead>
                             <TableHead>Description</TableHead>
+                            <TableHead>Icon</TableHead>
                             <TableHead className="text-right">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
@@ -47,6 +48,7 @@ export default async function ManageServices() {
                             <TableRow key={service.id}>
                                 <TableCell className="font-medium">{service.title}</TableCell>
                                 <TableCell>{service.description}</TableCell>
+                                <TableCell><code>{service.icon}</code></TableCell>
                                 <TableCell className="text-right">
                                     <Button asChild variant="outline" size="sm" className="mr-2">
                                         <Link href={`/admin/services/edit/${service.id}`}>Edit</Link>
