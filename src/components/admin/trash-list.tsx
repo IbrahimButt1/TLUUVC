@@ -6,10 +6,9 @@ import { format } from 'date-fns';
 import type { Email } from "@/lib/emails";
 import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
-import { Trash2, Undo } from "lucide-react";
+import { Trash2, Undo, Loader2 } from "lucide-react";
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -18,9 +17,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { permanentlyDeleteEmail, restoreEmail } from "@/lib/emails";
-import { DeleteButton } from "./delete-button";
-
 
 function HighlightedText({ text, highlight }: { text: string; highlight: string }) {
     if (!highlight.trim()) {
@@ -43,9 +39,33 @@ function HighlightedText({ text, highlight }: { text: string; highlight: string 
     );
 }
 
+interface ActionButtonProps {
+    isPending: boolean;
+}
 
-export default function TrashList({ emails, searchTerm }: { emails: Email[], searchTerm: string }) {
+function DeleteConfirmationButton({ isPending }: ActionButtonProps) {
+    return (
+        <Button variant="destructive" type="submit" disabled={isPending}>
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Delete Permanently
+        </Button>
+    )
+}
+
+function RestoreButton({ isPending }: ActionButtonProps) {
+    return (
+        <Button variant="outline" size="sm" type="submit" disabled={isPending}>
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            {!isPending && <Undo className="mr-2 h-4 w-4" />}
+            Restore
+        </Button>
+    )
+}
+
+
+export default function TrashList({ emails, searchTerm, onRestore, onDelete, isPending }: { emails: Email[], searchTerm: string, onRestore: (id: string) => void, onDelete: (id: string) => void, isPending: boolean }) {
     const [isClient, setIsClient] = useState(false);
+    const [openDialogId, setOpenDialogId] = useState<string | null>(null);
 
     useEffect(() => {
         setIsClient(true);
@@ -56,7 +76,7 @@ export default function TrashList({ emails, searchTerm }: { emails: Email[], sea
     return (
         <Card className="border shadow-sm">
             <CardContent className="p-0">
-                {!hasEmails ? (
+                {!hasEmails && !isPending ? (
                     <p className="p-6 text-center text-muted-foreground">The trash is empty.</p>
                 ) : (
                     <Accordion type="single" collapsible className="w-full">
@@ -85,16 +105,13 @@ export default function TrashList({ emails, searchTerm }: { emails: Email[], sea
                                             <HighlightedText text={email.message} highlight={searchTerm} />
                                         </p>
                                         <div className="flex justify-end pt-2 gap-2">
-                                            <form action={restoreEmail}>
+                                            <form action={() => onRestore(email.id)}>
                                                 <input type="hidden" name="id" value={email.id} />
-                                                <Button variant="outline" size="sm" type="submit">
-                                                    <Undo className="mr-2 h-4 w-4" />
-                                                    Restore
-                                                </Button>
+                                                <RestoreButton isPending={isPending} />
                                             </form>
-                                            <AlertDialog>
+                                            <AlertDialog open={openDialogId === email.id} onOpenChange={(isOpen) => setOpenDialogId(isOpen ? email.id : null)}>
                                                 <AlertDialogTrigger asChild>
-                                                    <Button variant="destructive" size="sm">
+                                                    <Button variant="destructive" size="sm" disabled={isPending}>
                                                         <Trash2 className="mr-2 h-4 w-4" />
                                                         Delete Permanently
                                                     </Button>
@@ -108,9 +125,12 @@ export default function TrashList({ emails, searchTerm }: { emails: Email[], sea
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
                                                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                        <form action={permanentlyDeleteEmail}>
+                                                        <form action={() => {
+                                                            onDelete(email.id)
+                                                            setOpenDialogId(null)
+                                                        }}>
                                                             <input type="hidden" name="id" value={email.id} />
-                                                            <DeleteButton />
+                                                            <DeleteConfirmationButton isPending={isPending} />
                                                         </form>
                                                     </AlertDialogFooter>
                                                 </AlertDialogContent>
