@@ -18,10 +18,10 @@ export default function AdminSidebar({ emailCount }: { emailCount: number }) {
 
   return (
     <aside className="w-64 bg-background border-r">
-      <div className="flex items-center gap-2 h-14 border-b px-6">
+      <Link href="/" className="flex items-center gap-2 h-14 border-b px-6 text-foreground hover:bg-muted transition-colors">
         <Plane className="h-6 w-6 text-primary" />
         <span className="font-bold font-headline text-lg">LUU Admin</span>
-      </div>
+      </Link>
       <nav className="flex flex-col p-4">
         {navLinks.map((link) => {
             const isActive = link.href === '/admin/inbox' ? pathname.startsWith('/admin/inbox') : pathname === link.href;
