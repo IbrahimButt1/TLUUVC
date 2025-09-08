@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Pie, PieChart, ResponsiveContainer, Tooltip, Cell } from "recharts"
 
 const initialData = [
-  { name: 'USA', value: 45, color: 'hsl(var(--chart-1))' },
+  { name: 'Pakistan', value: 45, color: 'hsl(var(--chart-1))' },
   { name: 'India', value: 25, color: 'hsl(var(--chart-2))' },
   { name: 'UK', value: 15, color: 'hsl(var(--chart-3))' },
   { name: 'Canada', value: 10, color: 'hsl(var(--chart-4))' },
