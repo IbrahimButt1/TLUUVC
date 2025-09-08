@@ -71,9 +71,6 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
                         ))}
                     </SelectContent>
                 </Select>
-                 <p className="text-sm text-muted-foreground">
-                    Choose an icon that best represents the service. More can be found at <a href="https://lucide.dev/icons/" target="_blank" rel="noopener noreferrer" className="text-primary underline">Lucide Icons</a>.
-                </p>
             </div>
             <div className="flex justify-end gap-2">
                 <Button variant="outline" asChild>

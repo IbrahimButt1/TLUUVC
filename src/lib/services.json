@@ -24,9 +24,9 @@
     "icon": "FileText"
   },
   {
-    "id": "ok",
-    "title": "OK HA",
-    "description": "Good",
-    "icon": "ThumbsUp"
+    "id": "eye",
+    "title": "Eye",
+    "description": "WOW",
+    "icon": "Hotel"
   }
 ]
