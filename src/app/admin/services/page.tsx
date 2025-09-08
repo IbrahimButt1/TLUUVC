@@ -14,32 +14,12 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
   } from "@/components/ui/alert-dialog"
+import { getServices, deleteService } from "@/lib/services";
+import { DeleteButton } from "@/components/admin/delete-button";
 
-// This is mock data. We'll replace this with a database later.
-const services = [
-    {
-      id: "student-visas",
-      title: "Student Visas",
-      description: "Comprehensive guidance for students aspiring to study abroad, from application to approval."
-    },
-    {
-      id: "work-visas",
-      title: "Work Visas",
-      description: "Tailored support for professionals seeking employment opportunities in a new country."
-    },
-    {
-      id: "family-partner-visas",
-      title: "Family & Partner Visas",
-      description: "Helping you reunite with your loved ones through dedicated family and partner visa services."
-    },
-    {
-      id: "application-review",
-      title: "Application Review",
-      description: "Meticulous review of your visa application to maximize your chances of success."
-    }
-  ];
 
-export default function ManageServices() {
+export default async function ManageServices() {
+  const services = await getServices();
   return (
     <div>
         <div className="flex items-center justify-between mb-6">
@@ -84,7 +64,12 @@ export default function ManageServices() {
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <AlertDialogAction>Delete</AlertDialogAction>
+                                                <form action={async () => {
+                                                    "use server";
+                                                    await deleteService(service.id);
+                                                }}>
+                                                    <DeleteButton />
+                                                </form>
                                             </AlertDialogFooter>
                                         </AlertDialogContent>
                                     </AlertDialog>
