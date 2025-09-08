@@ -1,48 +1,30 @@
-import { getEmails, markAllEmailsAsRead } from "@/lib/emails";
-import { Card, CardContent } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { format } from 'date-fns';
-import { cn } from "@/lib/utils";
+import InboxClient from "@/components/admin/inbox-client";
+import InboxList from "@/components/admin/inbox-list";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default async function InboxPage() {
-    // Mark all emails as read when the page is visited
-    await markAllEmailsAsRead();
-    const emails = await getEmails();
-
     return (
         <div>
             <h1 className="text-3xl font-bold mb-6">Email Inbox</h1>
-            <Card>
-                <CardContent className="p-0">
-                    {emails.length === 0 ? (
-                        <p className="p-6 text-muted-foreground">Your inbox is empty.</p>
-                    ) : (
-                        <Accordion type="single" collapsible className="w-full">
-                            {emails.map((email) => (
-                                <AccordionItem value={email.id} key={email.id}>
-                                    <AccordionTrigger className="p-6 hover:no-underline">
-                                        <div className="flex justify-between w-full items-center">
-                                            <div className={cn("flex flex-col text-left", !email.read && "font-bold")}>
-                                                <span className="font-medium">{email.name}</span>
-                                                <span className="text-sm text-muted-foreground">{email.subject}</span>
-                                            </div>
-                                            <span className="text-sm text-muted-foreground">
-                                                {format(new Date(email.receivedAt), "PPpp")}
-                                            </span>
-                                        </div>
-                                    </AccordionTrigger>
-                                    <AccordionContent className="p-6 pt-0">
-                                        <div className="space-y-4">
-                                            <p><strong>From:</strong> {email.email}</p>
-                                            <p className="whitespace-pre-wrap bg-muted p-4 rounded-md">{email.message}</p>
-                                        </div>
-                                    </AccordionContent>
-                                </AccordionItem>
-                            ))}
-                        </Accordion>
-                    )}
-                </CardContent>
-            </Card>
+            {/* This client component will handle marking emails as read */}
+            <InboxClient />
+            
+            {/* Suspense boundary for the email list */}
+            <Suspense fallback={<InboxSkeleton />}>
+                <InboxList />
+            </Suspense>
         </div>
     );
+}
+
+function InboxSkeleton() {
+    return (
+        <div className="space-y-4">
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+            <Skeleton className="h-16 w-full" />
+        </div>
+    )
 }
