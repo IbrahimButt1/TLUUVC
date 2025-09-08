@@ -1,6 +1,6 @@
 'use server';
 /**
- * @fileOverview A flow to send a contact email.
+ * @fileOverview A flow to send a contact email and save it to the inbox.
  *
  * - sendContactEmail - A function that handles sending an email from the contact form.
  * - SendContactEmailInput - The input type for the sendContactEmail function.
@@ -11,6 +11,7 @@ import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import { Resend } from 'resend';
 import { ContactEmail } from '@/ai/emails/contact-email';
+import { addEmail } from '@/lib/emails';
 
 if (!process.env.RESEND_API_KEY) {
   console.warn(
@@ -50,27 +51,30 @@ const sendContactEmailFlow = ai.defineFlow(
     outputSchema: SendContactEmailOutputSchema,
   },
   async (input) => {
-    if (!resend) {
-      const errorMessage = 'Resend is not configured. RESEND_API_KEY is missing.';
-      console.error(errorMessage);
-      return { success: false, error: errorMessage };
-    }
     try {
-      await resend.emails.send({
-        from: 'onboarding@resend.dev',
-        to: 'bk1414551@gmail.com',
-        subject: `New Contact Form Inquiry: ${input.subject}`,
-        react: ContactEmail({
-          name: input.name,
-          email: input.email,
-          message: input.message,
-        }),
-      });
+      if (resend) {
+        await resend.emails.send({
+          from: 'onboarding@resend.dev',
+          to: 'bk1414551@gmail.com',
+          subject: `New Contact Form Inquiry: ${input.subject}`,
+          react: ContactEmail({
+            name: input.name,
+            email: input.email,
+            message: input.message,
+          }),
+        });
+      } else {
+        console.warn('Resend not configured, skipping email send but saving to inbox.');
+      }
+      
+      // Save the email regardless of whether it was sent
+      await addEmail(input);
+
       return { success: true };
     } catch (error) {
-      console.error('Error sending email:', error);
+      console.error('Error in sendContactEmailFlow:', error);
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
-      return { success: false, error: `Failed to send email. ${errorMessage}` };
+      return { success: false, error: `Failed to process inquiry. ${errorMessage}` };
     }
   }
 );

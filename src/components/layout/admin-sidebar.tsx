@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LayoutDashboard, Plane } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Plane, Inbox } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/services', label: 'Services', icon: Briefcase },
+  { href: '/admin/inbox', label: 'Inbox', icon: Inbox },
 ];
 
 export default function AdminSidebar() {
