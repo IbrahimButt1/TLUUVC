@@ -3,10 +3,12 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
 const navLinks = [
+  { href: "#", label: "Home" },
   { href: "#services", label: "Services" },
   { href: "#about", label: "About" },
   { href: "#knowledge", label: "Knowledge Base" },
   { href: "#testimonials", label: "Testimonials" },
+  { href: "#contact", label: "Contact" },
 ];
 
 export default function Header() {
