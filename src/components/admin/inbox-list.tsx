@@ -7,7 +7,7 @@ import type { GroupedEmails } from "./inbox-client";
 import React, { useState, useEffect } from "react";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
-import { Trash2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -19,9 +19,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { deleteEmail } from "@/lib/emails";
-import { DeleteButton } from "./delete-button";
-
 
 function HighlightedText({ text, highlight }: { text: string; highlight: string }) {
     if (!highlight.trim()) {
@@ -44,8 +41,22 @@ function HighlightedText({ text, highlight }: { text: string; highlight: string 
     );
 }
 
-function EmailGroup({ title, emails, searchTerm, isClient }: { title: string; emails: Email[]; searchTerm: string, isClient: boolean }) {
+interface DeleteButtonProps {
+    isPending: boolean;
+}
+
+function DeleteConfirmationButton({isPending}: DeleteButtonProps) {
+    return (
+        <Button type="submit" disabled={isPending}>
+             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Continue
+        </Button>
+    )
+}
+
+function EmailGroup({ title, emails, searchTerm, isClient, onDelete, isPending }: { title: string; emails: Email[]; searchTerm: string, isClient: boolean, onDelete: (id: string) => void, isPending: boolean }) {
     if (emails.length === 0) return null;
+    const [openDialog, setOpenDialog] = useState(false);
 
     return (
         <>
@@ -79,7 +90,7 @@ function EmailGroup({ title, emails, searchTerm, isClient }: { title: string; em
                                 <HighlightedText text={email.message} highlight={searchTerm} />
                             </p>
                             <div className="flex justify-end pt-2">
-                                <AlertDialog>
+                                <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
                                     <AlertDialogTrigger asChild>
                                         <Button variant="outline" size="sm">
                                             <Trash2 className="mr-2 h-4 w-4" />
@@ -95,9 +106,12 @@ function EmailGroup({ title, emails, searchTerm, isClient }: { title: string; em
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            <form action={deleteEmail}>
+                                            <form action={() => {
+                                                onDelete(email.id);
+                                                setOpenDialog(false);
+                                            }}>
                                                 <input type="hidden" name="id" value={email.id} />
-                                                <Button type="submit">Continue</Button>
+                                                <DeleteConfirmationButton isPending={isPending}/>
                                             </form>
                                         </AlertDialogFooter>
                                     </AlertDialogContent>
@@ -111,7 +125,7 @@ function EmailGroup({ title, emails, searchTerm, isClient }: { title: string; em
     );
 }
 
-export default function InboxList({ groupedEmails, searchTerm }: { groupedEmails: GroupedEmails, searchTerm: string }) {
+export default function InboxList({ groupedEmails, searchTerm, onDelete, isPending }: { groupedEmails: GroupedEmails, searchTerm: string, onDelete: (id: string) => void, isPending: boolean }) {
     const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
@@ -127,10 +141,10 @@ export default function InboxList({ groupedEmails, searchTerm }: { groupedEmails
                     <p className="p-6 text-center text-muted-foreground">No emails found matching your search.</p>
                 ) : (
                     <Accordion type="single" collapsible className="w-full">
-                        <EmailGroup title="Today" emails={groupedEmails.today} searchTerm={searchTerm} isClient={isClient} />
-                        <EmailGroup title="Yesterday" emails={groupedEmails.yesterday} searchTerm={searchTerm} isClient={isClient} />
-                        <EmailGroup title="Last 7 Days" emails={groupedEmails.last7Days} searchTerm={searchTerm} isClient={isClient} />
-                        <EmailGroup title="Older" emails={groupedEmails.older} searchTerm={searchTerm} isClient={isClient} />
+                        <EmailGroup title="Today" emails={groupedEmails.today} searchTerm={searchTerm} isClient={isClient} onDelete={onDelete} isPending={isPending} />
+                        <EmailGroup title="Yesterday" emails={groupedEmails.yesterday} searchTerm={searchTerm} isClient={isClient} onDelete={onDelete} isPending={isPending} />
+                        <EmailGroup title="Last 7 Days" emails={groupedEmails.last7Days} searchTerm={searchTerm} isClient={isClient} onDelete={onDelete} isPending={isPending} />
+                        <EmailGroup title="Older" emails={groupedEmails.older} searchTerm={searchTerm} isClient={isClien} onDelete={onDelete} isPending={isPending} />
                     </Accordion>
                 )}
             </CardContent>

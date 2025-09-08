@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { markAllEmailsAsRead, type Email } from '@/lib/emails';
+import { useState, useEffect, useMemo, useTransition } from 'react';
+import { deleteEmail, markAllEmailsAsRead, type Email } from '@/lib/emails';
 import InboxList from './inbox-list';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { isToday, isYesterday, isWithinInterval, subDays, startOfDay } from 'date-fns';
 import { Card } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 
 export interface GroupedEmails {
     today: Email[];
@@ -18,12 +19,39 @@ export interface GroupedEmails {
 export default function InboxClient({ initialEmails }: { initialEmails: Email[] }) {
   const [emails, setEmails] = useState(initialEmails);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
 
   useEffect(() => {
     // This function will run on the client after the component mounts
     // to mark emails as read.
     markAllEmailsAsRead();
   }, []);
+
+  const handleDelete = (emailId: string) => {
+    startTransition(async () => {
+      // Optimistically update the UI
+      setEmails(currentEmails => currentEmails.filter(e => e.id !== emailId));
+      
+      const formData = new FormData();
+      formData.append('id', emailId);
+
+      try {
+        await deleteEmail(formData);
+        toast({
+          title: "Email moved to trash",
+        });
+      } catch (error) {
+        // Revert the optimistic update on error
+        setEmails(initialEmails); 
+        toast({
+          title: "Error",
+          description: "Failed to move email to trash. Please try again.",
+          variant: "destructive",
+        });
+      }
+    });
+  };
 
   const filteredAndGroupedEmails: GroupedEmails = useMemo(() => {
     const filtered = searchTerm
@@ -76,7 +104,12 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
             onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
-      <InboxList groupedEmails={filteredAndGroupedEmails} searchTerm={searchTerm} />
+      <InboxList 
+        groupedEmails={filteredAndGroupedEmails} 
+        searchTerm={searchTerm} 
+        onDelete={handleDelete}
+        isPending={isPending}
+      />
     </Card>
   );
 }
