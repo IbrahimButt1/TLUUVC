@@ -6,6 +6,7 @@ import InboxList from './inbox-list';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { isToday, isYesterday, isWithinInterval, subDays, startOfDay } from 'date-fns';
+import { Card } from '@/components/ui/card';
 
 export interface GroupedEmails {
     today: Email[];
