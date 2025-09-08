@@ -144,7 +144,7 @@ export default function InboxList({ groupedEmails, searchTerm, onDelete, isPendi
                         <EmailGroup title="Today" emails={groupedEmails.today} searchTerm={searchTerm} isClient={isClient} onDelete={onDelete} isPending={isPending} />
                         <EmailGroup title="Yesterday" emails={groupedEmails.yesterday} searchTerm={searchTerm} isClient={isClient} onDelete={onDelete} isPending={isPending} />
                         <EmailGroup title="Last 7 Days" emails={groupedEmails.last7Days} searchTerm={searchTerm} isClient={isClient} onDelete={onDelete} isPending={isPending} />
-                        <EmailGroup title="Older" emails={groupedEmails.older} searchTerm={searchTerm} isClient={isClien} onDelete={onDelete} isPending={isPending} />
+                        <EmailGroup title="Older" emails={groupedEmails.older} searchTerm={searchTerm} isClient={isClient} onDelete={onDelete} isPending={isPending} />
                     </Accordion>
                 )}
             </CardContent>
