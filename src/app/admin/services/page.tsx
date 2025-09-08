@@ -64,10 +64,7 @@ export default async function ManageServices() {
                                             </AlertDialogHeader>
                                             <AlertDialogFooter>
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <form action={async () => {
-                                                    "use server";
-                                                    await deleteService(service.id);
-                                                }}>
+                                                <form action={deleteService.bind(null, service.id)}>
                                                     <DeleteButton />
                                                 </form>
                                             </AlertDialogFooter>
