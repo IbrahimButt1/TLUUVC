@@ -1,22 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-  } from "@/components/ui/alert-dialog"
-import { getServices, deleteService } from "@/lib/services";
-import { DeleteButton } from "@/components/admin/delete-button";
-
+import { getServices } from "@/lib/services";
+import ServicesListClient from "@/components/admin/services-list-client";
 
 export default async function ManageServices() {
   const services = await getServices();
@@ -32,54 +18,7 @@ export default async function ManageServices() {
             </Button>
         </div>
 
-        <Card>
-            <CardContent>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Title</TableHead>
-                            <TableHead>Description</TableHead>
-                            <TableHead>Icon</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {services.map((service) => (
-                            <TableRow key={service.id}>
-                                <TableCell className="font-medium">{service.title}</TableCell>
-                                <TableCell>{service.description}</TableCell>
-                                <TableCell><code>{service.icon}</code></TableCell>
-                                <TableCell className="text-right">
-                                    <Button asChild variant="outline" size="sm" className="mr-2">
-                                        <Link href={`/admin/services/edit/${service.id}`}>Edit</Link>
-                                    </Button>
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <Button variant="destructive" size="sm">Delete</Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                This action cannot be undone. This will permanently delete this service.
-                                            </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <form action={deleteService}>
-                                                    <input type="hidden" name="id" value={service.id} />
-                                                    <DeleteButton />
-                                                </form>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </CardContent>
-        </Card>
+        <ServicesListClient initialServices={services} />
     </div>
   );
 }
