@@ -65,7 +65,7 @@ export default async function ManageServices() {
                                             <AlertDialogFooter>
                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
                                                 <form action={deleteService.bind(null, service.id)}>
-                                                    <DeleteButton />
+                                                    <Button variant="destructive" type="submit">Delete</Button>
                                                 </form>
                                             </AlertDialogFooter>
                                         </AlertDialogContent>
