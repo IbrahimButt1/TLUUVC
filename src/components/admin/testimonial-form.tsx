@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useFormStatus } from 'react-dom';
@@ -29,7 +28,7 @@ import {
 } from "@/components/ui/popover"
 
 interface TestimonialFormProps {
-    action: (formData: FormData) => Promise<void>;
+    action: (imageDataUri: string, formData: FormData) => Promise<void>;
     testimonial?: Testimonial;
     submitText: string;
 }
@@ -80,15 +79,16 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
             reader.readAsDataURL(file);
         }
     };
+    
+    const formAction = action.bind(null, imageDataUri);
 
 
     return (
-        <form action={action} className="space-y-6">
+        <form action={formAction} className="space-y-6">
             {testimonial && <input type="hidden" name="id" value={testimonial.id} />}
             <input type="hidden" name="destination" value={destinationValue} />
             <input type="hidden" name="role" value={selectedRole} />
             <input type="hidden" name="country" value={selectedCountry} />
-            <input type="hidden" name="image" value={imageDataUri} />
 
 
             <div className="space-y-2">
@@ -130,6 +130,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                                                 setSelectedRole(currentValue === selectedRole ? "" : currentValue)
                                                 setRolePopoverOpen(false)
                                             }}
+                                            onMouseDown={(e) => e.preventDefault()}
                                         >
                                             <Check
                                             className={cn(
@@ -189,6 +190,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                                                 setSelectedCountry(currentValue === selectedCountry ? "" : currentValue)
                                                 setCountryPopoverOpen(false)
                                             }}
+                                            onMouseDown={(e) => e.preventDefault()}
                                         >
                                             <Check
                                             className={cn(

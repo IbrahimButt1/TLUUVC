@@ -45,11 +45,10 @@ function generateId(name: string): string {
     return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
-export async function addTestimonial(formData: FormData) {
+export async function addTestimonial(image: string, formData: FormData) {
     const name = formData.get('name') as string;
     const destination = formData.get('destination') as string;
     const testimonial = formData.get('testimonial') as string;
-    const image = formData.get('image') as string;
     const role = formData.get('role') as string;
     const country = formData.get('country') as string;
 
@@ -77,12 +76,11 @@ export async function addTestimonial(formData: FormData) {
     redirect('/admin/testimonials');
 }
 
-export async function updateTestimonial(formData: FormData) {
+export async function updateTestimonial(image: string, formData: FormData) {
     const id = formData.get('id') as string;
     const name = formData.get('name') as string;
     const destination = formData.get('destination') as string;
     const testimonial = formData.get('testimonial') as string;
-    const image = formData.get('image') as string;
     const role = formData.get('role') as string;
     const country = formData.get('country') as string;
     

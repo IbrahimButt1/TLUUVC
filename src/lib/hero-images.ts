@@ -40,11 +40,10 @@ function generateId(title: string): string {
     return title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
-export async function addHeroImage(formData: FormData) {
+export async function addHeroImage(image: string, formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
-    const image = formData.get('image') as string;
-
+    
     if (!title || !description || !image) {
         return;
     }

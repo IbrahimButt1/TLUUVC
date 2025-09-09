@@ -33,9 +33,7 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     return await readSiteSettings();
 }
 
-export async function updateSiteSettings(formData: FormData) {
-    const logo = formData.get('logo') as string;
-
+export async function updateSiteSettings(logo: string, formData: FormData) {
     const currentSettings = await readSiteSettings();
 
     const newSettings: SiteSettings = {
@@ -45,7 +43,6 @@ export async function updateSiteSettings(formData: FormData) {
 
     await writeSiteSettings(newSettings);
     
-    // Revalidate all relevant paths
     revalidatePath('/');
     revalidatePath('/admin');
 
