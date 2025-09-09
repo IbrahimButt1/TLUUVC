@@ -54,7 +54,7 @@ export default function NavLinks({ className }: { className?: string }) {
           key={link.href} 
           href={link.href}
           data-active={activeSection === link.id}
-          className="nav-link text-muted-foreground hover:text-foreground transition-colors font-medium"
+          className="nav-link text-foreground hover:text-primary transition-colors font-medium"
         >
           {link.label}
         </a>
