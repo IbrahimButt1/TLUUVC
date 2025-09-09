@@ -4,23 +4,18 @@ import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { getHeroImages, type HeroImage } from '@/lib/hero-images';
-import { useEffect, useState, useRef } from "react";
+import type { HeroImage } from '@/lib/hero-images';
+import { useRef } from "react";
 
-export default function Hero() {
-  const [images, setImages] = useState<HeroImage[]>([]);
+export default function Hero({ images }: { images: HeroImage[] }) {
   const plugin = useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   )
 
-  useEffect(() => {
-    getHeroImages().then(setImages);
-  }, []);
-
   if (images.length === 0) {
     return (
       <section className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center text-center bg-muted">
-        <p className="text-muted-foreground">Loading hero images...</p>
+        <p className="text-muted-foreground">No hero images have been added yet.</p>
       </section>
     );
   }
