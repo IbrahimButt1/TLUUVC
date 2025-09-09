@@ -2,7 +2,7 @@
 
 import { Plane, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose, SheetTrigger } from "@/components/ui/sheet";
 import Image from "next/image";
 import { getSiteSettings } from "@/lib/site-settings";
 import React, { useState, useEffect } from "react";
@@ -22,7 +22,7 @@ export default function Header() {
   
   return (
     <header className={cn(
-      "w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-md"
+      "w-full bg-background shadow-md"
     )}>
       <div className="container flex h-20 items-center">
         <div className="mr-auto flex items-center">
