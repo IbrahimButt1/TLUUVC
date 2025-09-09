@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Testimonial } from "@/lib/testimonials";
-import { Loader2, Check, ChevronsUpDown, GraduationCap, Globe } from 'lucide-react';
+import { Loader2, Check, ChevronsUpDown, GraduationCap, Globe, Upload } from 'lucide-react';
 import React from 'react';
 import { countries, Country } from '@/lib/countries';
 import Image from 'next/image';
@@ -61,10 +61,26 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
 
     const [selectedRole, setSelectedRole] = React.useState(testimonial?.role || "");
     const [selectedCountry, setSelectedCountry] = React.useState(testimonial?.country || "");
+    const [imagePreview, setImagePreview] = React.useState(testimonial?.image || null);
+    const [imageDataUri, setImageDataUri] = React.useState(testimonial?.image || "");
 
     const destinationValue = `${selectedRole} in ${selectedCountry}`;
     
     const currentCountry = countries.find((c) => c.value === selectedCountry);
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const dataUri = reader.result as string;
+                setImagePreview(dataUri);
+                setImageDataUri(dataUri);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
 
     return (
         <form action={action} className="space-y-6">
@@ -72,6 +88,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
             <input type="hidden" name="destination" value={destinationValue} />
             <input type="hidden" name="role" value={selectedRole} />
             <input type="hidden" name="country" value={selectedCountry} />
+            <input type="hidden" name="image" value={imageDataUri} />
 
 
             <div className="space-y-2">
@@ -112,6 +129,10 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                                             onSelect={(currentValue) => {
                                                 setSelectedRole(currentValue === selectedRole ? "" : currentValue)
                                                 setRolePopoverOpen(false)
+                                            }}
+                                            onMouseDown={(e) => {
+                                              e.preventDefault();
+                                              e.stopPropagation();
                                             }}
                                         >
                                             <Check
@@ -172,6 +193,10 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                                                 setSelectedCountry(currentValue === selectedCountry ? "" : currentValue)
                                                 setCountryPopoverOpen(false)
                                             }}
+                                            onMouseDown={(e) => {
+                                              e.preventDefault();
+                                              e.stopPropagation();
+                                            }}
                                         >
                                             <Check
                                             className={cn(
@@ -198,12 +223,26 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                     </Popover>
                 </div>
             </div>
-            <div className="space-y-2">
-                <Label htmlFor="image">Image URL</Label>
-                <Input id="image" name="image" placeholder="https://picsum.photos/100/100" defaultValue={testimonial?.image} required />
-                 <p className="text-sm text-muted-foreground">
-                    Use a service like <a href="https://picsum.photos/" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">picsum.photos</a> or upload an image and paste the URL here.
-                </p>
+            <div className="space-y-4">
+                <Label htmlFor="image-upload">Client Image</Label>
+                <div className="flex items-center gap-4">
+                    <div className="w-24 h-24 rounded-full border border-dashed flex items-center justify-center bg-muted overflow-hidden">
+                        {imagePreview ? (
+                            <Image src={imagePreview} alt="Client image preview" width={96} height={96} className="w-full h-full object-cover" />
+                        ) : (
+                             <div className="text-center text-muted-foreground text-sm p-2">
+                                <Upload className="mx-auto h-6 w-6" />
+                                <span>Preview</span>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex-1">
+                        <Input id="image-upload" name="image-upload" type="file" accept="image/*" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                        <p className="text-sm text-muted-foreground mt-2">
+                            Upload a photo of the client. A square image works best.
+                        </p>
+                    </div>
+                </div>
             </div>
             <div className="space-y-2">
                 <Label htmlFor="testimonial">Testimonial</Label>

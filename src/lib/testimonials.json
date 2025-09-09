@@ -34,5 +34,14 @@
     "testimonial": "Navigating the German visa system was daunting, but their clear instructions and support were invaluable. I landed my tech job and visa without any hiccups.",
     "role": "Tech Professional",
     "country": "Germany"
+  },
+  {
+    "id": "ibrahim-butt",
+    "name": "Ibrahim Butt",
+    "destination": "Work Visa in United States of America",
+    "testimonial": "I'm Professional Web Developer 💕",
+    "image": "https://picsum.photos/100/100?random=1",
+    "role": "Work Visa",
+    "country": "United States of America"
   }
 ]
