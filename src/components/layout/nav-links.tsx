@@ -18,19 +18,38 @@ export default function NavLinks() {
   const sectionRefs = useRef<Map<string, HTMLElement | null>>(new Map());
 
   useEffect(() => {
+    const trackedSections = new Map<string, { isIntersecting: boolean; intersectionRatio: number }>();
+
+    const updateActiveSection = () => {
+        let maxRatio = -1;
+        let mostVisibleSectionId = '';
+
+        trackedSections.forEach((value, key) => {
+            if (value.isIntersecting && value.intersectionRatio > maxRatio) {
+                maxRatio = value.intersectionRatio;
+                mostVisibleSectionId = key;
+            }
+        });
+
+        if (mostVisibleSectionId) {
+            setActiveSection(mostVisibleSectionId);
+        }
+    };
+
+
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-             if (entry.intersectionRatio >= 0.2) {
-              setActiveSection(entry.target.id);
-            }
-          }
+            trackedSections.set(entry.target.id, {
+                isIntersecting: entry.isIntersecting,
+                intersectionRatio: entry.intersectionRatio,
+            });
         });
+        updateActiveSection();
       },
       {
-        threshold: [0.2, 0.5, 0.8], // multiple thresholds for better detection
-        rootMargin: "-50% 0px -50% 0px" // only consider the center of the viewport
+        threshold: Array.from({ length: 101 }, (_, i) => i / 100), // Create an array of thresholds from 0.0 to 1.0
+        rootMargin: "0px 0px -50% 0px"
       }
     );
 
