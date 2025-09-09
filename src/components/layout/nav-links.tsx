@@ -13,25 +13,42 @@ const navLinks = [
 ];
 
 export default function NavLinks() {
-  const [activeSection, setActiveSection] = useState('hero');
-  const observer = useRef<IntersectionObserver | null>(null);
+  const [activeSection, setActiveSection] = useState<string>('hero');
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const sectionRefs = useRef<Map<string, HTMLElement | null>>(new Map());
 
   useEffect(() => {
-    observer.current = new IntersectionObserver((entries) => {
-      const visibleSection = entries.find((entry) => entry.isIntersecting)?.target;
-      if (visibleSection) {
-        setActiveSection(visibleSection.id);
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+             if (entry.intersectionRatio >= 0.2) {
+              setActiveSection(entry.target.id);
+            }
+          }
+        });
+      },
+      {
+        threshold: [0.2, 0.5, 0.8], // multiple thresholds for better detection
+        rootMargin: "-50% 0px -50% 0px" // only consider the center of the viewport
       }
-    }, { threshold: 0.2 });
+    );
 
-    const sections = document.querySelectorAll('section[id]');
-    sections.forEach((section) => {
-      observer.current?.observe(section);
+    const currentObserver = observerRef.current;
+
+    navLinks.forEach((link) => {
+      const element = document.getElementById(link.id);
+      if (element) {
+        sectionRefs.current.set(link.id, element);
+        currentObserver.observe(element);
+      }
     });
 
     return () => {
-      sections.forEach((section) => {
-        observer.current?.unobserve(section);
+      sectionRefs.current.forEach((element) => {
+        if (element) {
+          currentObserver.unobserve(element);
+        }
       });
     };
   }, []);
