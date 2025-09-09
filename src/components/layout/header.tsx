@@ -1,21 +1,67 @@
+'use client';
+
 import { Plane, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Image from "next/image";
 import { getSiteSettings } from "@/lib/site-settings";
-
+import React, { useState, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "#", label: "Home" },
-  { href: "#services", label: "Services" },
-  { href: "#about", label: "About" },
-  { href: "#knowledge", label: "Knowledge Base" },
-  { href: "#testimonials", label: "Testimonials" },
-  { href: "#contact", label: "Contact" },
+  { href: "#", label: "Home", id: "hero" }, // Assuming hero section has an id="hero" or we treat top of page as home
+  { href: "#services", label: "Services", id: "services" },
+  { href: "#about", label: "About", id: "about" },
+  { href: "#knowledge", label: "Knowledge Base", id: "knowledge" },
+  { href: "#testimonials", label: "Testimonials", id: "testimonials" },
+  { href: "#contact", label: "Contact", id: "contact" },
 ];
 
-export default async function Header() {
-  const settings = await getSiteSettings();
+export default function Header() {
+  const [settings, setSettings] = useState<Awaited<ReturnType<typeof getSiteSettings>> | null>(null);
+  const [activeSection, setActiveSection] = useState('hero');
+  const sectionsRef = useRef<Record<string, HTMLElement | null>>({});
+
+  useEffect(() => {
+    getSiteSettings().then(setSettings);
+  }, []);
+
+  useEffect(() => {
+    // Populate refs for each section
+    navLinks.forEach(link => {
+      // Home is a special case, we'll use a placeholder for it
+      if (link.id !== 'hero') {
+        sectionsRef.current[link.id] = document.getElementById(link.id);
+      }
+    });
+
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight / 2;
+      let currentSection = 'hero';
+
+      navLinks.forEach(link => {
+        const section = sectionsRef.current[link.id];
+        if (section && scrollPosition >= section.offsetTop) {
+          currentSection = link.id;
+        }
+      });
+      
+      // Handle hero section specifically - active when at the top
+      if (window.scrollY < 200) {
+        currentSection = 'hero';
+      }
+
+      setActiveSection(currentSection);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  if (!settings) {
+    return <header className="sticky top-0 z-50 w-full h-14" />;
+  }
+  
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
@@ -27,7 +73,14 @@ export default async function Header() {
         </div>
         <nav className="hidden md:flex flex-1 items-center gap-6 text-sm">
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="nav-link text-muted-foreground hover:text-foreground transition-colors">
+            <a 
+              key={link.href} 
+              href={link.href} 
+              className={cn(
+                "nav-link text-muted-foreground hover:text-foreground transition-colors",
+                activeSection === link.id && 'nav-link-active'
+              )}
+            >
               {link.label}
             </a>
           ))}
