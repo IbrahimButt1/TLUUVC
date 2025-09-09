@@ -9,7 +9,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "#", label: "Home", id: "hero" }, // Assuming hero section has an id="hero" or we treat top of page as home
+  { href: "#", label: "Home", id: "hero" },
   { href: "#services", label: "Services", id: "services" },
   { href: "#about", label: "About", id: "about" },
   { href: "#knowledge", label: "Knowledge Base", id: "knowledge" },
@@ -27,36 +27,38 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
-    // Populate refs for each section
     navLinks.forEach(link => {
-      // Home is a special case, we'll use a placeholder for it
-      if (link.id !== 'hero') {
         sectionsRef.current[link.id] = document.getElementById(link.id);
-      }
     });
 
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight / 2;
-      let currentSection = 'hero';
+      const scrollPosition = window.scrollY + window.innerHeight / 3;
+      let currentSectionId = '';
 
-      navLinks.forEach(link => {
-        const section = sectionsRef.current[link.id];
-        if (section && scrollPosition >= section.offsetTop) {
-          currentSection = link.id;
-        }
-      });
+      for (const link of navLinks) {
+          const section = sectionsRef.current[link.id];
+          if (section && section.offsetTop <= scrollPosition) {
+              currentSectionId = link.id;
+          }
+      }
       
-      // Handle hero section specifically - active when at the top
       if (window.scrollY < 200) {
-        currentSection = 'hero';
+        currentSectionId = 'hero';
+      }
+      
+      // Check if we're at the bottom of the page
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
+        currentSectionId = 'contact';
       }
 
-      setActiveSection(currentSection);
+      setActiveSection(currentSectionId);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); 
+
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [settings]);
 
   if (!settings) {
     return <header className="sticky top-0 z-50 w-full h-14" />;
