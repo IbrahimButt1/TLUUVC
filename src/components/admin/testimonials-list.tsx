@@ -1,9 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -15,6 +14,9 @@ import {
 import { deleteTestimonial, type Testimonial } from "@/lib/testimonials";
 import { DeleteButton } from "@/components/admin/delete-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { MoreHorizontal } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 function HighlightedText({ text, highlight }: { text: string; highlight: string }) {
     if (!highlight.trim()) {
@@ -39,65 +41,87 @@ function HighlightedText({ text, highlight }: { text: string; highlight: string 
 
 export default function TestimonialsList({ testimonials, searchTerm }: { testimonials: Testimonial[], searchTerm: string }) {
     return (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {testimonials.map((testimonial) => (
-                <Card key={testimonial.id}>
-                    <CardHeader>
-                        <div className="flex items-start justify-between gap-4">
-                            <div className="flex items-center gap-4">
-                                <Avatar className="h-12 w-12">
-                                  <AvatarImage src={testimonial.image} alt={testimonial.name} />
-                                  <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <CardTitle>
-                                        <HighlightedText text={testimonial.name} highlight={searchTerm} />
-                                    </CardTitle>
-                                    <CardDescription>
-                                        <HighlightedText text={testimonial.destination} highlight={searchTerm} />
-                                    </CardDescription>
-                                </div>
-                            </div>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <p className="text-muted-foreground italic">
-                            "<HighlightedText text={testimonial.testimonial} highlight={searchTerm} />"
-                        </p>
-
-                        <div className="flex justify-end gap-2 pt-4">
-                            <Button asChild variant="outline" size="sm">
-                                <Link href={`/admin/testimonials/edit/${testimonial.id}`}>Edit</Link>
-                            </Button>
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button variant="destructive" size="sm">Delete</Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            This action cannot be undone. This will permanently delete this testimonial.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <form action={deleteTestimonial}>
-                                            <input type="hidden" name="id" value={testimonial.id} />
-                                            <DeleteButton />
-                                        </form>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-                        </div>
-                    </CardContent>
-                </Card>
-            ))}
-             {testimonials.length === 0 && (
-                <div className="col-span-full text-center text-muted-foreground py-12">
-                    <p>No testimonials found. Try adjusting your search.</p>
-                </div>
-            )}
-        </div>
+        <Card>
+            <CardContent>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead className="w-[300px]">Client</TableHead>
+                            <TableHead>Testimonial</TableHead>
+                            <TableHead className="w-[100px] text-right">Actions</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {testimonials.map((testimonial) => (
+                            <TableRow key={testimonial.id}>
+                                <TableCell>
+                                    <div className="flex items-center gap-4">
+                                        <Avatar className="h-12 w-12">
+                                            <AvatarImage src={testimonial.image} alt={testimonial.name} />
+                                            <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <div className="font-medium">
+                                                <HighlightedText text={testimonial.name} highlight={searchTerm} />
+                                            </div>
+                                            <div className="text-sm text-muted-foreground">
+                                                <HighlightedText text={testimonial.destination} highlight={searchTerm} />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </TableCell>
+                                <TableCell>
+                                    <p className="text-muted-foreground italic truncate max-w-md">
+                                        "<HighlightedText text={testimonial.testimonial} highlight={searchTerm} />"
+                                    </p>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" className="h-8 w-8 p-0">
+                                                <span className="sr-only">Open menu</span>
+                                                <MoreHorizontal className="h-4 w-4" />
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuItem asChild>
+                                                <Link href={`/admin/testimonials/edit/${testimonial.id}`}>Edit</Link>
+                                            </DropdownMenuItem>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                        Delete
+                                                    </DropdownMenuItem>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This action cannot be undone. This will permanently delete this testimonial.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <form action={deleteTestimonial}>
+                                                            <input type="hidden" name="id" value={testimonial.id} />
+                                                            <DeleteButton />
+                                                        </form>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                {testimonials.length === 0 && (
+                    <div className="text-center text-muted-foreground py-12">
+                        <p>No testimonials found. Try adjusting your search.</p>
+                    </div>
+                )}
+            </CardContent>
+        </Card>
     );
 }
