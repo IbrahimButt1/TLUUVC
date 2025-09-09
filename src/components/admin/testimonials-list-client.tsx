@@ -24,14 +24,14 @@ export default function TestimonialsListClient({ initialTestimonials }: { initia
 
   return (
     <div>
-       <div className="relative mb-6">
+       <div className="mb-6">
         <Card className="shadow-none">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
                 type="search"
                 placeholder="Search testimonials..."
-                className="pl-10 w-full bg-card"
+                className="w-full bg-card pl-10"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
