@@ -5,48 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Image from "next/image";
 import { getSiteSettings } from "@/lib/site-settings";
-import React, { useState, useEffect, useRef } from "react";
-import { cn } from "@/lib/utils";
-
-const navLinks = [
-  { href: "#hero", label: "Home", id: "hero" },
-  { href: "#services", label: "Services", id: "services" },
-  { href: "#about", label: "About", id: "about" },
-  { href: "#knowledge", label: "Knowledge Base", id: "knowledge" },
-  { href: "#testimonials", label: "Testimonials", id: "testimonials" },
-  { href: "#contact", label: "Contact", id: "contact" },
-];
+import React, { useState, useEffect } from "react";
+import NavLinks from "./nav-links";
 
 export default function Header() {
   const [settings, setSettings] = useState<Awaited<ReturnType<typeof getSiteSettings>> | null>(null);
-  const [activeSection, setActiveSection] = useState('hero');
-  const observer = useRef<IntersectionObserver | null>(null);
-
+  
   useEffect(() => {
     getSiteSettings().then(setSettings);
   }, []);
-
-  useEffect(() => {
-    observer.current = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
-        }
-      });
-    }, { threshold: 0.2 });
-    
-    const sections = document.querySelectorAll('section[id]');
-    sections.forEach((section) => {
-      observer.current?.observe(section);
-    });
-
-    return () => {
-      sections.forEach((section) => {
-        observer.current?.unobserve(section);
-      });
-    };
-  }, []);
-
 
   if (!settings) {
     return <header className="sticky top-0 z-50 w-full h-14" />;
@@ -61,20 +28,9 @@ export default function Header() {
             <span className="font-bold font-headline text-lg">The LUU Visa Consultant</span>
           </a>
         </div>
-        <nav className="hidden md:flex flex-1 items-center gap-6 text-sm">
-          {navLinks.map((link) => (
-            <a 
-              key={link.href} 
-              href={link.href} 
-              className={cn(
-                "nav-link text-muted-foreground hover:text-foreground transition-colors",
-                activeSection === link.id && "active text-foreground"
-              )}
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
+        
+        <NavLinks />
+
         <div className="flex flex-1 items-center justify-end space-x-2">
           <Button asChild className="hidden md:inline-flex">
             <a href="#contact">Get a Consultation</a>
@@ -88,11 +44,13 @@ export default function Header() {
             </SheetTrigger>
             <SheetContent side="left">
               <div className="flex flex-col gap-6 pt-10">
-                {navLinks.map((link) => (
-                  <a key={link.href} href={link.href} className="text-lg font-medium text-foreground hover:text-primary transition-colors">
-                    {link.label}
-                  </a>
-                ))}
+                <a href="#" className="text-lg font-medium text-foreground hover:text-primary transition-colors">Home</a>
+                <a href="#services" className="text-lg font-medium text-foreground hover:text-primary transition-colors">Services</a>
+                <a href="#about" className="text-lg font-medium text-foreground hover:text-primary transition-colors">About</a>
+                <a href="#knowledge" className="text-lg font-medium text-foreground hover:text-primary transition-colors">Knowledge Base</a>
+                <a href="#testimonials" className="text-lg font-medium text-foreground hover:text-primary transition-colors">Testimonials</a>
+                <a href="#contact" className="text-lg font-medium text-foreground hover:text-primary transition-colors">Contact</a>
+
                 <Button asChild className="mt-4">
                   <a href="#contact">Get a Consultation</a>
                 </Button>
