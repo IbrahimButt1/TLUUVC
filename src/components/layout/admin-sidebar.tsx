@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/services', label: 'Services', icon: Briefcase },
+  { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquareQuote },
   { href: '/admin/inbox', label: 'Inbox', icon: Inbox },
   { href: '/admin/inbox/trash', label: 'Trash', icon: Trash2 },
 ];
@@ -32,7 +33,7 @@ export default function AdminSidebar({ emailCount }: { emailCount: number }) {
       <nav className="flex flex-col p-4">
         <p className="text-xs font-semibold text-muted-foreground px-3 pt-2 pb-1">Admin</p>
         {navLinks.map((link) => {
-            const isActive = link.href === '/admin/inbox' ? pathname.startsWith('/admin/inbox') : pathname === link.href;
+            const isActive = pathname.startsWith(link.href) && (link.href !== '/admin' || pathname === '/admin');
             return (
                 <Link
                     key={link.href}

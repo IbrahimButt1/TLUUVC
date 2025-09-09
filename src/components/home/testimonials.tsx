@@ -1,35 +1,22 @@
+'use client';
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
-const testimonials = [
-  {
-    name: "Alex Johnson",
-    image: "https://picsum.photos/100/100?random=1",
-    destination: "Student in Canada",
-    testimonial: "The process was seamless and stress-free. The team's expertise was evident from day one. I'm now studying my dream course in Toronto, all thanks to them!"
-  },
-  {
-    name: "Maria Garcia",
-    image: "https://picsum.photos/100/100?random=2",
-    destination: "Skilled Worker in Australia",
-    testimonial: "I can't thank them enough. They handled my complex work visa case with utmost professionalism and secured my visa faster than I expected. Highly recommended!"
-  },
-  {
-    name: "Chen Wei",
-    image: "https://picsum.photos/100/100?random=3",
-    destination: "Family Reunion in the UK",
-    testimonial: "Reuniting with my family was my biggest dream. The LUU Visa Consultant made it possible with their patient and thorough guidance. They are true experts."
-  },
-  {
-    name: "Priya Patel",
-    image: "https://picsum.photos/100/100?random=4",
-    destination: "Tech Professional in Germany",
-    testimonial: "Navigating the German visa system was daunting, but their clear instructions and support were invaluable. I landed my tech job and visa without any hiccups."
-  },
-];
+import { getTestimonials, type Testimonial } from "@/lib/testimonials";
+import { useEffect, useState } from "react";
 
 export default function Testimonials() {
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+
+  useEffect(() => {
+    getTestimonials().then(setTestimonials);
+  }, []);
+
+  if (testimonials.length === 0) {
+    return null; // Or a loading skeleton
+  }
+
   return (
     <section id="testimonials" className="py-12 md:py-24 bg-background">
       <div className="container">
