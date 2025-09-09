@@ -27,7 +27,7 @@ export default async function Header() {
         </div>
         <nav className="hidden md:flex flex-1 items-center gap-6 text-sm">
           {navLinks.map((link) => (
-            <a key={link.href} href={link.href} className="text-muted-foreground hover:text-foreground transition-colors">
+            <a key={link.href} href={link.href} className="nav-link text-muted-foreground hover:text-foreground transition-colors">
               {link.label}
             </a>
           ))}
