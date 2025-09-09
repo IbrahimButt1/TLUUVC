@@ -9,8 +9,8 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Testimonial } from "@/lib/testimonials";
 import { Loader2, Check, ChevronsUpDown } from 'lucide-react';
-import { getTestimonials } from '@/lib/testimonials';
 import React from 'react';
+import { countries } from '@/lib/countries';
 
 import { cn } from "@/lib/utils"
 import {
@@ -26,7 +26,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-
 
 interface TestimonialFormProps {
     action: (formData: FormData) => Promise<void>;
@@ -44,75 +43,124 @@ function SubmitButton({ submitText }: { submitText: string }) {
     )
 }
 
+const roles = [
+    { value: 'Student Visa', label: 'Student Visa' },
+    { value: 'Work Visa', label: 'Work Visa' },
+    { value: 'Family Visa', label: 'Family Visa' },
+    { value: 'Partner Visa', label: 'Partner Visa' },
+    { value: 'Tourist Visa', label: 'Tourist Visa' },
+    { value: 'Business Visa', label: 'Business Visa' },
+    { value: 'Skilled Worker', label: 'Skilled Worker' },
+    { value: 'Tech Professional', label: 'Tech Professional' },
+];
+
 export default function TestimonialForm({ action, testimonial, submitText }: TestimonialFormProps) {
-    const [allTestimonials, setAllTestimonials] = React.useState<Testimonial[]>([]);
-    const [open, setOpen] = React.useState(false);
-    const [value, setValue] = React.useState(testimonial?.destination || "");
+    const [rolePopoverOpen, setRolePopoverOpen] = React.useState(false);
+    const [countryPopoverOpen, setCountryPopoverOpen] = React.useState(false);
 
-    React.useEffect(() => {
-        getTestimonials().then(data => setAllTestimonials(data));
-    }, []);
+    const [selectedRole, setSelectedRole] = React.useState(testimonial?.role || "");
+    const [selectedCountry, setSelectedCountry] = React.useState(testimonial?.destination || "");
 
-    const destinations = React.useMemo(() => {
-        const uniqueDestinations = [...new Set(allTestimonials.map(t => t.destination))];
-        return uniqueDestinations.map(d => ({ value: d, label: d }));
-    }, [allTestimonials]);
+    const destinationValue = `${selectedRole} in ${selectedCountry}`;
     
     return (
         <form action={action} className="space-y-6">
             {testimonial && <input type="hidden" name="id" value={testimonial.id} />}
+            <input type="hidden" name="destination" value={destinationValue} />
+            <input type="hidden" name="role" value={selectedRole} />
+            <input type="hidden" name="country" value={selectedCountry} />
+
+
+            <div className="space-y-2">
+                <Label htmlFor="name">Client Name</Label>
+                <Input id="name" name="name" defaultValue={testimonial?.name} required />
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                    <Label htmlFor="name">Client Name</Label>
-                    <Input id="name" name="name" defaultValue={testimonial?.name} required />
-                </div>
-                <div className="space-y-2">
-                    <Label htmlFor="destination">Destination / Role</Label>
-                    <Input type="hidden" name="destination" value={value} />
-                     <Popover open={open} onOpenChange={setOpen}>
+                 <div className="space-y-2">
+                    <Label htmlFor="role">Role</Label>
+                    <Popover open={rolePopoverOpen} onOpenChange={setRolePopoverOpen}>
                         <PopoverTrigger asChild>
                             <Button
                             variant="outline"
                             role="combobox"
-                            aria-expanded={open}
+                            aria-expanded={rolePopoverOpen}
                             className="w-full justify-between font-normal"
                             >
-                            {value
-                                ? destinations.find((d) => d.value === value)?.label
-                                : "Select destination..."}
+                            {selectedRole
+                                ? roles.find((r) => r.value === selectedRole)?.label
+                                : "Select role..."}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                             <Command>
-                                <CommandInput placeholder="Search or add destination..." />
+                                <CommandInput placeholder="Search roles..." />
                                 <CommandList>
-                                    <CommandEmpty
-                                        onSelect={() => {
-                                            const inputValue = (document.querySelector('[cmdk-input]') as HTMLInputElement)?.value;
-                                            setValue(inputValue);
-                                            setOpen(false);
-                                        }}
-                                    >
-                                        No destination found. Press Enter to add.
-                                    </CommandEmpty>
+                                    <CommandEmpty>No role found.</CommandEmpty>
                                     <CommandGroup>
-                                        {destinations.map((d) => (
+                                        {roles.map((r) => (
                                         <CommandItem
-                                            key={d.value}
-                                            value={d.value}
+                                            key={r.value}
+                                            value={r.value}
                                             onSelect={(currentValue) => {
-                                                setValue(currentValue === value ? "" : currentValue)
-                                                setOpen(false)
+                                                setSelectedRole(currentValue === selectedRole ? "" : currentValue)
+                                                setRolePopoverOpen(false)
                                             }}
                                         >
                                             <Check
                                             className={cn(
                                                 "mr-2 h-4 w-4",
-                                                value === d.value ? "opacity-100" : "opacity-0"
+                                                selectedRole === r.value ? "opacity-100" : "opacity-0"
                                             )}
                                             />
-                                            {d.label}
+                                            {r.label}
+                                        </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </CommandList>
+                            </Command>
+                        </PopoverContent>
+                    </Popover>
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="country">Destination Country</Label>
+                     <Popover open={countryPopoverOpen} onOpenChange={setCountryPopoverOpen}>
+                        <PopoverTrigger asChild>
+                            <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={countryPopoverOpen}
+                            className="w-full justify-between font-normal"
+                            >
+                            {selectedCountry
+                                ? countries.find((c) => c.value === selectedCountry)?.label
+                                : "Select country..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                            <Command>
+                                <CommandInput placeholder="Search country..." />
+                                <CommandList>
+                                    <CommandEmpty>No country found.</CommandEmpty>
+                                    <CommandGroup>
+                                        {countries.map((c) => (
+                                        <CommandItem
+                                            key={c.value}
+                                            value={c.value}
+                                            onSelect={(currentValue) => {
+                                                setSelectedCountry(currentValue === selectedCountry ? "" : currentValue)
+                                                setCountryPopoverOpen(false)
+                                            }}
+                                        >
+                                            <Check
+                                            className={cn(
+                                                "mr-2 h-4 w-4",
+                                                selectedCountry === c.value ? "opacity-100" : "opacity-0"
+                                            )}
+                                            />
+                                            {c.label}
                                         </CommandItem>
                                         ))}
                                     </CommandGroup>

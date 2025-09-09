@@ -1,30 +1,39 @@
+
 [
   {
     "id": "alex-johnson",
     "name": "Alex Johnson",
     "image": "https://picsum.photos/100/100?random=1",
-    "destination": "Student in Canada",
-    "testimonial": "The process was seamless and stress-free. The team's expertise was evident from day one. I'm now studying my dream course in Toronto, all thanks to them!"
+    "destination": "Student Visa in Canada",
+    "testimonial": "The process was seamless and stress-free. The team's expertise was evident from day one. I'm now studying my dream course in Toronto, all thanks to them!",
+    "role": "Student Visa",
+    "country": "Canada"
   },
   {
     "id": "maria-garcia",
     "name": "Maria Garcia",
     "image": "https://picsum.photos/100/100?random=2",
     "destination": "Skilled Worker in Australia",
-    "testimonial": "I can't thank them enough. They handled my complex work visa case with utmost professionalism and secured my visa faster than I expected. Highly recommended!"
+    "testimonial": "I can't thank them enough. They handled my complex work visa case with utmost professionalism and secured my visa faster than I expected. Highly recommended!",
+    "role": "Skilled Worker",
+    "country": "Australia"
   },
   {
     "id": "chen-wei",
     "name": "Chen Wei",
     "image": "https://picsum.photos/100/100?random=3",
-    "destination": "Family Reunion in the UK",
-    "testimonial": "Reuniting with my family was my biggest dream. The LUU Visa Consultant made it possible with their patient and thorough guidance. They are true experts."
+    "destination": "Family Visa in United Kingdom",
+    "testimonial": "Reuniting with my family was my biggest dream. The LUU Visa Consultant made it possible with their patient and thorough guidance. They are true experts.",
+    "role": "Family Visa",
+    "country": "United Kingdom"
   },
   {
     "id": "priya-patel",
     "name": "Priya Patel",
     "image": "https://picsum.photos/100/100?random=4",
     "destination": "Tech Professional in Germany",
-    "testimonial": "Navigating the German visa system was daunting, but their clear instructions and support were invaluable. I landed my tech job and visa without any hiccups."
+    "testimonial": "Navigating the German visa system was daunting, but their clear instructions and support were invaluable. I landed my tech job and visa without any hiccups.",
+    "role": "Tech Professional",
+    "country": "Germany"
   }
 ]

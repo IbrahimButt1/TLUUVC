@@ -11,6 +11,8 @@ export interface Testimonial {
     destination: string;
     testimonial: string;
     image: string;
+    role?: string;
+    country?: string;
 }
 
 const dataPath = path.join(process.cwd(), 'src', 'lib', 'testimonials.json');
@@ -48,8 +50,10 @@ export async function addTestimonial(formData: FormData) {
     const destination = formData.get('destination') as string;
     const testimonial = formData.get('testimonial') as string;
     const image = formData.get('image') as string;
+    const role = formData.get('role') as string;
+    const country = formData.get('country') as string;
 
-    if (!name || !destination || !testimonial || !image) {
+    if (!name || !destination || !testimonial || !image || !role || !country) {
         return;
     }
 
@@ -59,6 +63,8 @@ export async function addTestimonial(formData: FormData) {
         destination,
         testimonial,
         image,
+        role,
+        country,
     };
 
     const testimonials = await readTestimonials();
@@ -77,12 +83,14 @@ export async function updateTestimonial(formData: FormData) {
     const destination = formData.get('destination') as string;
     const testimonial = formData.get('testimonial') as string;
     const image = formData.get('image') as string;
+    const role = formData.get('role') as string;
+    const country = formData.get('country') as string;
     
     const testimonials = await readTestimonials();
     const testimonialIndex = testimonials.findIndex(t => t.id === id);
 
     if (testimonialIndex !== -1) {
-        testimonials[testimonialIndex] = { id, name, destination, testimonial, image };
+        testimonials[testimonialIndex] = { id, name, destination, testimonial, image, role, country };
         await writeTestimonials(testimonials);
     }
 
