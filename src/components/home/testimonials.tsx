@@ -4,10 +4,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getTestimonials, type Testimonial } from "@/lib/testimonials";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import Autoplay from "embla-carousel-autoplay";
+
 
 export default function Testimonials() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const plugin = useRef(
+    Autoplay({ delay: 5000, stopOnInteraction: true })
+  )
 
   useEffect(() => {
     getTestimonials().then(setTestimonials);
@@ -25,10 +30,13 @@ export default function Testimonials() {
           <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">Hear from our clients who have successfully embarked on their new journeys.</p>
         </div>
         <Carousel
+          plugins={[plugin.current]}
           opts={{
             align: "start",
             loop: true,
           }}
+          onMouseEnter={plugin.current.stop}
+          onMouseLeave={plugin.current.reset}
           className="w-full max-w-4xl mx-auto"
         >
           <CarouselContent>
