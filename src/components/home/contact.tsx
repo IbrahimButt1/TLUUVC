@@ -5,10 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useActionState, useState } from "react";
+import { useActionState, useState, useEffect } from "react";
 import { sendContactEmail } from "@/ai/flows/send-contact-email";
 import { useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getServices, type Service } from "@/lib/services";
+
 
 type FormState = {
   success: boolean;
@@ -31,6 +34,11 @@ export default function Contact() {
   const [email, setEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [services, setServices] = useState<Service[]>([]);
+
+  useEffect(() => {
+    getServices().then(setServices);
+  }, []);
 
   const action = async (prevState: FormState, formData: FormData): Promise<FormState> => {
     try {
@@ -96,7 +104,19 @@ export default function Contact() {
               </div>
               <div className="space-y-2">
                 <Label htmlFor="subject">Subject</Label>
-                <Input id="subject" name="subject" placeholder="e.g., Inquiry about Student Visa" required value={subject} onChange={e => setSubject(e.target.value)} />
+                <Select name="subject" value={subject} onValueChange={setSubject} required>
+                    <SelectTrigger id="subject">
+                        <SelectValue placeholder="Select a service" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {services.map((service) => (
+                            <SelectItem key={service.id} value={service.title}>
+                                {service.title}
+                            </SelectItem>
+                        ))}
+                         <SelectItem value="Other">Other Inquiry</SelectItem>
+                    </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="message">Your Message</Label>
