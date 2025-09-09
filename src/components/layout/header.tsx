@@ -47,7 +47,7 @@ export default function Header() {
             <SheetContent side="left" className="w-[300px]">
                <SheetHeader className="flex flex-row items-center justify-between">
                 <SheetTitle className="flex items-center gap-2">
-                  <Image src={settings.logo} alt="Company Logo" width={128} height={32} className="object-contain" />
+                  <Image src={settings.logo} alt="Company Logo" width={140} height={35} className="object-contain" />
                 </SheetTitle>
                 <SheetClose>
                   <X className="h-5 w-5"/>
