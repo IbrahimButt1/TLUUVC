@@ -35,8 +35,7 @@ export default function Header() {
       <div className="container flex h-16 items-center">
         <div className="mr-auto flex items-center">
           <a href="#" className="flex items-center gap-3">
-            <Image src={settings.logo} alt="Company Logo" width={32} height={32} className="rounded-full" data-ai-hint="logo" />
-            <span className="font-bold font-headline text-xl text-primary">The LUU Visa Consultant</span>
+            <Image src={settings.logo} alt="Company Logo" width={128} height={32} className="object-contain" data-ai-hint="logo" />
           </a>
         </div>
         
@@ -56,8 +55,7 @@ export default function Header() {
             <SheetContent side="left" className="w-[300px]">
                <SheetHeader className="flex flex-row items-center justify-between">
                 <SheetTitle className="flex items-center gap-2">
-                  <Image src={settings.logo} alt="Company Logo" width={24} height={24} className="rounded-full" />
-                  <span className="font-bold text-lg">LUU Visa</span>
+                  <Image src={settings.logo} alt="Company Logo" width={128} height={32} className="object-contain" />
                 </SheetTitle>
                 <SheetClose>
                   <X className="h-5 w-5"/>
