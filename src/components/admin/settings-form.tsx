@@ -12,7 +12,7 @@ import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 
 interface SettingsFormProps {
-    action: (logoDataUri: string, formData: FormData) => Promise<void>;
+    action: (formData: FormData) => Promise<void>;
     settings: SiteSettings;
     submitText: string;
 }
@@ -87,11 +87,10 @@ export default function SettingsForm({ action, settings, submitText }: SettingsF
         }
     };
     
-    const formAction = action.bind(null, logoDataUri);
-
 
     return (
-        <form action={formAction} className="space-y-6">
+        <form action={action} className="space-y-6">
+            <input type="hidden" name="logo" value={logoDataUri} />
             <div className="space-y-4">
                 <Label htmlFor="logo-upload">Website Logo</Label>
                 <div className="flex items-center gap-4">
