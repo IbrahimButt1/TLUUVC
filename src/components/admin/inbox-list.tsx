@@ -60,20 +60,20 @@ function EmailGroup({ title, emails, searchTerm, isClient, onDelete, isPending }
 
     return (
         <>
-            <div className="flex items-center gap-4 px-6 py-2">
+            <div className="flex items-center gap-4 px-4 py-1">
                 <Separator className="flex-1" />
                 <h3 className="text-xs font-semibold text-muted-foreground">{title}</h3>
                 <Separator className="flex-1" />
             </div>
             {emails.map((email) => (
-                <AccordionItem value={email.id} key={email.id} className="border-b-0">
-                    <AccordionTrigger className="px-6 py-4 hover:no-underline hover:bg-muted/50 rounded-md transition-colors data-[state=open]:bg-muted">
+                <AccordionItem value={email.id} key={email.id} className="border-b">
+                    <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/50 rounded-md transition-colors data-[state=open]:bg-muted">
                         <div className="flex justify-between w-full items-center">
-                            <div className={cn("flex flex-col text-left gap-1", !email.read && "font-bold")}>
-                                <span className="font-medium">
+                            <div className={cn("flex flex-col text-left", !email.read && "font-bold")}>
+                                <span className="font-medium text-sm">
                                     <HighlightedText text={email.name} highlight={searchTerm} />
                                 </span>
-                                <span className="text-sm text-muted-foreground">
+                                <span className="text-xs text-muted-foreground">
                                     <HighlightedText text={email.subject} highlight={searchTerm} />
                                 </span>
                             </div>
@@ -82,7 +82,7 @@ function EmailGroup({ title, emails, searchTerm, isClient, onDelete, isPending }
                             </span>
                         </div>
                     </AccordionTrigger>
-                    <AccordionContent className="p-6 pt-2">
+                    <AccordionContent className="p-4 pt-0">
                         <div className="space-y-4 bg-muted/50 p-4 rounded-md">
                             <p className="text-sm"><strong>From:</strong> <a href={`mailto:${email.email}`} className="text-primary hover:underline"><HighlightedText text={email.email} highlight={searchTerm} /></a></p>
                             <p className="text-sm"><strong>Subject:</strong> <HighlightedText text={email.subject} highlight={searchTerm} /></p>
