@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useFormStatus } from 'react-dom';
@@ -7,7 +8,25 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Testimonial } from "@/lib/testimonials";
-import { Loader2 } from 'lucide-react';
+import { Loader2, Check, ChevronsUpDown } from 'lucide-react';
+import { getTestimonials } from '@/lib/testimonials';
+import React from 'react';
+
+import { cn } from "@/lib/utils"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
 
 interface TestimonialFormProps {
     action: (formData: FormData) => Promise<void>;
@@ -26,6 +45,19 @@ function SubmitButton({ submitText }: { submitText: string }) {
 }
 
 export default function TestimonialForm({ action, testimonial, submitText }: TestimonialFormProps) {
+    const [allTestimonials, setAllTestimonials] = React.useState<Testimonial[]>([]);
+    const [open, setOpen] = React.useState(false);
+    const [value, setValue] = React.useState(testimonial?.destination || "");
+
+    React.useEffect(() => {
+        getTestimonials().then(data => setAllTestimonials(data));
+    }, []);
+
+    const destinations = React.useMemo(() => {
+        const uniqueDestinations = [...new Set(allTestimonials.map(t => t.destination))];
+        return uniqueDestinations.map(d => ({ value: d, label: d }));
+    }, [allTestimonials]);
+    
     return (
         <form action={action} className="space-y-6">
             {testimonial && <input type="hidden" name="id" value={testimonial.id} />}
@@ -36,7 +68,58 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="destination">Destination / Role</Label>
-                    <Input id="destination" name="destination" placeholder="e.g., Student in Canada" defaultValue={testimonial?.destination} required />
+                    <Input type="hidden" name="destination" value={value} />
+                     <Popover open={open} onOpenChange={setOpen}>
+                        <PopoverTrigger asChild>
+                            <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="w-full justify-between font-normal"
+                            >
+                            {value
+                                ? destinations.find((d) => d.value === value)?.label
+                                : "Select destination..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                            <Command>
+                                <CommandInput placeholder="Search or add destination..." />
+                                <CommandList>
+                                    <CommandEmpty
+                                        onSelect={() => {
+                                            const inputValue = (document.querySelector('[cmdk-input]') as HTMLInputElement)?.value;
+                                            setValue(inputValue);
+                                            setOpen(false);
+                                        }}
+                                    >
+                                        No destination found. Press Enter to add.
+                                    </CommandEmpty>
+                                    <CommandGroup>
+                                        {destinations.map((d) => (
+                                        <CommandItem
+                                            key={d.value}
+                                            value={d.value}
+                                            onSelect={(currentValue) => {
+                                                setValue(currentValue === value ? "" : currentValue)
+                                                setOpen(false)
+                                            }}
+                                        >
+                                            <Check
+                                            className={cn(
+                                                "mr-2 h-4 w-4",
+                                                value === d.value ? "opacity-100" : "opacity-0"
+                                            )}
+                                            />
+                                            {d.label}
+                                        </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </CommandList>
+                            </Command>
+                        </PopoverContent>
+                    </Popover>
                 </div>
             </div>
             <div className="space-y-2">
