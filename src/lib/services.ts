@@ -10,6 +10,9 @@ export interface Service {
     title: string;
     description: string;
     icon: string;
+    longDescription?: string;
+    requirements?: string[];
+    image?: string;
 }
 
 // Path to the JSON file that acts as our database

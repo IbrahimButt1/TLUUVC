@@ -6,6 +6,8 @@ import * as LucideIcons from "lucide-react";
 import { getServices, type Service } from "@/lib/services";
 import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 type IconName = keyof typeof LucideIcons;
 
@@ -41,17 +43,23 @@ export default function Services() {
                 )}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <Card className="text-center h-full hover:shadow-xl hover:-translate-y-2 transition-transform duration-300">
-                  <CardHeader>
-                    <div className="mx-auto bg-secondary p-4 rounded-full w-fit">
-                      <Icon className="h-10 w-10 text-primary" />
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <CardTitle className="mb-2 font-headline">{service.title}</CardTitle>
-                    <CardDescription>{service.description}</CardDescription>
-                  </CardContent>
-                </Card>
+                <Link href={`/services/${service.id}`} className="group h-full flex">
+                    <Card className="text-center h-full hover:shadow-xl hover:-translate-y-2 transition-transform duration-300 flex flex-col w-full">
+                    <CardHeader>
+                        <div className="mx-auto bg-secondary p-4 rounded-full w-fit transition-colors group-hover:bg-primary/10">
+                        <Icon className="h-10 w-10 text-primary" />
+                        </div>
+                    </CardHeader>
+                    <CardContent className="flex flex-col flex-grow">
+                        <CardTitle className="mb-2 font-headline">{service.title}</CardTitle>
+                        <CardDescription className="flex-grow">{service.description}</CardDescription>
+                         <div className="mt-4 flex items-center justify-center text-primary font-semibold">
+                            <span>Learn More</span>
+                            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                        </div>
+                    </CardContent>
+                    </Card>
+                </Link>
               </div>
             )
           })}

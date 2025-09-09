@@ -1,32 +1,82 @@
+
 [
   {
     "id": "student-visas",
     "title": "Student Visas",
     "description": "Comprehensive guidance for students aspiring to study abroad, from application to approval.",
-    "icon": "University"
+    "icon": "University",
+    "longDescription": "Navigating the student visa process can be complex. We provide expert, end-to-end guidance to ensure your application is strong, complete, and submitted correctly. From choosing the right institution and course to preparing financial documents and acing your visa interview, we're with you every step of the way. Our goal is to make your dream of international education a reality.",
+    "requirements": [
+      "Acceptance letter from a designated learning institution.",
+      "Proof of financial support to cover tuition and living expenses.",
+      "Valid passport and passport-sized photographs.",
+      "Statement of Purpose (SOP) outlining your academic goals.",
+      "Academic transcripts and certificates.",
+      "Medical examination certificate, if required."
+    ],
+    "image": "https://picsum.photos/800/600?random=1"
   },
   {
     "id": "work-visas",
     "title": "Work Visas",
     "description": "Tailored support for professionals seeking employment opportunities in a new country.",
-    "icon": "Briefcase"
+    "icon": "Briefcase",
+    "longDescription": "Securing a work visa is a critical step in advancing your career internationally. We specialize in assisting professionals, skilled workers, and entrepreneurs in obtaining the necessary permits to work legally in their destination country. We'll help you understand eligibility criteria, compile the required documentation, and liaise with employers and immigration authorities to streamline your application.",
+    "requirements": [
+      "Valid job offer from an employer in the destination country.",
+      "Proof of relevant work experience and qualifications.",
+      "Language proficiency test results (e.g., IELTS, TOEFL).",
+      "Police clearance certificates.",
+      "Resume or Curriculum Vitae (CV).",
+      "Labor Market Impact Assessment (LMIA), if applicable."
+    ],
+    "image": "https://picsum.photos/800/600?random=2"
   },
   {
     "id": "family-partner-visas",
     "title": "Family & Partner Visas",
     "description": "Helping you reunite with your loved ones through dedicated family and partner visa services.",
-    "icon": "Users"
+    "icon": "Users",
+    "longDescription": "We understand the importance of family. Our dedicated family and partner visa services are designed to help you reunite with your loved ones with minimal hassle. Whether you are sponsoring a spouse, partner, child, or parent, we provide compassionate and thorough assistance to navigate the sponsorship process and meet all immigration requirements, ensuring your family's journey is a smooth one.",
+    "requirements": [
+      "Proof of relationship (e.g., marriage certificate, birth certificate).",
+      "Sponsor's proof of citizenship or permanent residency.",
+      "Evidence of financial capacity to support the sponsored family member.",
+      "Completed sponsorship and application forms.",
+      "Background checks and police certificates.",
+      "Photos and other evidence of a genuine relationship."
+    ],
+    "image": "https://picsum.photos/800/600?random=3"
   },
   {
     "id": "application-review",
     "title": "Application Review",
     "description": "Meticulous review of your visa application to maximize your chances of success.",
-    "icon": "FileText"
+    "icon": "FileText",
+    "longDescription": "Even a small error can lead to visa rejection. Our meticulous application review service provides a final, expert check of all your documents and forms before submission. We scrutinize every detail to ensure accuracy, completeness, and compliance with the latest immigration regulations. This final step significantly increases your chances of a first-time approval, saving you time, money, and stress.",
+    "requirements": [
+      "Completed draft of your visa application forms.",
+      "All supporting documents (financial, academic, personal, etc.).",
+      "Copy of your passport and other identification.",
+      "Any previous communication with immigration authorities.",
+      "Details of the specific visa category you are applying for.",
+      "Our signed service agreement."
+    ],
+    "image": "https://picsum.photos/800/600?random=4"
   },
   {
-    "id": "eye",
+    "id": "eid-offer-20-off",
     "title": "Eid Offer 20% off",
     "description": "Maga Discount",
-    "icon": "Hotel"
+    "icon": "Hotel",
+    "longDescription": "Celebrate Eid with an exclusive 20% discount on all our visa consultation services! Whether you're planning to study, work, or reunite with family abroad, take advantage of this limited-time offer to make your dreams more affordable. Our expert team is ready to provide you with the same high-quality guidance at a special festive price. Contact us today to learn more!",
+    "requirements": [
+      "Mention 'EID2024' when booking your consultation.",
+      "Offer valid for new clients only.",
+      "Consultation must be booked during the promotional period.",
+      "Cannot be combined with other offers or discounts.",
+      "Standard service terms and conditions apply."
+    ],
+    "image": "https://picsum.photos/800/600?random=5"
   }
 ]
