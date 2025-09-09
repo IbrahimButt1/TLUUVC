@@ -29,7 +29,7 @@ function SubmitButton({ submitText }: { submitText: string }) {
     )
 }
 
-const MAX_FILE_SIZE_MB = 2;
+const MAX_FILE_SIZE_MB = 1;
 
 export default function HeroImageForm({ action, image, submitText }: HeroImageFormProps) {
     const [imagePreview, setImagePreview] = React.useState<string | null>(image?.image || null);
@@ -94,7 +94,7 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
                     <div className="flex-1">
                         <Input id="image-upload" name="imageFile" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
-                            Upload a landscape image (e.g. 1920x1080). Max file size: {MAX_FILE_SIZE_MB}MB.
+                            Upload a landscape image (e.g. 1920x1080). Max file size: ${MAX_FILE_SIZE_MB}MB.
                         </p>
                     </div>
                 </div>

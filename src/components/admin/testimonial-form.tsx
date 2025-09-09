@@ -55,7 +55,7 @@ const roles = [
     { value: 'Tech Professional', label: 'Tech Professional' },
 ];
 
-const MAX_FILE_SIZE_MB = 2;
+const MAX_FILE_SIZE_MB = 1;
 
 
 export default function TestimonialForm({ action, testimonial, submitText }: TestimonialFormProps) {
@@ -244,7 +244,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                     <div className="flex-1">
                         <Input id="image-upload" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
-                            Upload a photo of the client. A square image works best. Max file size: {MAX_FILE_SIZE_MB}MB.
+                            Upload a photo of the client. A square image works best. Max file size: ${MAX_FILE_SIZE_MB}MB.
                         </p>
                     </div>
                 </div>

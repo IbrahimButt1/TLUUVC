@@ -37,6 +37,17 @@ export async function getHeroImages(): Promise<HeroImage[]> {
     return await readHeroImages();
 }
 
+export async function getPaginatedHeroImages(page: number, limit: number) {
+    const allImages = await readHeroImages();
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+    const images = allImages.slice(startIndex, endIndex);
+    return {
+        images,
+        totalCount: allImages.length
+    }
+}
+
 export async function getHeroImageById(id: string): Promise<HeroImage | undefined> {
     const images = await readHeroImages();
     return images.find(s => s.id === id);
@@ -67,7 +78,7 @@ export async function addHeroImage(imageDataUri: string, formData: FormData) {
     };
 
     const images = await readHeroImages();
-    images.push(newImage);
+    images.unshift(newImage);
     await writeHeroImages(images);
     
     revalidatePath('/');
