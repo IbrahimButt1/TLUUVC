@@ -107,7 +107,7 @@ export default function SettingsForm({ action, settings, submitText }: SettingsF
                     <div className="flex-1">
                         <Input id="logo-upload" type="file" accept="image/*" onChange={handleLogoChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
-                           Upload your site logo. A square image works best. Images over {MAX_SIZE_KB}KB will be compressed.
+                           Upload your site logo. A square image works best. Images over ${MAX_SIZE_KB}KB will be compressed.
                         </p>
                     </div>
                 </div>
