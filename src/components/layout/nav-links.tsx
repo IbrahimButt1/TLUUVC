@@ -14,7 +14,7 @@ const navLinks = [
 export default function NavLinks({ className }: { className?: string }) {
 
   return (
-    <nav className={cn("hidden md:flex flex-1 items-center gap-6 text-sm justify-center", className)}>
+    <nav className={cn("hidden md:flex items-center gap-6 text-sm", className)}>
       {navLinks.map((link) => (
         <a 
           key={link.href} 

@@ -30,18 +30,18 @@ export default function Header() {
   return (
     <header className={cn(
       "sticky top-0 z-50 w-full transition-all duration-300",
-      isScrolled ? "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-md" : "bg-transparent"
+      isScrolled ? "bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-md rounded-b-xl" : "bg-transparent"
     )}>
       <div className="container flex h-16 items-center">
         <div className="mr-auto flex items-center">
           <a href="#" className="flex items-center gap-3">
-            <Image src={settings.logo} alt="Company Logo" width={128} height={32} className="object-contain" data-ai-hint="logo" />
+            <Image src={settings.logo} alt="Company Logo" width={140} height={35} className="object-contain" data-ai-hint="logo" />
           </a>
         </div>
         
         <NavLinks className="hidden md:flex items-center gap-8" />
 
-        <div className="flex flex-1 items-center justify-end space-x-2">
+        <div className="flex items-center justify-end space-x-2 ml-auto">
           <Button asChild className="hidden md:inline-flex" variant="secondary" size="sm">
             <a href="#contact">Get a Consultation</a>
           </Button>
