@@ -8,12 +8,18 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Button } from "@/components/ui/button";
 import { Checkbox } from '@/components/ui/checkbox';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Label } from '@/components/ui/label';
+import { getServices, Service } from '@/lib/services';
+import * as LucideIcons from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+
+type IconName = keyof typeof LucideIcons;
+const DefaultIcon = LucideIcons.FileText;
 
 const WIDGETS = {
-  services: { id: 'services', title: 'Manage Services' },
+  services: { id: 'services', title: 'Services Overview' },
   trafficCountry: { id: 'trafficCountry', title: 'Traffic by Country' },
   trafficCity: { id: 'trafficCity', title: 'Traffic by City' },
 };
@@ -25,6 +31,7 @@ const DEFAULT_WIDGETS: WidgetId[] = ['services', 'trafficCountry', 'trafficCity'
 export default function AdminDashboard() {
   const [visibleWidgets, setVisibleWidgets] = useState<WidgetId[]>([]);
   const [isClient, setIsClient] = useState(false);
+  const [services, setServices] = useState<Service[]>([]);
 
   useEffect(() => {
     setIsClient(true);
@@ -39,6 +46,9 @@ export default function AdminDashboard() {
       console.error("Failed to parse widgets from localStorage", error);
       setVisibleWidgets(DEFAULT_WIDGETS);
     }
+    
+    // Fetch services on the client side
+    getServices().then(setServices);
   }, []);
 
   const handleWidgetToggle = (widgetId: WidgetId) => {
@@ -87,16 +97,44 @@ export default function AdminDashboard() {
       </div>
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {visibleWidgets.includes('services') && (
-            <Link href="/admin/services">
-                <Card className="hover:bg-muted transition-colors">
-                <CardHeader>
-                    <CardTitle>Manage Services</CardTitle>
-                    <CardDescription>
-                    Add, edit, or delete your service offerings.
-                    </CardDescription>
+            <Card className="col-span-1 lg:col-span-3">
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div>
+                        <CardTitle>Services Overview</CardTitle>
+                        <CardDescription>
+                            A quick look at your current service offerings.
+                        </CardDescription>
+                    </div>
+                     <Button asChild variant="outline" size="sm">
+                        <Link href="/admin/services">
+                            Manage All
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                        </Link>
+                    </Button>
                 </CardHeader>
-                </Card>
-            </Link>
+                <CardContent>
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {services.slice(0, 3).map((service, index) => {
+                             const Icon = (LucideIcons[service.icon as IconName] as React.ElementType) || DefaultIcon;
+                             return (
+                                <div key={service.id} className="flex flex-col gap-4">
+                                     <div className="flex items-start gap-4">
+                                        <div className="bg-muted p-3 rounded-md">
+                                            <Icon className="h-6 w-6 text-primary" />
+                                        </div>
+                                        <div>
+                                            <p className="font-semibold">{service.title}</p>
+                                            <p className="text-sm text-muted-foreground">{service.description}</p>
+                                        </div>
+                                    </div>
+                                    {index < 2 && <Separator className="lg:hidden" />}
+                                </div>
+                             )
+                        })}
+                         {services.length === 0 && <p className="text-sm text-muted-foreground">No services have been added yet.</p>}
+                    </div>
+                </CardContent>
+            </Card>
         )}
       </div>
 
