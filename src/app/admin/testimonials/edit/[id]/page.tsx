@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import TestimonialForm from "@/components/admin/testimonial-form";
 
 export default async function EditTestimonialPage({ params }: { params: { id: string } }) {
-    const testimonial = await getTestimonialById(params.id);
+    const id = params.id;
+    const testimonial = await getTestimonialById(id);
+    
     if (!testimonial) {
         notFound();
     }
