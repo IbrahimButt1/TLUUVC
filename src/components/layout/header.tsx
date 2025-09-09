@@ -32,21 +32,25 @@ export default function Header() {
     });
 
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 150; // Offset for better accuracy
+      const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const documentHeight = document.body.offsetHeight;
+      
       let currentSectionId = 'hero';
 
-      for (const link of navLinks) {
-          const section = sectionsRef.current[link.id];
-          if (section && section.offsetTop <= scrollPosition) {
-              currentSectionId = link.id;
-          }
+      // Check if we're at the bottom of the page
+      if (scrollPosition + windowHeight >= documentHeight - 50) {
+        currentSectionId = 'contact';
+      } else {
+        // Find the last section that is above the middle of the viewport
+        for (const link of navLinks) {
+            const section = sectionsRef.current[link.id];
+            if (section && section.offsetTop <= scrollPosition + windowHeight / 2) {
+                currentSectionId = link.id;
+            }
+        }
       }
       
-      // Check if we're at the bottom of the page to highlight "Contact"
-      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
-        currentSectionId = 'contact';
-      }
-
       setActiveSection(currentSectionId);
     };
 
