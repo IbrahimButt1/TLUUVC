@@ -130,10 +130,6 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                                                 setSelectedRole(currentValue === selectedRole ? "" : currentValue)
                                                 setRolePopoverOpen(false)
                                             }}
-                                            onMouseDown={(e) => {
-                                              e.preventDefault();
-                                              e.stopPropagation();
-                                            }}
                                         >
                                             <Check
                                             className={cn(
@@ -193,10 +189,6 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                                                 setSelectedCountry(currentValue === selectedCountry ? "" : currentValue)
                                                 setCountryPopoverOpen(false)
                                             }}
-                                            onMouseDown={(e) => {
-                                              e.preventDefault();
-                                              e.stopPropagation();
-                                            }}
                                         >
                                             <Check
                                             className={cn(
@@ -237,7 +229,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                         )}
                     </div>
                     <div className="flex-1">
-                        <Input id="image-upload" name="image-upload" type="file" accept="image/*" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                        <Input id="image-upload" type="file" accept="image/*" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
                             Upload a photo of the client. A square image works best.
                         </p>
