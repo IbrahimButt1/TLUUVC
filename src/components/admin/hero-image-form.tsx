@@ -13,7 +13,8 @@ import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 
 interface HeroImageFormProps {
-    action: (formData: FormData) => Promise<void>;
+    action: (imageDataUri: string, formData: FormData) => Promise<void>;
+    image?: HeroImage;
     submitText: string;
 }
 
@@ -29,9 +30,9 @@ function SubmitButton({ submitText }: { submitText: string }) {
 
 const MAX_SIZE_KB = 300;
 
-export default function HeroImageForm({ action, submitText }: HeroImageFormProps) {
-    const [imagePreview, setImagePreview] = React.useState<string | null>(null);
-    const [imageDataUri, setImageDataUri] = React.useState("");
+export default function HeroImageForm({ action, image, submitText }: HeroImageFormProps) {
+    const [imagePreview, setImagePreview] = React.useState<string | null>(image?.image || null);
+    const [imageDataUri, setImageDataUri] = React.useState(image?.image || "");
     const { toast } = useToast();
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,17 +87,19 @@ export default function HeroImageForm({ action, submitText }: HeroImageFormProps
             }
         }
     };
+    
+    const formAction = action.bind(null, imageDataUri);
 
     return (
-        <form action={action} className="space-y-6">
-            <input type="hidden" name="image" value={imageDataUri} />
+        <form action={formAction} className="space-y-6">
+            {image && <input type="hidden" name="id" value={image.id} />}
             <div className="space-y-2">
                 <Label htmlFor="title">Image Title</Label>
-                <Input id="title" name="title" required placeholder="e.g. Your Gateway to Global Opportunities" />
+                <Input id="title" name="title" defaultValue={image?.title} required placeholder="e.g. Your Gateway to Global Opportunities" />
             </div>
             <div className="space-y-2">
                 <Label htmlFor="description">Image Description</Label>
-                <Textarea id="description" name="description" rows={3} required placeholder="e.g. Expert visa consultation..."/>
+                <Textarea id="description" name="description" defaultValue={image?.description} rows={3} required placeholder="e.g. Expert visa consultation..."/>
             </div>
              <div className="space-y-4">
                 <Label htmlFor="image-upload">Hero Image</Label>

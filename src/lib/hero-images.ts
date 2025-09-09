@@ -36,14 +36,18 @@ export async function getHeroImages(): Promise<HeroImage[]> {
     return await readHeroImages();
 }
 
+export async function getHeroImageById(id: string): Promise<HeroImage | undefined> {
+    const images = await readHeroImages();
+    return images.find(s => s.id === id);
+}
+
 function generateId(title: string): string {
     return title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
-export async function addHeroImage(formData: FormData) {
+export async function addHeroImage(image: string, formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
-    const image = formData.get('image') as string;
     
     if (!title || !description || !image) {
         return;
@@ -65,6 +69,28 @@ export async function addHeroImage(formData: FormData) {
 
     redirect('/admin/hero');
 }
+
+
+export async function updateHeroImage(image: string, formData: FormData) {
+    const id = formData.get('id') as string;
+    const title = formData.get('title') as string;
+    const description = formData.get('description') as string;
+
+    const images = await readHeroImages();
+    const imageIndex = images.findIndex(s => s.id === id);
+
+    if (imageIndex !== -1) {
+        images[imageIndex] = { ...images[imageIndex], title, description, image };
+        await writeHeroImages(images);
+    }
+
+    revalidatePath('/');
+    revalidatePath('/admin/hero');
+    revalidatePath(`/admin/hero/edit/${id}`);
+
+    redirect('/admin/hero');
+}
+
 
 export async function deleteHeroImage(formData: FormData) {
     const id = formData.get('id') as string;
