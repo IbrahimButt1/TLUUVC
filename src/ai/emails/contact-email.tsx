@@ -42,7 +42,7 @@ export const ContactEmail: React.FC<Readonly<ContactEmailProps>> = ({
           </Section>
           <Section>
             <Text className="text-lg font-semibold text-gray-700 mt-4">
-              Sender's Email:
+              Sender's Contact (Email/Phone):
             </Text>
             <Text className="text-gray-800 bg-gray-50 p-3 rounded-md text-base">
               {email}

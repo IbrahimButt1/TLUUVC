@@ -32,6 +32,7 @@ export default function Contact() {
   const { toast } = useToast();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [services, setServices] = useState<Service[]>([]);
@@ -41,10 +42,22 @@ export default function Contact() {
   }, []);
 
   const action = async (prevState: FormState, formData: FormData): Promise<FormState> => {
+    const emailValue = formData.get('email') as string;
+    const phoneValue = formData.get('phone') as string;
+    
+    if (!emailValue && !phoneValue) {
+        toast({
+            title: "Validation Error",
+            description: "Please provide either an email address or a phone number.",
+            variant: "destructive",
+        });
+        return { success: false, message: "Email or phone is required." };
+    }
+
     try {
       const result = await sendContactEmail({
         name: formData.get('name') as string,
-        email: formData.get('email') as string,
+        email: `${emailValue}${emailValue && phoneValue ? ' | ' : ''}${phoneValue}`,
         subject: formData.get('subject') as string,
         message: formData.get('message') as string,
       });
@@ -56,6 +69,7 @@ export default function Contact() {
         });
         setName('');
         setEmail('');
+        setPhone('');
         setSubject('');
         setMessage('');
         return { success: true, message: "Email sent successfully" };
@@ -92,14 +106,18 @@ export default function Contact() {
           </CardHeader>
           <CardContent>
             <form className="space-y-6" action={formAction}>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
+               <div className="space-y-2">
                   <Label htmlFor="name">Full Name</Label>
                   <Input id="name" name="name" placeholder="John Doe" required value={name} onChange={e => setName(e.target.value)} />
                 </div>
+              <div className="grid md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" name="email" type="email" placeholder="john.doe@example.com" required value={email} onChange={e => setEmail(e.target.value)}/>
+                  <Input id="email" name="email" type="email" placeholder="john.doe@example.com" value={email} onChange={e => setEmail(e.target.value)}/>
+                </div>
+                 <div className="space-y-2">
+                  <Label htmlFor="phone">Phone Number</Label>
+                  <Input id="phone" name="phone" type="tel" placeholder="+1 (555) 123-4567" value={phone} onChange={e => setPhone(e.target.value)} />
                 </div>
               </div>
               <div className="space-y-2">

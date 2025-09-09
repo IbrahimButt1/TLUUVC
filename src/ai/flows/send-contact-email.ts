@@ -25,7 +25,7 @@ const resend = process.env.RESEND_API_KEY
 
 const SendContactEmailInputSchema = z.object({
   name: z.string().describe('The name of the person sending the message.'),
-  email: z.string().email().describe('The email address of the sender.'),
+  email: z.string().describe('The email address or phone number of the sender.'),
   subject: z.string().describe('The subject of the message.'),
   message: z.string().describe('The content of the message.'),
 });
