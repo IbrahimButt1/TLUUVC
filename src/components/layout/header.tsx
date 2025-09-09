@@ -28,13 +28,14 @@ export default function Header() {
 
   useEffect(() => {
     observer.current = new IntersectionObserver((entries) => {
-      const visibleSection = entries.find((entry) => entry.isIntersecting)?.target.id;
-      if (visibleSection) {
-        setActiveSection(visibleSection);
-      }
-    }, { threshold: 0.5 });
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    }, { threshold: 0.2 });
     
-    const sections = document.querySelectorAll('section');
+    const sections = document.querySelectorAll('section[id]');
     sections.forEach((section) => {
       observer.current?.observe(section);
     });
