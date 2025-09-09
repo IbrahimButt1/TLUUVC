@@ -31,6 +31,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
   const handleDelete = (emailId: string) => {
     startTransition(async () => {
       // Optimistically update the UI
+      const originalEmails = emails;
       setEmails(currentEmails => currentEmails.filter(e => e.id !== emailId));
       
       const formData = new FormData();
@@ -41,9 +42,11 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
         toast({
           title: "Email moved to trash",
         });
+        // We need to refetch the initialEmails or just accept the optimistic update
+        // For simplicity, we'll just let the optimistic update stand.
       } catch (error) {
         // Revert the optimistic update on error
-        setEmails(initialEmails); 
+        setEmails(originalEmails); 
         toast({
           title: "Error",
           description: "Failed to move email to trash. Please try again.",
