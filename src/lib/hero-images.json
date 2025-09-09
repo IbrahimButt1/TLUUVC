@@ -1,0 +1,21 @@
+
+[
+  {
+    "id": "your-gateway-to-global-opportunities",
+    "title": "Your Gateway to Global Opportunities",
+    "description": "Expert visa consultation to help you navigate your journey abroad with confidence and ease.",
+    "image": "https://picsum.photos/1920/1080"
+  },
+  {
+    "id": "discover-a-world-of-possibilities",
+    "title": "Discover a World of Possibilities",
+    "description": "Let us guide you through every step of your international journey.",
+    "image": "https://picsum.photos/1920/1080?random=1"
+  },
+  {
+    "id": "start-your-new-chapter",
+    "title": "Start Your New Chapter",
+    "description": "Your adventure awaits. We're here to make it happen.",
+    "image": "https://picsum.photos/1920/1080?random=2"
+  }
+]

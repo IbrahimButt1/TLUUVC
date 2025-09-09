@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -11,6 +11,7 @@ const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/services', label: 'Services', icon: Briefcase },
   { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquareQuote },
+  { href: '/admin/hero', label: 'Hero Images', icon: ImageIcon },
   { href: '/admin/inbox', label: 'Inbox', icon: Inbox },
   { href: '/admin/inbox/trash', label: 'Trash', icon: Trash2 },
 ];
