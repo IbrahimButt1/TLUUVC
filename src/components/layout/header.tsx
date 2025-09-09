@@ -24,15 +24,15 @@ export default function Header() {
   }, []);
 
   if (!settings) {
-    return <header className="sticky top-0 z-50 w-full h-16" />;
+    return <header className="w-full h-16" />;
   }
   
   return (
     <header className={cn(
-      "sticky top-0 z-50 w-full transition-all duration-300 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-      isScrolled ? "shadow-md rounded-b-xl" : ""
+      "w-full z-50 transition-all duration-300 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+      isScrolled ? "shadow-md" : ""
     )}>
-      <div className="container flex h-16 items-center">
+      <div className="container flex h-20 items-center">
         <div className="mr-auto flex items-center">
           <a href="#" className="flex items-center gap-3">
             <Image src={settings.logo} alt="Company Logo" width={140} height={35} className="object-contain" data-ai-hint="logo" />
