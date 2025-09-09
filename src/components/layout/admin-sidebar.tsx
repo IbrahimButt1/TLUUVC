@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Mail } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -22,7 +22,6 @@ const clientNavLinks = [
     { href: '/#about', label: 'About', icon: Info },
     { href: '/#knowledge', label: 'Knowledge Base', icon: Lightbulb },
     { href: '/#testimonials', label: 'Testimonials', icon: MessageSquareQuote },
-    { href: '/#contact', label: 'Contact', icon: Mail },
 ];
 
 const settingsLink = { href: '/admin/settings', label: 'Site Settings', icon: Settings };
