@@ -106,7 +106,7 @@ export default function Contact() {
                 <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="name">Full Name</Label>
-                      <Input id="name" name="name" placeholder="John Doe" required value={name} onChange={e => setName(e.target.value)} />
+                      <Input id="name" name="name" placeholder="Ali" required value={name} onChange={e => setName(e.target.value)} />
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="contact">Email or Phone Number</Label>
