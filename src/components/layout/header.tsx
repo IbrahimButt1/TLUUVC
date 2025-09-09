@@ -2,7 +2,7 @@
 
 import { Plane, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "@/components/ui/sheet";
 import Image from "next/image";
 import { getSiteSettings } from "@/lib/site-settings";
 import React, { useState, useEffect } from "react";
@@ -43,6 +43,12 @@ export default function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="left">
+               <SheetHeader>
+                <SheetTitle className="sr-only">Mobile Navigation Menu</SheetTitle>
+                <SheetDescription className="sr-only">
+                  A list of links to navigate the website sections.
+                </SheetDescription>
+              </SheetHeader>
               <div className="flex flex-col gap-6 pt-10">
                 <a href="#" className="text-lg font-medium text-foreground hover:text-primary transition-colors">Home</a>
                 <a href="#services" className="text-lg font-medium text-foreground hover:text-primary transition-colors">Services</a>
