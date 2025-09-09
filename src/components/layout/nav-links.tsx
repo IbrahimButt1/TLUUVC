@@ -17,18 +17,14 @@ export default function NavLinks({ className }: { className?: string }) {
 
   useEffect(() => {
     observer.current = new IntersectionObserver((entries) => {
-      const visibleSections = entries.filter(entry => entry.isIntersecting);
-      if (visibleSections.length > 0) {
-        // Sort by the largest visible area
-        visibleSections.sort((a, b) => {
-          return b.intersectionRatio - a.intersectionRatio;
-        });
-        setActiveSection(visibleSections[0].target.id);
-      }
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+        }
+      });
     }, { 
-      // Create a range of thresholds
-      threshold: Array.from({ length: 101 }, (_, i) => i / 100),
-      rootMargin: '-50% 0px -50% 0px' 
+      threshold: 0.5,
+      rootMargin: '-50% 0px -50% 0px'
     });
 
     const sections = document.querySelectorAll('section[id]');
