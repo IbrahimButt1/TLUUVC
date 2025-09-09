@@ -2,6 +2,8 @@ import { Plane, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Image from "next/image";
+import { getSiteSettings } from "@/lib/site-settings";
+
 
 const navLinks = [
   { href: "#", label: "Home" },
@@ -12,13 +14,14 @@ const navLinks = [
   { href: "#contact", label: "Contact" },
 ];
 
-export default function Header() {
+export default async function Header() {
+  const settings = await getSiteSettings();
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <div className="mr-6 flex items-center">
           <a href="#" className="flex items-center gap-2">
-            <Image src="https://picsum.photos/32/32" alt="Company Logo" width={32} height={32} className="rounded-full" data-ai-hint="logo" />
+            <Image src={settings.logo} alt="Company Logo" width={32} height={32} className="rounded-full" data-ai-hint="logo" />
             <span className="font-bold font-headline text-lg">The LUU Visa Consultant</span>
           </a>
         </div>
