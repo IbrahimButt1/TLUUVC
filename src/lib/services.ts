@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
+import { uploadImage } from '@/lib/storage';
 
 export interface Service {
     id: string;
@@ -45,51 +46,79 @@ export async function getServiceById(id: string): Promise<Service | undefined> {
     return services.find(s => s.id === id);
 }
 
-export async function addService(formData: FormData) {
+function generateId(title: string): string {
+    return title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
+export async function addService(imageDataUri: string, formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const icon = formData.get('icon') as string;
+    const longDescription = formData.get('longDescription') as string;
+    const requirementsRaw = formData.get('requirements') as string;
 
     if (!title || !description || !icon) {
         return;
     }
+    
+    let imageUrl = 'https://picsum.photos/800/600';
+    if (imageDataUri) {
+        imageUrl = await uploadImage(imageDataUri, `service-${Date.now()}`);
+    }
 
     const newService: Service = {
-        id: title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+        id: generateId(title),
         title,
         description,
         icon,
+        longDescription,
+        requirements: requirementsRaw.split('\n').filter(req => req.trim() !== ''),
+        image: imageUrl,
     };
 
     const services = await readServices();
     services.push(newService);
     await writeServices(services);
     
-    // Revalidate all relevant paths
     revalidatePath('/');
     revalidatePath('/admin/services');
 
     redirect('/admin/services');
 }
 
-export async function updateService(formData: FormData) {
+export async function updateService(imageDataUri: string, formData: FormData) {
     const id = formData.get('id') as string;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const icon = formData.get('icon') as string;
+    const longDescription = formData.get('longDescription') as string;
+    const requirementsRaw = formData.get('requirements') as string;
     
     const services = await readServices();
     const serviceIndex = services.findIndex(s => s.id === id);
 
     if (serviceIndex !== -1) {
-        services[serviceIndex] = { ...services[serviceIndex], title, description, icon };
+        let imageUrl = services[serviceIndex].image;
+        if (imageDataUri && imageDataUri.startsWith('data:image')) {
+            imageUrl = await uploadImage(imageDataUri, `service-${Date.now()}`);
+        }
+        
+        services[serviceIndex] = { 
+            ...services[serviceIndex], 
+            title, 
+            description, 
+            icon,
+            longDescription,
+            requirements: requirementsRaw.split('\n').filter(req => req.trim() !== ''),
+            image: imageUrl,
+        };
         await writeServices(services);
     }
 
-    // Revalidate all relevant paths
     revalidatePath('/');
     revalidatePath('/admin/services');
     revalidatePath(`/admin/services/edit/${id}`);
+    revalidatePath(`/services/${id}`);
 
     redirect('/admin/services');
 }
@@ -102,7 +131,6 @@ export async function deleteService(formData: FormData) {
     services = services.filter(s => s.id !== id);
     await writeServices(services);
 
-    // Revalidate all relevant paths
     revalidatePath('/');
     revalidatePath('/admin/services');
     
