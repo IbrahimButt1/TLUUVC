@@ -59,7 +59,6 @@ export async function addHeroImage(imageDataUri: string, formData: FormData) {
         imageUrl = await uploadImage(imageDataUri, `hero-${Date.now()}`);
     }
 
-
     const newImage: HeroImage = {
         id: generateId(title),
         title,
