@@ -13,7 +13,7 @@ import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 
 interface HeroImageFormProps {
-    action: (imageDataUri: string, formData: FormData) => Promise<void>;
+    action: (formData: FormData) => Promise<void>;
     image?: HeroImage;
     submitText: string;
 }
@@ -88,11 +88,10 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
         }
     };
     
-    const formAction = action.bind(null, imageDataUri);
-
     return (
-        <form action={formAction} className="space-y-6">
+        <form action={action} className="space-y-6">
             {image && <input type="hidden" name="id" value={image.id} />}
+            <input type="hidden" name="image" value={imageDataUri} />
             <div className="space-y-2">
                 <Label htmlFor="title">Image Title</Label>
                 <Input id="title" name="title" defaultValue={image?.title} required placeholder="e.g. Your Gateway to Global Opportunities" />
