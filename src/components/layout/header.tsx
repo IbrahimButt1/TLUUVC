@@ -1,6 +1,7 @@
 import { Plane, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import Image from "next/image";
 
 const navLinks = [
   { href: "#", label: "Home" },
@@ -17,7 +18,7 @@ export default function Header() {
       <div className="container flex h-14 items-center">
         <div className="mr-6 flex items-center">
           <a href="#" className="flex items-center gap-2">
-            <Plane className="h-6 w-6 text-primary" />
+            <Image src="https://picsum.photos/32/32" alt="Company Logo" width={32} height={32} className="rounded-full" data-ai-hint="logo" />
             <span className="font-bold font-headline text-lg">The LUU Visa Consultant</span>
           </a>
         </div>

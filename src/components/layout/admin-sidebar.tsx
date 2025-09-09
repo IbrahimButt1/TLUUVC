@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import Image from 'next/image';
 
 const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -27,7 +28,7 @@ export default function AdminSidebar({ emailCount }: { emailCount: number }) {
   return (
     <aside className="w-64 bg-background border-r">
       <Link href="/" className="flex items-center gap-2 h-14 border-b px-6 text-foreground hover:bg-muted transition-colors">
-        <Plane className="h-6 w-6 text-primary" />
+        <Image src="https://picsum.photos/32/32" alt="Company Logo" width={24} height={24} className="rounded-full" data-ai-hint="logo" />
         <span className="font-bold font-headline text-lg">LUU Admin</span>
       </Link>
       <nav className="flex flex-col p-4">
