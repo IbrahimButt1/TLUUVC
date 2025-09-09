@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/popover"
 
 interface TestimonialFormProps {
-    action: (imageDataUri: string, formData: FormData) => Promise<void>;
+    action: (formData: FormData) => Promise<void>;
     testimonial?: Testimonial;
     submitText: string;
 }
@@ -64,7 +64,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
     const [selectedRole, setSelectedRole] = React.useState(testimonial?.role || "");
     const [selectedCountry, setSelectedCountry] = React.useState(testimonial?.country || "");
     const [imagePreview, setImagePreview] = React.useState(testimonial?.image || null);
-    const [imageDataUri, setImageDataUri] = React.useState(testimonial?.image || "");
+    const [imageDataUri, setImageDataUri] = React.useState("");
     const { toast } = useToast();
 
     const destinationValue = `${selectedRole} in ${selectedCountry}`;
@@ -74,12 +74,13 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            if (file.size > MAX_SIZE_KB * 1024) {
-                 const reader = new FileReader();
-                reader.onload = (event) => {
-                    const img = new window.Image();
-                    img.src = event.target?.result as string;
-                    img.onload = () => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new window.Image();
+                img.src = event.target?.result as string;
+                img.onload = () => {
+                    const dataUrl = event.target?.result as string;
+                    if (file.size > MAX_SIZE_KB * 1024) {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         const MAX_WIDTH = 800;
@@ -102,34 +103,28 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                         canvas.height = height;
                         ctx!.drawImage(img, 0, 0, width, height);
                         
-                        const dataUrl = canvas.toDataURL(file.type, 0.7);
-                        setImagePreview(dataUrl);
-                        setImageDataUri(dataUrl);
+                        const compressedDataUrl = canvas.toDataURL(file.type, 0.7);
+                        setImagePreview(compressedDataUrl);
+                        setImageDataUri(compressedDataUrl);
                          toast({
                             title: 'Image Compressed',
                             description: `The uploaded image was larger than ${MAX_SIZE_KB}KB and has been automatically compressed.`
                         });
+                    } else {
+                        setImagePreview(dataUrl);
+                        setImageDataUri(dataUrl);
                     }
-                };
-                reader.readAsDataURL(file);
-            } else {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const dataUri = reader.result as string;
-                    setImagePreview(dataUri);
-                    setImageDataUri(dataUri);
-                };
-                reader.readAsDataURL(file);
-            }
+                }
+            };
+            reader.readAsDataURL(file);
         }
     };
-    
-    const formAction = action.bind(null, imageDataUri);
 
 
     return (
-        <form action={formAction} className="space-y-6">
+        <form action={action} className="space-y-6">
             {testimonial && <input type="hidden" name="id" value={testimonial.id} />}
+            <input type="hidden" name="image" value={imageDataUri} />
             <input type="hidden" name="destination" value={destinationValue} />
             <input type="hidden" name="role" value={selectedRole} />
             <input type="hidden" name="country" value={selectedCountry} />

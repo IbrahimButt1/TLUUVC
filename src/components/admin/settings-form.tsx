@@ -12,7 +12,7 @@ import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 
 interface SettingsFormProps {
-    action: (logoDataUri: string, formData: FormData) => Promise<void>;
+    action: (formData: FormData) => Promise<void>;
     settings: SiteSettings;
     submitText: string;
 }
@@ -31,18 +31,19 @@ const MAX_SIZE_KB = 300;
 
 export default function SettingsForm({ action, settings, submitText }: SettingsFormProps) {
     const [logoPreview, setLogoPreview] = React.useState<string | null>(settings.logo || null);
-    const [logoDataUri, setLogoDataUri] = React.useState(settings.logo || "");
+    const [logoDataUri, setLogoDataUri] = React.useState("");
     const { toast } = useToast();
 
     const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            if (file.size > MAX_SIZE_KB * 1024) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    const img = new window.Image();
-                    img.src = event.target?.result as string;
-                    img.onload = () => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new window.Image();
+                img.src = event.target?.result as string;
+                img.onload = () => {
+                     const dataUrl = event.target?.result as string;
+                    if (file.size > MAX_SIZE_KB * 1024) {
                         const canvas = document.createElement('canvas');
                         const ctx = canvas.getContext('2d');
                         const MAX_WIDTH = 800;
@@ -65,32 +66,26 @@ export default function SettingsForm({ action, settings, submitText }: SettingsF
                         canvas.height = height;
                         ctx!.drawImage(img, 0, 0, width, height);
                         
-                        const dataUrl = canvas.toDataURL(file.type, 0.7);
-                        setLogoPreview(dataUrl);
-                        setLogoDataUri(dataUrl);
+                        const compressedDataUrl = canvas.toDataURL(file.type, 0.7);
+                        setLogoPreview(compressedDataUrl);
+                        setLogoDataUri(compressedDataUrl);
                         toast({
                             title: 'Image Compressed',
                             description: `The uploaded image was larger than ${MAX_SIZE_KB}KB and has been automatically compressed.`
                         });
+                    } else {
+                         setLogoPreview(dataUrl);
+                         setLogoDataUri(dataUrl);
                     }
-                };
-                reader.readAsDataURL(file);
-            } else {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    const dataUri = reader.result as string;
-                    setLogoPreview(dataUri);
-                    setLogoDataUri(dataUri);
-                };
-                reader.readAsDataURL(file);
-            }
+                }
+            };
+            reader.readAsDataURL(file);
         }
     };
-    
-    const formAction = action.bind(null, logoDataUri);
 
     return (
-        <form action={formAction} className="space-y-6">
+        <form action={action} className="space-y-6">
+            <input type="hidden" name="logo" value={logoDataUri} />
             <div className="space-y-4">
                 <Label htmlFor="logo-upload">Website Logo</Label>
                 <div className="flex items-center gap-4">

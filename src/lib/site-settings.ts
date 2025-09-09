@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
+import { uploadImage } from './storage';
 
 export interface SiteSettings {
     logo: string;
@@ -33,12 +34,18 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     return await readSiteSettings();
 }
 
-export async function updateSiteSettings(logo: string, formData: FormData) {
+export async function updateSiteSettings(formData: FormData) {
+    const logoDataUri = formData.get('logo') as string;
     const currentSettings = await readSiteSettings();
+
+    let logoUrl = currentSettings.logo;
+    if (logoDataUri && logoDataUri.startsWith('data:image')) {
+        logoUrl = await uploadImage(logoDataUri, `logo-${Date.now()}`);
+    }
 
     const newSettings: SiteSettings = {
         ...currentSettings,
-        logo: logo || currentSettings.logo,
+        logo: logoUrl,
     };
 
     await writeSiteSettings(newSettings);

@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
+import { uploadImage } from './storage';
 
 export interface Testimonial {
     id: string;
@@ -45,23 +46,26 @@ function generateId(name: string): string {
     return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
-export async function addTestimonial(image: string, formData: FormData) {
+export async function addTestimonial(formData: FormData) {
     const name = formData.get('name') as string;
     const destination = formData.get('destination') as string;
     const testimonial = formData.get('testimonial') as string;
+    const imageDataUri = formData.get('image') as string;
     const role = formData.get('role') as string;
     const country = formData.get('country') as string;
 
-    if (!name || !destination || !testimonial || !image || !role || !country) {
+    if (!name || !destination || !testimonial || !imageDataUri || !role || !country) {
         return;
     }
+
+    const imageUrl = await uploadImage(imageDataUri, `testimonial-${Date.now()}`);
 
     const newTestimonial: Testimonial = {
         id: generateId(name),
         name,
         destination,
         testimonial,
-        image,
+        image: imageUrl,
         role,
         country,
     };
@@ -76,11 +80,12 @@ export async function addTestimonial(image: string, formData: FormData) {
     redirect('/admin/testimonials');
 }
 
-export async function updateTestimonial(image: string, formData: FormData) {
+export async function updateTestimonial(formData: FormData) {
     const id = formData.get('id') as string;
     const name = formData.get('name') as string;
     const destination = formData.get('destination') as string;
     const testimonial = formData.get('testimonial') as string;
+    const imageDataUri = formData.get('image') as string;
     const role = formData.get('role') as string;
     const country = formData.get('country') as string;
     
@@ -88,13 +93,18 @@ export async function updateTestimonial(image: string, formData: FormData) {
     const testimonialIndex = testimonials.findIndex(t => t.id === id);
 
     if (testimonialIndex !== -1) {
-        testimonials[testimonialIndex] = { id, name, destination, testimonial, image, role, country };
+        let imageUrl = testimonials[testimonialIndex].image;
+        if (imageDataUri && imageDataUri.startsWith('data:image')) {
+            imageUrl = await uploadImage(imageDataUri, `testimonial-${Date.now()}`);
+        }
+        testimonials[testimonialIndex] = { id, name, destination, testimonial, image: imageUrl, role, country };
         await writeTestimonials(testimonials);
     }
 
     revalidatePath('/');
     revalidatePath('/admin/testimonials');
     revalidatePath(`/admin/testimonials/edit/${id}`);
+
 
     redirect('/admin/testimonials');
 }

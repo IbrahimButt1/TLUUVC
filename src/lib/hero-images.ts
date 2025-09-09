@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
+import { uploadImage } from '@/lib/storage';
 
 export interface HeroImage {
     id: string;
@@ -48,17 +49,19 @@ function generateId(title: string): string {
 export async function addHeroImage(formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
-    const image = formData.get('image') as string;
+    const imageDataUri = formData.get('image') as string;
     
-    if (!title || !description || !image) {
+    if (!title || !description || !imageDataUri) {
         return;
     }
+
+    const imageUrl = await uploadImage(imageDataUri, `hero-${Date.now()}`);
 
     const newImage: HeroImage = {
         id: generateId(title),
         title,
         description,
-        image,
+        image: imageUrl,
     };
 
     const images = await readHeroImages();
@@ -76,13 +79,17 @@ export async function updateHeroImage(formData: FormData) {
     const id = formData.get('id') as string;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
-    const image = formData.get('image') as string;
+    const imageDataUri = formData.get('image') as string;
 
     const images = await readHeroImages();
     const imageIndex = images.findIndex(s => s.id === id);
 
     if (imageIndex !== -1) {
-        images[imageIndex] = { ...images[imageIndex], title, description, image: image || images[imageIndex].image };
+        let imageUrl = images[imageIndex].image;
+        if (imageDataUri && imageDataUri.startsWith('data:image')) {
+            imageUrl = await uploadImage(imageDataUri, `hero-${Date.now()}`);
+        }
+        images[imageIndex] = { ...images[imageIndex], title, description, image: imageUrl };
         await writeHeroImages(images);
     }
 
