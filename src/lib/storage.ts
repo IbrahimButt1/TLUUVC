@@ -2,11 +2,12 @@
 
 import { getStorage } from 'firebase-admin/storage';
 import { initializeApp, getApps, cert } from 'firebase-admin/app';
+import sharp from 'sharp';
 
 function initializeFirebaseApp() {
     if (!process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
         console.warn(
-            'Firebase service account key is not set. Image uploads will not work. Please add it to your .env file.'
+            'Firebase service account key is not set. Image uploads will fall back to data URIs. Please add it to your .env file.'
         );
         return false;
     }
@@ -19,7 +20,7 @@ function initializeFirebaseApp() {
         const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
         if (!serviceAccount.project_id) {
              console.warn(
-                'Firebase service account key is invalid. Image uploads will not work.'
+                'Firebase service account key is invalid. Image uploads will fall back to data URIs.'
             );
             return false;
         }
@@ -39,8 +40,6 @@ function initializeFirebaseApp() {
 export async function uploadImage(dataUri: string, filename: string): Promise<string> {
     const isFirebaseInitialized = initializeFirebaseApp();
     if (!isFirebaseInitialized || !dataUri.startsWith('data:image')) {
-        // If Firebase is not configured or if it's not a data URI, return the original URI
-        // This handles both placeholders and un-configured states gracefully.
         return dataUri;
     }
 
@@ -49,13 +48,18 @@ export async function uploadImage(dataUri: string, filename: string): Promise<st
     const base64Data = dataUri.split(',')[1];
     const buffer = Buffer.from(base64Data, 'base64');
     
-    const file = bucket.file(`images/${filename}`);
+    const optimizedBuffer = await sharp(buffer)
+      .resize(1920, 1080, { fit: 'inside', withoutEnlargement: true })
+      .webp({ quality: 80 })
+      .toBuffer();
+
+    const file = bucket.file(`images/${filename}.webp`);
     
-    await file.save(buffer, {
+    await file.save(optimizedBuffer, {
         metadata: {
-            contentType: mimeType,
+            contentType: 'image/webp',
         },
-        public: true, // Make the file publicly accessible
+        public: true,
     });
     
     return file.publicUrl();

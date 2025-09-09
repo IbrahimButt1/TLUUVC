@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/popover"
 
 interface TestimonialFormProps {
-    action: (formData: FormData) => Promise<void>;
+    action: (imageDataUri: string, formData: FormData) => Promise<void>;
     testimonial?: Testimonial;
     submitText: string;
 }
@@ -55,7 +55,8 @@ const roles = [
     { value: 'Tech Professional', label: 'Tech Professional' },
 ];
 
-const MAX_SIZE_KB = 300;
+const MAX_FILE_SIZE_MB = 2;
+
 
 export default function TestimonialForm({ action, testimonial, submitText }: TestimonialFormProps) {
     const [rolePopoverOpen, setRolePopoverOpen] = React.useState(false);
@@ -74,57 +75,30 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+                toast({
+                    title: 'File Too Large',
+                    description: `Please upload an image smaller than ${MAX_FILE_SIZE_MB}MB.`,
+                    variant: 'destructive'
+                });
+                return;
+            }
             const reader = new FileReader();
             reader.onload = (event) => {
-                const img = new window.Image();
-                img.src = event.target?.result as string;
-                img.onload = () => {
-                    const dataUrl = event.target?.result as string;
-                    if (file.size > MAX_SIZE_KB * 1024) {
-                        const canvas = document.createElement('canvas');
-                        const ctx = canvas.getContext('2d');
-                        const MAX_WIDTH = 800;
-                        const MAX_HEIGHT = 800;
-                        let width = img.width;
-                        let height = img.height;
-
-                        if (width > height) {
-                            if (width > MAX_WIDTH) {
-                                height *= MAX_WIDTH / width;
-                                width = MAX_WIDTH;
-                            }
-                        } else {
-                            if (height > MAX_HEIGHT) {
-                                width *= MAX_HEIGHT / height;
-                                height = MAX_HEIGHT;
-                            }
-                        }
-                        canvas.width = width;
-                        canvas.height = height;
-                        ctx!.drawImage(img, 0, 0, width, height);
-                        
-                        const compressedDataUrl = canvas.toDataURL(file.type, 0.7);
-                        setImagePreview(compressedDataUrl);
-                        setImageDataUri(compressedDataUrl);
-                         toast({
-                            title: 'Image Compressed',
-                            description: `The uploaded image was larger than ${MAX_SIZE_KB}KB and has been automatically compressed.`
-                        });
-                    } else {
-                        setImagePreview(dataUrl);
-                        setImageDataUri(dataUrl);
-                    }
-                }
+                const dataUrl = event.target?.result as string;
+                setImagePreview(dataUrl);
+                setImageDataUri(dataUrl);
             };
             reader.readAsDataURL(file);
         }
     };
 
+    const formAction = action.bind(null, imageDataUri);
+
 
     return (
-        <form action={action} className="space-y-6">
+        <form action={formAction} className="space-y-6">
             {testimonial && <input type="hidden" name="id" value={testimonial.id} />}
-            <input type="hidden" name="image" value={imageDataUri} />
             <input type="hidden" name="destination" value={destinationValue} />
             <input type="hidden" name="role" value={selectedRole} />
             <input type="hidden" name="country" value={selectedCountry} />
@@ -169,7 +143,6 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                                                 setSelectedRole(currentValue === selectedRole ? "" : currentValue)
                                                 setRolePopoverOpen(false)
                                             }}
-                                            onMouseDown={(e) => e.preventDefault()}
                                         >
                                             <Check
                                             className={cn(
@@ -229,7 +202,6 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                                                 setSelectedCountry(currentValue === selectedCountry ? "" : currentValue)
                                                 setCountryPopoverOpen(false)
                                             }}
-                                            onMouseDown={(e) => e.preventDefault()}
                                         >
                                             <Check
                                             className={cn(
@@ -270,9 +242,9 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                         )}
                     </div>
                     <div className="flex-1">
-                        <Input id="image-upload" type="file" accept="image/jpeg, image/png" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                        <Input id="image-upload" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
-                            Upload a photo of the client. A square image works best. Images over {MAX_SIZE_KB}KB will be compressed.
+                            Upload a photo of the client. A square image works best. Max file size: {MAX_FILE_SIZE_MB}MB.
                         </p>
                     </div>
                 </div>
