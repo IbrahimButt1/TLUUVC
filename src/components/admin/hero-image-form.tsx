@@ -12,7 +12,7 @@ import React from 'react';
 import Image from 'next/image';
 
 interface HeroImageFormProps {
-    action: (imageDataUri: string, formData: FormData) => Promise<void>;
+    action: (formData: FormData) => Promise<void>;
     submitText: string;
 }
 
@@ -43,10 +43,9 @@ export default function HeroImageForm({ action, submitText }: HeroImageFormProps
         }
     };
 
-    const formAction = action.bind(null, imageDataUri);
-
     return (
-        <form action={formAction} className="space-y-6">
+        <form action={action} className="space-y-6">
+            <input type="hidden" name="image" value={imageDataUri} />
             <div className="space-y-2">
                 <Label htmlFor="title">Image Title</Label>
                 <Input id="title" name="title" required placeholder="e.g. Your Gateway to Global Opportunities" />
