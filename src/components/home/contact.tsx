@@ -31,8 +31,7 @@ function SubmitButton() {
 export default function Contact() {
   const { toast } = useToast();
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [contact, setContact] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [services, setServices] = useState<Service[]>([]);
@@ -42,13 +41,12 @@ export default function Contact() {
   }, []);
 
   const action = async (prevState: FormState, formData: FormData): Promise<FormState> => {
-    const emailValue = formData.get('email') as string;
-    const phoneValue = formData.get('phone') as string;
+    const contactValue = formData.get('contact') as string;
     
-    if (!emailValue && !phoneValue) {
+    if (!contactValue) {
         toast({
             title: "Validation Error",
-            description: "Please provide either an email address or a phone number.",
+            description: "Please provide an email address or a phone number.",
             variant: "destructive",
         });
         return { success: false, message: "Email or phone is required." };
@@ -57,7 +55,7 @@ export default function Contact() {
     try {
       const result = await sendContactEmail({
         name: formData.get('name') as string,
-        email: `${emailValue}${emailValue && phoneValue ? ' | ' : ''}${phoneValue}`,
+        email: contactValue,
         subject: formData.get('subject') as string,
         message: formData.get('message') as string,
       });
@@ -68,8 +66,7 @@ export default function Contact() {
           description: "Thank you for your message. We will get back to you shortly.",
         });
         setName('');
-        setEmail('');
-        setPhone('');
+        setContact('');
         setSubject('');
         setMessage('');
         return { success: true, message: "Email sent successfully" };
@@ -106,22 +103,18 @@ export default function Contact() {
           </CardHeader>
           <CardContent>
             <form className="space-y-6" action={formAction}>
-               <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" name="name" placeholder="John Doe" required value={name} onChange={e => setName(e.target.value)} />
+                <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="name">Full Name</Label>
+                      <Input id="name" name="name" placeholder="John Doe" required value={name} onChange={e => setName(e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="contact">Email or Phone Number</Label>
+                      <Input id="contact" name="contact" placeholder="name@example.com or +92 300 1234567" required value={contact} onChange={e => setContact(e.target.value)} />
+                    </div>
                 </div>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" name="email" type="email" placeholder="john.doe@example.com" value={email} onChange={e => setEmail(e.target.value)}/>
-                </div>
-                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" name="phone" type="tel" placeholder="+1 (555) 123-4567" value={phone} onChange={e => setPhone(e.target.value)} />
-                </div>
-              </div>
               <div className="space-y-2">
-                <Label htmlFor="subject">Subject</Label>
+                <Label htmlFor="subject">Service of Interest</Label>
                 <Select name="subject" value={subject} onValueChange={setSubject} required>
                     <SelectTrigger id="subject">
                         <SelectValue placeholder="Select a service" />
