@@ -32,8 +32,8 @@ export default function Header() {
     });
 
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + window.innerHeight / 3;
-      let currentSectionId = '';
+      const scrollPosition = window.scrollY + 150; // Offset for better accuracy
+      let currentSectionId = 'hero';
 
       for (const link of navLinks) {
           const section = sectionsRef.current[link.id];
@@ -42,11 +42,7 @@ export default function Header() {
           }
       }
       
-      if (window.scrollY < 200) {
-        currentSectionId = 'hero';
-      }
-      
-      // Check if we're at the bottom of the page
+      // Check if we're at the bottom of the page to highlight "Contact"
       if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 50) {
         currentSectionId = 'contact';
       }
@@ -80,7 +76,7 @@ export default function Header() {
               href={link.href} 
               className={cn(
                 "nav-link text-muted-foreground hover:text-foreground transition-colors",
-                activeSection === link.id && 'nav-link-active'
+                activeSection === link.id && 'nav-link-active text-foreground font-medium'
               )}
             >
               {link.label}
