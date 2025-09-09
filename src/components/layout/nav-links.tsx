@@ -1,5 +1,5 @@
-
-import React from 'react';
+'use client';
+import React, { useState, useEffect, useRef } from 'react';
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -11,14 +11,50 @@ const navLinks = [
   { href: "#contact", label: "Contact", id: "contact" },
 ];
 
-export default function NavLinks() {
+export default function NavLinks({ className }: { className?: string }) {
+  const [activeSection, setActiveSection] = useState('hero');
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    observer.current = new IntersectionObserver((entries) => {
+      const visibleSections = entries.filter(entry => entry.isIntersecting);
+      if (visibleSections.length > 0) {
+        // Sort by the largest visible area
+        visibleSections.sort((a, b) => {
+          return b.intersectionRatio - a.intersectionRatio;
+        });
+        setActiveSection(visibleSections[0].target.id);
+      }
+    }, { 
+      // Create a range of thresholds
+      threshold: Array.from({ length: 101 }, (_, i) => i / 100),
+      rootMargin: '-50% 0px -50% 0px' 
+    });
+
+    const sections = document.querySelectorAll('section[id]');
+    sections.forEach(section => {
+      if (observer.current) {
+        observer.current.observe(section);
+      }
+    });
+
+    return () => {
+      sections.forEach(section => {
+        if (observer.current) {
+          observer.current.unobserve(section);
+        }
+      });
+    };
+  }, []);
+
   return (
-    <nav className="hidden md:flex flex-1 items-center gap-6 text-sm">
+    <nav className={cn("hidden md:flex flex-1 items-center gap-6 text-sm justify-center", className)}>
       {navLinks.map((link) => (
         <a 
           key={link.href} 
-          href={link.href} 
-          className="text-muted-foreground hover:text-foreground transition-colors"
+          href={link.href}
+          data-active={activeSection === link.id}
+          className="nav-link text-muted-foreground hover:text-foreground transition-colors font-medium"
         >
           {link.label}
         </a>
