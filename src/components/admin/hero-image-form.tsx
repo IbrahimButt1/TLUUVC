@@ -40,7 +40,7 @@ export default function HeroImageForm({ action, submitText }: HeroImageFormProps
             if (file.size > MAX_SIZE_KB * 1024) {
                  const reader = new FileReader();
                 reader.onload = (event) => {
-                    const img = new Image();
+                    const img = new window.Image();
                     img.src = event.target?.result as string;
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
