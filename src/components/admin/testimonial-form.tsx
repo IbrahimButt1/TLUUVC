@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Testimonial } from "@/lib/testimonials";
-import { Loader2, Check, ChevronsUpDown } from 'lucide-react';
+import { Loader2, Check, ChevronsUpDown, GraduationCap, Globe } from 'lucide-react';
 import React from 'react';
 import { countries } from '@/lib/countries';
 
@@ -59,7 +59,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
     const [countryPopoverOpen, setCountryPopoverOpen] = React.useState(false);
 
     const [selectedRole, setSelectedRole] = React.useState(testimonial?.role || "");
-    const [selectedCountry, setSelectedCountry] = React.useState(testimonial?.destination || "");
+    const [selectedCountry, setSelectedCountry] = React.useState(testimonial?.country || "");
 
     const destinationValue = `${selectedRole} in ${selectedCountry}`;
     
@@ -87,9 +87,12 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                             aria-expanded={rolePopoverOpen}
                             className="w-full justify-between font-normal"
                             >
-                            {selectedRole
-                                ? roles.find((r) => r.value === selectedRole)?.label
-                                : "Select role..."}
+                            <div className="flex items-center gap-2">
+                                <GraduationCap className="h-4 w-4 text-muted-foreground" />
+                                {selectedRole
+                                    ? roles.find((r) => r.value === selectedRole)?.label
+                                    : "Select role..."}
+                            </div>
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
@@ -133,9 +136,12 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                             aria-expanded={countryPopoverOpen}
                             className="w-full justify-between font-normal"
                             >
-                            {selectedCountry
-                                ? countries.find((c) => c.value === selectedCountry)?.label
-                                : "Select country..."}
+                            <div className="flex items-center gap-2">
+                                <Globe className="h-4 w-4 text-muted-foreground" />
+                                {selectedCountry
+                                    ? countries.find((c) => c.value === selectedCountry)?.label
+                                    : "Select country..."}
+                            </div>
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
