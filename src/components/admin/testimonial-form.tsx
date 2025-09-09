@@ -10,7 +10,8 @@ import Link from "next/link";
 import type { Testimonial } from "@/lib/testimonials";
 import { Loader2, Check, ChevronsUpDown, GraduationCap, Globe } from 'lucide-react';
 import React from 'react';
-import { countries } from '@/lib/countries';
+import { countries, Country } from '@/lib/countries';
+import Image from 'next/image';
 
 import { cn } from "@/lib/utils"
 import {
@@ -63,6 +64,8 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
 
     const destinationValue = `${selectedRole} in ${selectedCountry}`;
     
+    const currentCountry = countries.find((c) => c.value === selectedCountry);
+
     return (
         <form action={action} className="space-y-6">
             {testimonial && <input type="hidden" name="id" value={testimonial.id} />}
@@ -137,9 +140,19 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                             className="w-full justify-between font-normal"
                             >
                             <div className="flex items-center gap-2">
-                                <Globe className="h-4 w-4 text-muted-foreground" />
+                                {currentCountry ? (
+                                     <Image 
+                                        src={`https://flagcdn.com/w20/${currentCountry.code.toLowerCase()}.png`} 
+                                        alt={`${currentCountry.label} flag`} 
+                                        width={20} 
+                                        height={15} 
+                                        className="h-4 w-5 object-contain"
+                                    />
+                                ) : (
+                                    <Globe className="h-4 w-4 text-muted-foreground" />
+                                )}
                                 {selectedCountry
-                                    ? countries.find((c) => c.value === selectedCountry)?.label
+                                    ? currentCountry?.label
                                     : "Select country..."}
                             </div>
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -166,7 +179,16 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                                                 selectedCountry === c.value ? "opacity-100" : "opacity-0"
                                             )}
                                             />
-                                            {c.label}
+                                            <div className="flex items-center gap-2">
+                                                <Image 
+                                                    src={`https://flagcdn.com/w20/${c.code.toLowerCase()}.png`} 
+                                                    alt={`${c.label} flag`} 
+                                                    width={20} 
+                                                    height={15}
+                                                    className="h-4 w-5 object-contain mr-2"
+                                                />
+                                                <span>{c.label}</span>
+                                            </div>
                                         </CommandItem>
                                         ))}
                                     </CommandGroup>
