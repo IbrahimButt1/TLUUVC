@@ -4,7 +4,8 @@ import { getHeroImageById, updateHeroImage } from "@/lib/hero-images";
 import { notFound } from "next/navigation";
 
 export default async function EditHeroImagePage({ params }: { params: { id: string } }) {
-    const image = await getHeroImageById(params.id);
+    const id = params.id;
+    const image = await getHeroImageById(id);
     if (!image) {
         notFound();
     }
