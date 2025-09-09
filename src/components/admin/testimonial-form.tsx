@@ -11,6 +11,7 @@ import { Loader2, Check, ChevronsUpDown, GraduationCap, Globe, Upload } from 'lu
 import React from 'react';
 import { countries, Country } from '@/lib/countries';
 import Image from 'next/image';
+import { useToast } from '@/hooks/use-toast';
 
 import { cn } from "@/lib/utils"
 import {
@@ -54,6 +55,8 @@ const roles = [
     { value: 'Tech Professional', label: 'Tech Professional' },
 ];
 
+const MAX_SIZE_KB = 300;
+
 export default function TestimonialForm({ action, testimonial, submitText }: TestimonialFormProps) {
     const [rolePopoverOpen, setRolePopoverOpen] = React.useState(false);
     const [countryPopoverOpen, setCountryPopoverOpen] = React.useState(false);
@@ -62,6 +65,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
     const [selectedCountry, setSelectedCountry] = React.useState(testimonial?.country || "");
     const [imagePreview, setImagePreview] = React.useState(testimonial?.image || null);
     const [imageDataUri, setImageDataUri] = React.useState(testimonial?.image || "");
+    const { toast } = useToast();
 
     const destinationValue = `${selectedRole} in ${selectedCountry}`;
     
@@ -70,13 +74,53 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const dataUri = reader.result as string;
-                setImagePreview(dataUri);
-                setImageDataUri(dataUri);
-            };
-            reader.readAsDataURL(file);
+            if (file.size > MAX_SIZE_KB * 1024) {
+                 const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.src = event.target?.result as string;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const MAX_WIDTH = 800;
+                        const MAX_HEIGHT = 800;
+                        let width = img.width;
+                        let height = img.height;
+
+                        if (width > height) {
+                            if (width > MAX_WIDTH) {
+                                height *= MAX_WIDTH / width;
+                                width = MAX_WIDTH;
+                            }
+                        } else {
+                            if (height > MAX_HEIGHT) {
+                                width *= MAX_HEIGHT / height;
+                                height = MAX_HEIGHT;
+                            }
+                        }
+                        canvas.width = width;
+                        canvas.height = height;
+                        ctx!.drawImage(img, 0, 0, width, height);
+                        
+                        const dataUrl = canvas.toDataURL(file.type, 0.7);
+                        setImagePreview(dataUrl);
+                        setImageDataUri(dataUrl);
+                         toast({
+                            title: 'Image Compressed',
+                            description: `The uploaded image was larger than ${MAX_SIZE_KB}KB and has been automatically compressed.`
+                        });
+                    }
+                };
+                reader.readAsDataURL(file);
+            } else {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const dataUri = reader.result as string;
+                    setImagePreview(dataUri);
+                    setImageDataUri(dataUri);
+                };
+                reader.readAsDataURL(file);
+            }
         }
     };
     
@@ -233,7 +277,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                     <div className="flex-1">
                         <Input id="image-upload" type="file" accept="image/*" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
-                            Upload a photo of the client. A square image works best.
+                            Upload a photo of the client. A square image works best. Images over {MAX_SIZE_KB}KB will be compressed.
                         </p>
                     </div>
                 </div>
