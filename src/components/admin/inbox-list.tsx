@@ -85,10 +85,13 @@ function EmailGroup({ title, emails, searchTerm, isClient, onDelete, isPending }
                     <AccordionContent className="p-6 pt-2">
                         <div className="space-y-4 bg-muted/50 p-4 rounded-md">
                             <p className="text-sm"><strong>From:</strong> <a href={`mailto:${email.email}`} className="text-primary hover:underline"><HighlightedText text={email.email} highlight={searchTerm} /></a></p>
-
-                            <p className="whitespace-pre-wrap text-sm leading-relaxed">
-                                <HighlightedText text={email.message} highlight={searchTerm} />
-                            </p>
+                            <p className="text-sm"><strong>Subject:</strong> <HighlightedText text={email.subject} highlight={searchTerm} /></p>
+                            <div>
+                                <p className="text-sm font-semibold mb-2">Message Received:</p>
+                                <p className="whitespace-pre-wrap text-sm leading-relaxed">
+                                    <HighlightedText text={email.message} highlight={searchTerm} />
+                                </p>
+                            </div>
                             <div className="flex justify-end pt-2">
                                 <AlertDialog open={openDialog} onOpenChange={setOpenDialog}>
                                     <AlertDialogTrigger asChild>
