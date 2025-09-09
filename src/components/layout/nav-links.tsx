@@ -17,13 +17,14 @@ export default function NavLinks({ className }: { className?: string }) {
 
   useEffect(() => {
     observer.current = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-        }
-      });
+      const visibleSections = entries.filter(entry => entry.isIntersecting);
+      if (visibleSections.length > 0) {
+        // Find the section with the largest visible area
+        visibleSections.sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        setActiveSection(visibleSections[0].target.id);
+      }
     }, { 
-      threshold: 0.5,
+      threshold: [0.25, 0.5, 0.75, 1], // More thresholds for better accuracy
       rootMargin: '-50% 0px -50% 0px'
     });
 
@@ -50,7 +51,7 @@ export default function NavLinks({ className }: { className?: string }) {
           key={link.href} 
           href={link.href}
           data-active={activeSection === link.id}
-          className="nav-link text-foreground hover:text-primary transition-colors font-medium"
+          className="nav-link text-foreground/80 hover:text-primary transition-colors font-medium"
         >
           {link.label}
         </a>
