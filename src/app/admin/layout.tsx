@@ -2,6 +2,10 @@ import AdminSidebar from '@/components/layout/admin-sidebar';
 import { getUnreadEmailCount } from '@/lib/emails';
 import { getSiteSettings } from '@/lib/site-settings';
 
+function AdminSidebarWrapper({ children }: { children: React.ReactNode }) {
+    return <div className="flex min-h-screen">{children}</div>;
+}
+
 
 export default async function AdminLayout({
   children,
@@ -12,9 +16,9 @@ export default async function AdminLayout({
   const settings = await getSiteSettings();
 
   return (
-    <div className="flex min-h-screen">
+    <AdminSidebarWrapper>
       <AdminSidebar emailCount={emailCount} settings={settings} />
       <main className="flex-1 p-8 bg-muted/40">{children}</main>
-    </div>
+    </AdminSidebarWrapper>
   );
 }
