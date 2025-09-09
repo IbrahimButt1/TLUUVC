@@ -9,7 +9,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { href: "#", label: "Home", id: "hero" },
+  { href: "#hero", label: "Home", id: "hero" },
   { href: "#services", label: "Services", id: "services" },
   { href: "#about", label: "About", id: "about" },
   { href: "#knowledge", label: "Knowledge Base", id: "knowledge" },
@@ -20,45 +20,32 @@ const navLinks = [
 export default function Header() {
   const [settings, setSettings] = useState<Awaited<ReturnType<typeof getSiteSettings>> | null>(null);
   const [activeSection, setActiveSection] = useState('hero');
-  const sectionsRef = useRef<Record<string, HTMLElement | null>>({});
+  const observer = useRef<IntersectionObserver | null>(null);
 
   useEffect(() => {
     getSiteSettings().then(setSettings);
   }, []);
 
   useEffect(() => {
-    navLinks.forEach(link => {
-        sectionsRef.current[link.id] = document.getElementById(link.id);
+    observer.current = new IntersectionObserver((entries) => {
+      const visibleSection = entries.find((entry) => entry.isIntersecting)?.target.id;
+      if (visibleSection) {
+        setActiveSection(visibleSection);
+      }
+    }, { threshold: 0.5 });
+    
+    const sections = document.querySelectorAll('section');
+    sections.forEach((section) => {
+      observer.current?.observe(section);
     });
 
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const windowHeight = window.innerHeight;
-      const documentHeight = document.body.offsetHeight;
-      
-      let currentSectionId = 'hero';
-
-      // Check if we're at the bottom of the page
-      if (scrollPosition + windowHeight >= documentHeight - 50) {
-        currentSectionId = 'contact';
-      } else {
-        // Find the last section that is above the middle of the viewport
-        for (const link of navLinks) {
-            const section = sectionsRef.current[link.id];
-            if (section && section.offsetTop <= scrollPosition + windowHeight / 2) {
-                currentSectionId = link.id;
-            }
-        }
-      }
-      
-      setActiveSection(currentSectionId);
+    return () => {
+      sections.forEach((section) => {
+        observer.current?.unobserve(section);
+      });
     };
+  }, []);
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); 
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [settings]);
 
   if (!settings) {
     return <header className="sticky top-0 z-50 w-full h-14" />;
@@ -80,7 +67,7 @@ export default function Header() {
               href={link.href} 
               className={cn(
                 "nav-link text-muted-foreground hover:text-foreground transition-colors",
-                activeSection === link.id && 'nav-link-active text-foreground font-medium'
+                activeSection === link.id && "active text-foreground"
               )}
             >
               {link.label}
