@@ -46,10 +46,9 @@ function generateId(title: string): string {
     return title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
-export async function addHeroImage(formData: FormData) {
+export async function addHeroImage(imageDataUri: string, formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
-    const imageDataUri = formData.get('image') as string;
     
     if (!title || !description || !imageDataUri) {
         return;
@@ -75,11 +74,10 @@ export async function addHeroImage(formData: FormData) {
 }
 
 
-export async function updateHeroImage(formData: FormData) {
+export async function updateHeroImage(imageDataUri: string, formData: FormData) {
     const id = formData.get('id') as string;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
-    const imageDataUri = formData.get('image') as string;
 
     const images = await readHeroImages();
     const imageIndex = images.findIndex(s => s.id === id);
