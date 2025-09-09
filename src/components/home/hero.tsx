@@ -2,15 +2,39 @@
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import type { HeroImage } from '@/lib/hero-images';
-import { useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { cn } from '@/lib/utils';
+
 
 export default function Hero({ images }: { images: HeroImage[] }) {
   const plugin = useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
   )
+  const [api, setApi] = useState<CarouselApi>()
+  const [current, setCurrent] = useState(0)
+  const [count, setCount] = useState(0)
+
+  const scrollTo = useCallback((index: number) => {
+    api?.scrollTo(index);
+  }, [api]);
+
+
+  useEffect(() => {
+    if (!api) {
+      return
+    }
+
+    setCount(api.scrollSnapList().length)
+    setCurrent(api.selectedScrollSnap())
+
+    api.on("select", () => {
+      setCurrent(api.selectedScrollSnap())
+    })
+  }, [api])
+
 
   if (images.length === 0) {
     return (
@@ -22,6 +46,7 @@ export default function Hero({ images }: { images: HeroImage[] }) {
 
   return (
     <Carousel
+      setApi={setApi}
       plugins={[plugin.current]}
       opts={{ loop: true }}
       onMouseEnter={plugin.current.stop}
@@ -60,9 +85,22 @@ export default function Hero({ images }: { images: HeroImage[] }) {
           </CarouselItem>
         ))}
       </CarouselContent>
-       <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-            <CarouselPrevious className="static -translate-y-0" />
-            <CarouselNext className="static -translate-y-0" />
+       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6">
+            <CarouselPrevious className="static -translate-y-0 text-white bg-black/20 hover:bg-black/40 hover:text-white border-white/50" />
+            <div className="flex items-center justify-center gap-2">
+                {Array.from({ length: count }).map((_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => scrollTo(i)}
+                        className={cn(
+                            "h-2 w-2 rounded-full transition-all",
+                            current === i ? "bg-white w-4" : "bg-white/50 hover:bg-white/75"
+                        )}
+                        aria-label={`Go to slide ${i + 1}`}
+                    />
+                ))}
+            </div>
+            <CarouselNext className="static -translate-y-0 text-white bg-black/20 hover:bg-black/40 hover:text-white border-white/50" />
        </div>
     </Carousel>
   );
