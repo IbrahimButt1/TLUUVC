@@ -38,6 +38,14 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+                toast({
+                    title: 'Invalid File Type',
+                    description: 'Please upload a JPG or PNG image.',
+                    variant: 'destructive'
+                });
+                return;
+            }
             const reader = new FileReader();
             reader.onload = (event) => {
                 const img = new window.Image();

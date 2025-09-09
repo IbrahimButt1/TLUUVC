@@ -16,5 +16,11 @@
     "title": "Start Your New Chapter",
     "description": "Your adventure awaits. We're here to make it happen.",
     "image": "https://picsum.photos/1920/1080?random=2"
+  },
+  {
+    "id": "explore-wold",
+    "title": "Explore Wold",
+    "description": "Dreram Comes True",
+    "image": "https://picsum.photos/800/800"
   }
 ]
