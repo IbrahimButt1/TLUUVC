@@ -38,9 +38,10 @@ function initializeFirebaseApp() {
 
 export async function uploadImage(dataUri: string, filename: string): Promise<string> {
     const isFirebaseInitialized = initializeFirebaseApp();
-    if (!isFirebaseInitialized) {
-        // Return a placeholder if Firebase is not configured
-        return 'https://picsum.photos/800/800';
+    if (!isFirebaseInitialized || !dataUri.startsWith('data:image')) {
+        // If Firebase is not configured or if it's not a data URI, return the original URI
+        // This handles both placeholders and un-configured states gracefully.
+        return dataUri;
     }
 
     const bucket = getStorage().bucket();

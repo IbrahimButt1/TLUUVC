@@ -50,11 +50,15 @@ export async function addHeroImage(imageDataUri: string, formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     
-    if (!title || !description || !imageDataUri) {
+    if (!title || !description) {
         return;
     }
+    
+    let imageUrl = 'https://picsum.photos/1920/1080';
+    if (imageDataUri) {
+        imageUrl = await uploadImage(imageDataUri, `hero-${Date.now()}`);
+    }
 
-    const imageUrl = await uploadImage(imageDataUri, `hero-${Date.now()}`);
 
     const newImage: HeroImage = {
         id: generateId(title),
