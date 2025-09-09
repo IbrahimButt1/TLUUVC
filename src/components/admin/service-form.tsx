@@ -88,15 +88,15 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
             {service && <input type="hidden" name="id" value={service.id} />}
             <div className="space-y-2">
                 <Label htmlFor="title">Service Title</Label>
-                <Input id="title" name="title" defaultValue={service?.title} required />
+                <Input id="title" name="title" defaultValue={service?.title} required placeholder="e.g. Student Visas"/>
             </div>
             <div className="space-y-2">
                 <Label htmlFor="description">Short Description (for home page cards)</Label>
-                <Textarea id="description" name="description" defaultValue={service?.description} rows={3} required />
+                <Textarea id="description" name="description" defaultValue={service?.description} rows={3} required placeholder="e.g. Comprehensive guidance for students aspiring to study abroad..."/>
             </div>
              <div className="space-y-2">
                 <Label htmlFor="longDescription">Long Description (for service detail page)</Label>
-                <Textarea id="longDescription" name="longDescription" defaultValue={service?.longDescription} rows={6} />
+                <Textarea id="longDescription" name="longDescription" defaultValue={service?.longDescription} rows={6} placeholder="e.g. Navigating the student visa process can be complex. We provide expert, end-to-end guidance..."/>
             </div>
              <div className="space-y-2">
                 <Label htmlFor="requirements">Key Requirements (one per line)</Label>
@@ -105,7 +105,7 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
                     name="requirements" 
                     defaultValue={service?.requirements?.join('\n')} 
                     rows={6}
-                    placeholder="Enter each requirement on a new line."
+                    placeholder="e.g. Acceptance letter from a designated learning institution."
                 />
             </div>
             <div className="space-y-4">
