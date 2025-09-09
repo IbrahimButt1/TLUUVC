@@ -2,7 +2,7 @@
 
 import { Plane, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import Image from "next/image";
 import { getSiteSettings } from "@/lib/site-settings";
 import React, { useState, useEffect } from "react";
@@ -11,26 +11,18 @@ import { cn } from "@/lib/utils";
 
 export default function Header() {
   const [settings, setSettings] = useState<Awaited<ReturnType<typeof getSiteSettings>> | null>(null);
-  const [isScrolled, setIsScrolled] = useState(false);
   
   useEffect(() => {
     getSiteSettings().then(setSettings);
-
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   if (!settings) {
-    return <header className="w-full h-16" />;
+    return <header className="w-full h-20" />;
   }
   
   return (
     <header className={cn(
-      "w-full z-50 transition-all duration-300 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
-      isScrolled ? "shadow-md" : ""
+      "w-full bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 shadow-md"
     )}>
       <div className="container flex h-20 items-center">
         <div className="mr-auto flex items-center">
@@ -39,7 +31,7 @@ export default function Header() {
           </a>
         </div>
         
-        <NavLinks className="hidden md:flex items-center gap-8" />
+        <NavLinks className="hidden md:flex" />
 
         <div className="flex items-center justify-end space-x-2 ml-auto">
           <Button asChild className="hidden md:inline-flex" variant="secondary" size="sm">
