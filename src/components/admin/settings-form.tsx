@@ -12,7 +12,7 @@ import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 
 interface SettingsFormProps {
-    action: (formData: FormData) => Promise<void>;
+    action: (logoDataUri: string, formData: FormData) => Promise<void>;
     settings: SiteSettings;
     submitText: string;
 }
@@ -82,10 +82,11 @@ export default function SettingsForm({ action, settings, submitText }: SettingsF
             reader.readAsDataURL(file);
         }
     };
+    
+    const formAction = action.bind(null, logoDataUri);
 
     return (
-        <form action={action} className="space-y-6">
-            <input type="hidden" name="logo" value={logoDataUri} />
+        <form action={formAction} className="space-y-6">
             <div className="space-y-4">
                 <Label htmlFor="logo-upload">Website Logo</Label>
                 <div className="flex items-center gap-4">
@@ -100,7 +101,7 @@ export default function SettingsForm({ action, settings, submitText }: SettingsF
                         )}
                     </div>
                     <div className="flex-1">
-                        <Input id="logo-upload" type="file" accept="image/*" onChange={handleLogoChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                        <Input id="logo-upload" type="file" accept="image/jpeg, image/png" onChange={handleLogoChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
                            Upload your site logo. A square image works best. Images over ${MAX_SIZE_KB}KB will be compressed.
                         </p>

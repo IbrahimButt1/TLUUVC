@@ -112,7 +112,7 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
                         )}
                     </div>
                     <div className="flex-1">
-                        <Input id="image-upload" name="imageFile" type="file" accept="image/*" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                        <Input id="image-upload" name="imageFile" type="file" accept="image/jpeg, image/png" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
                             Upload a landscape image (e.g. 1920x1080). Images over ${MAX_SIZE_KB}KB will be compressed.
                         </p>
