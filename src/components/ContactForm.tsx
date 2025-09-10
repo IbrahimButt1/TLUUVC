@@ -17,11 +17,11 @@ export default function LoginForm() {
     <div className="grid gap-6">
         <div className="grid gap-4">
             <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="username">User Name</Label>
                 <Input
-                    id="email"
-                    type="email"
-                    placeholder="m@example.com"
+                    id="username"
+                    type="text"
+                    placeholder="your-username"
                     required
                 />
             </div>
