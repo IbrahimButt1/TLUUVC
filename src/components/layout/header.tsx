@@ -31,7 +31,7 @@ export default function Header() {
   return (
     <header className="w-full bg-background/95 backdrop-blur-sm shadow-sm">
       <div className="container flex h-20 items-center justify-between">
-        <div className="flex items-center">
+        <div className="flex items-center gap-8">
           {/* Logo */}
           <a href="/" className="flex items-center">
             <Image
