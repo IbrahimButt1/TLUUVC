@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormStatus } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,9 +10,11 @@ import React from 'react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import type { SiteSettings } from '@/lib/site-settings';
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
+import { Separator } from '../ui/separator';
 
 interface SettingsFormProps {
-    action: (formData: FormData) => Promise<void>;
+    action: (prevState: any, formData: FormData) => Promise<{ message: string; }>;
     settings: SiteSettings;
     submitText: string;
 }
@@ -20,7 +22,7 @@ interface SettingsFormProps {
 function SubmitButton({ submitText }: { submitText: string }) {
     const { pending } = useFormStatus();
     return (
-        <Button type="submit" disabled={pending}>
+        <Button type="submit" disabled={pending} className="w-full md:w-auto">
             {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {submitText}
         </Button>
@@ -31,8 +33,18 @@ const MAX_FILE_SIZE_MB = 1;
 
 export default function SettingsForm({ action, settings, submitText }: SettingsFormProps) {
     const [logoPreview, setLogoPreview] = React.useState<string | null>(settings?.logo || null);
-    const [logoDataUri, setLogoDataUri] = React.useState("");
     const { toast } = useToast();
+
+    const [state, formAction] = useFormState(action, { message: '' });
+
+     React.useEffect(() => {
+        if (state.message) {
+            toast({
+                title: 'Settings Saved',
+                description: state.message,
+            });
+        }
+    }, [state, toast]);
 
     const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -49,38 +61,65 @@ export default function SettingsForm({ action, settings, submitText }: SettingsF
             reader.onload = (event) => {
                 const dataUrl = event.target?.result as string;
                 setLogoPreview(dataUrl);
-                setLogoDataUri(dataUrl);
             };
             reader.readAsDataURL(file);
         }
     };
-    
-    const formAction = action;
-    
+        
     return (
-        <form action={formAction} className="space-y-6">
-            <input type="hidden" name="logo" value={logoDataUri} />
-            <div className="space-y-4">
-                <Label htmlFor="logo-upload">Company Logo</Label>
-                <div className="flex items-center gap-4">
-                    <div className="w-32 h-16 rounded-md border border-dashed flex items-center justify-center bg-muted overflow-hidden">
-                        {logoPreview ? (
-                            <Image src={logoPreview} alt="Logo preview" width={128} height={64} className="w-full h-full object-contain" />
-                        ) : (
-                             <div className="text-center text-muted-foreground text-sm p-2">
-                                <Upload className="mx-auto h-6 w-6" />
-                                <span>Preview</span>
+        <form action={formAction} className="space-y-8">
+            <Card>
+                <CardHeader>
+                    <CardTitle>Branding</CardTitle>
+                    <CardDescription>Update your company's logo.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-4">
+                        <Label htmlFor="logo-upload">Company Logo</Label>
+                        <div className="flex items-center gap-4">
+                            <div className="w-32 h-16 rounded-md border border-dashed flex items-center justify-center bg-muted overflow-hidden">
+                                {logoPreview ? (
+                                    <Image src={logoPreview} alt="Logo preview" width={128} height={64} className="w-full h-full object-contain" />
+                                ) : (
+                                    <div className="text-center text-muted-foreground text-sm p-2">
+                                        <Upload className="mx-auto h-6 w-6" />
+                                        <span>Preview</span>
+                                    </div>
+                                )}
                             </div>
-                        )}
+                            <div className="flex-1">
+                                <Input id="logo-upload" name="logoFile" type="file" accept="image/*" onChange={handleLogoChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                                <p className="text-sm text-muted-foreground mt-2">
+                                Upload your company logo. Max file size: ${MAX_FILE_SIZE_MB}MB.
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <div className="flex-1">
-                        <Input id="logo-upload" name="imageFile" type="file" accept="image/*" onChange={handleLogoChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
-                        <p className="text-sm text-muted-foreground mt-2">
-                           Upload your company logo. Max file size: ${MAX_FILE_SIZE_MB}MB.
-                        </p>
+                </CardContent>
+            </Card>
+
+             <Card>
+                <CardHeader>
+                    <CardTitle>Admin Credentials</CardTitle>
+                    <CardDescription>Manage administrator username and password.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                    <div className="space-y-2">
+                        <Label htmlFor="username">Username</Label>
+                        <Input id="username" name="username" defaultValue={settings.username} required />
                     </div>
-                </div>
-            </div>
+                    <Separator />
+                     <div className="space-y-2">
+                        <Label htmlFor="newPassword">New Password</Label>
+                        <Input id="newPassword" name="newPassword" type="password" placeholder="Leave blank to keep current password" />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                        <Input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm your new password" />
+                    </div>
+                </CardContent>
+            </Card>
+
             <div className="flex justify-end gap-2">
                 <Button variant="outline" asChild>
                     <Link href="/admin">Cancel</Link>

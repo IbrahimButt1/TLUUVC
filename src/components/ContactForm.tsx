@@ -1,26 +1,35 @@
-"use client"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+"use client";
+
+import { useFormState, useFormStatus } from 'react-dom';
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { authenticate } from '@/lib/auth';
+import { Alert, AlertDescription, AlertTitle } from './ui/alert';
+import { AlertCircle } from 'lucide-react';
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending ? 'Logging in...' : 'Login'}
+    </Button>
+  );
+}
 
 export default function LoginForm() {
+  const [errorMessage, dispatch] = useFormState(authenticate, undefined);
+
   return (
-    <div className="grid gap-6">
+    <form action={dispatch} className="grid gap-6">
         <div className="grid gap-4">
             <div className="grid gap-2">
                 <Label htmlFor="username">User Name</Label>
                 <Input
                     id="username"
                     type="text"
+                    name="username"
                     placeholder="your-username"
                     required
                 />
@@ -35,12 +44,17 @@ export default function LoginForm() {
                     Forgot your password?
                     </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <Input id="password" name="password" type="password" required />
             </div>
-            <Button type="submit" className="w-full">
-            Login
-            </Button>
+            <SubmitButton />
+             {errorMessage && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Login Failed</AlertTitle>
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
+            )}
         </div>
-    </div>
+    </form>
   )
 }

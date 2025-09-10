@@ -10,7 +10,7 @@ export default async function SettingsPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Site Settings</CardTitle>
-                    <CardDescription>Manage your website's general settings and branding.</CardDescription>
+                    <CardDescription>Manage your website's general settings, branding, and administrator credentials.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <SettingsForm
