@@ -37,9 +37,9 @@ export default function Header() {
             <Image
               src={settings.logo}
               alt="Company Logo"
-              width={280}
-              height={70}
-              className="object-contain rounded-lg h-[70px] w-auto"
+              width={270}
+              height={68}
+              className="object-contain rounded-lg h-[68px] w-auto"
               data-ai-hint="logo"
             />
           </a>
@@ -51,7 +51,7 @@ export default function Header() {
         {/* Right Side: CTA and Mobile Menu */}
         <div className="flex items-center gap-4">
           <Button asChild className="hidden md:inline-flex">
-            <a href="/admin">Sign In</a>
+            <a href="/login">Sign In</a>
           </Button>
 
           <Sheet>
@@ -67,9 +67,9 @@ export default function Header() {
                   <Image
                     src={settings.logo}
                     alt="Company Logo"
-                    width={280}
-                    height={70}
-                    className="object-contain rounded-lg h-[70px] w-auto"
+                    width={270}
+                    height={68}
+                    className="object-contain rounded-lg h-[68px] w-auto"
                   />
                 </SheetTitle>
                 <SheetClose>
@@ -118,7 +118,7 @@ export default function Header() {
                 </a>
 
                 <Button asChild className="mt-4">
-                  <a href="/admin">Sign In</a>
+                  <a href="/login">Sign In</a>
                 </Button>
               </div>
             </SheetContent>
