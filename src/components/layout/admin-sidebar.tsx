@@ -25,8 +25,8 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
 
   return (
     <aside className="w-64 bg-background border-r">
-      <Link href="/" className="flex items-center gap-2 h-14 border-b px-4 text-foreground hover:bg-muted transition-colors">
-        <Image src={settings.logo} alt="Company Logo" width={36} height={36} className="object-contain rounded-md" data-ai-hint="logo" />
+      <Link href="/" className="flex items-center gap-2 h-14 border-b pr-4 text-foreground hover:bg-muted transition-colors">
+        <Image src={settings.logo} alt="Company Logo" width={38} height={38} className="object-contain rounded-md" data-ai-hint="logo" />
         <span className="font-bold text-sm">THE LUU VISA CONSULTANT</span>
       </Link>
       <nav className="flex flex-col p-4">

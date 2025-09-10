@@ -30,15 +30,15 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-sm shadow-sm">
-      <div className="container flex h-20 items-center justify-between px-6">
+      <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-4">
           {/* Logo */}
           <a href="#" className="flex items-center gap-2">
             <Image
               src={settings.logo}
               alt="Company Logo"
-              width={84}
-              height={21}
+              width={140}
+              height={35}
               className="object-contain rounded-lg"
               data-ai-hint="logo"
             />
@@ -50,10 +50,6 @@ export default function Header() {
 
         {/* Right Side: CTA and Mobile Menu */}
         <div className="flex items-center gap-4">
-          <Button asChild className="hidden md:flex">
-            <a href="#contact">Get a Consultation</a>
-          </Button>
-
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="md:hidden">
@@ -67,8 +63,8 @@ export default function Header() {
                   <Image
                     src={settings.logo}
                     alt="Company Logo"
-                    width={84}
-                    height={21}
+                    width={140}
+                    height={35}
                     className="object-contain rounded-lg"
                   />
                 </SheetTitle>
