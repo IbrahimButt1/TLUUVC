@@ -37,9 +37,9 @@ export default function Header() {
             <Image
               src={settings.logo}
               alt="Company Logo"
-              width={240}
-              height={60}
-              className="object-contain rounded-lg h-16 w-auto"
+              width={280}
+              height={70}
+              className="object-contain rounded-lg h-20 w-auto"
               data-ai-hint="logo"
             />
           </a>
@@ -67,9 +67,9 @@ export default function Header() {
                   <Image
                     src={settings.logo}
                     alt="Company Logo"
-                    width={240}
-                    height={60}
-                    className="object-contain rounded-lg h-16 w-auto"
+                    width={280}
+                    height={70}
+                    className="object-contain rounded-lg h-20 w-auto"
                   />
                 </SheetTitle>
                 <SheetClose>
