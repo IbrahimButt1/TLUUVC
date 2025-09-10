@@ -31,15 +31,15 @@ export default function Header() {
   return (
     <header className="w-full bg-background/95 backdrop-blur-sm shadow-sm">
       <div className="container flex h-20 items-center justify-between">
-        <div className="flex items-center gap-8">
+        <div className="flex items-center">
           {/* Logo */}
-          <a href="/" className="flex items-center mr-8">
+          <a href="/" className="flex items-center">
             <Image
               src={settings.logo}
               alt="Company Logo"
-              width={140}
-              height={35}
-              className="object-contain rounded-lg h-10 w-auto"
+              width={180}
+              height={45}
+              className="object-contain rounded-lg h-12 w-auto"
               data-ai-hint="logo"
             />
           </a>
@@ -67,9 +67,9 @@ export default function Header() {
                   <Image
                     src={settings.logo}
                     alt="Company Logo"
-                    width={140}
-                    height={35}
-                    className="object-contain rounded-lg h-10 w-auto"
+                    width={180}
+                    height={45}
+                    className="object-contain rounded-lg h-12 w-auto"
                   />
                 </SheetTitle>
                 <SheetClose>
