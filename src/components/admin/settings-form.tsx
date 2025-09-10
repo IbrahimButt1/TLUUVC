@@ -5,14 +5,14 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import type { SiteSettings } from "@/lib/site-settings";
 import { Loader2, Upload } from 'lucide-react';
 import React from 'react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
+import type { SiteSettings } from '@/lib/site-settings';
 
 interface SettingsFormProps {
-    action: (logoDataUri: string, formData: FormData) => Promise<void>;
+    action: (formData: FormData) => Promise<void>;
     settings: SiteSettings;
     submitText: string;
 }
@@ -29,9 +29,8 @@ function SubmitButton({ submitText }: { submitText: string }) {
 
 const MAX_FILE_SIZE_MB = 1;
 
-
 export default function SettingsForm({ action, settings, submitText }: SettingsFormProps) {
-    const [logoPreview, setLogoPreview] = React.useState<string | null>(settings.logo || null);
+    const [logoPreview, setLogoPreview] = React.useState<string | null>(settings?.logo || null);
     const [logoDataUri, setLogoDataUri] = React.useState("");
     const { toast } = useToast();
 
@@ -56,16 +55,17 @@ export default function SettingsForm({ action, settings, submitText }: SettingsF
         }
     };
     
-    const formAction = action.bind(null, logoDataUri);
-
+    const formAction = action;
+    
     return (
         <form action={formAction} className="space-y-6">
+            <input type="hidden" name="logo" value={logoDataUri} />
             <div className="space-y-4">
-                <Label htmlFor="logo-upload">Website Logo</Label>
+                <Label htmlFor="logo-upload">Company Logo</Label>
                 <div className="flex items-center gap-4">
-                     <div className="w-24 h-24 rounded-full border border-dashed flex items-center justify-center bg-muted overflow-hidden">
+                    <div className="w-32 h-16 rounded-md border border-dashed flex items-center justify-center bg-muted overflow-hidden">
                         {logoPreview ? (
-                            <Image src={logoPreview} alt="Logo preview" width={96} height={96} className="w-full h-full object-cover" />
+                            <Image src={logoPreview} alt="Logo preview" width={128} height={64} className="w-full h-full object-contain" />
                         ) : (
                              <div className="text-center text-muted-foreground text-sm p-2">
                                 <Upload className="mx-auto h-6 w-6" />
@@ -74,14 +74,13 @@ export default function SettingsForm({ action, settings, submitText }: SettingsF
                         )}
                     </div>
                     <div className="flex-1">
-                        <Input id="logo-upload" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleLogoChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                        <Input id="logo-upload" name="imageFile" type="file" accept="image/*" onChange={handleLogoChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
-                           Upload your site logo. A square image works best. Max file size: ${MAX_FILE_SIZE_MB}MB.
+                           Upload your company logo. Max file size: ${MAX_FILE_SIZE_MB}MB.
                         </p>
                     </div>
                 </div>
             </div>
-            
             <div className="flex justify-end gap-2">
                 <Button variant="outline" asChild>
                     <Link href="/admin">Cancel</Link>

@@ -8,7 +8,6 @@ import type { HeroImage } from '@/lib/hero-images';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { cn } from '@/lib/utils';
 
-
 export default function Hero({ images }: { images: HeroImage[] }) {
   const plugin = useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true })
@@ -21,11 +20,8 @@ export default function Hero({ images }: { images: HeroImage[] }) {
     api?.scrollTo(index);
   }, [api]);
 
-
   useEffect(() => {
-    if (!api) {
-      return
-    }
+    if (!api) return;
 
     setCount(api.scrollSnapList().length)
     setCurrent(api.selectedScrollSnap())
@@ -35,11 +31,15 @@ export default function Hero({ images }: { images: HeroImage[] }) {
     })
   }, [api])
 
-
   if (images.length === 0) {
     return (
-      <section id="hero" className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center text-center bg-muted pt-20">
-        <p className="text-muted-foreground">No hero images have been added yet.</p>
+      <section 
+        id="hero" 
+        className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center text-center bg-muted"
+      >
+        <p className="text-muted-foreground">
+          No hero images have been added yet.
+        </p>
       </section>
     );
   }
@@ -51,13 +51,13 @@ export default function Hero({ images }: { images: HeroImage[] }) {
       opts={{ loop: true }}
       onMouseEnter={plugin.current.stop}
       onMouseLeave={plugin.current.reset}
-      className="w-full pt-20"
+      className="w-full"
       id="hero"
     >
       <CarouselContent>
         {images.map((image, index) => (
           <CarouselItem key={index}>
-            <section className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center text-center text-white">
+            <section className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center text-center text-white pt-20">
               <Image
                 src={image.image}
                 alt={image.title}
@@ -86,23 +86,25 @@ export default function Hero({ images }: { images: HeroImage[] }) {
           </CarouselItem>
         ))}
       </CarouselContent>
-       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6">
-            <CarouselPrevious className="static -translate-y-0 text-white bg-black/20 hover:bg-black/40 hover:text-white border-white/50" />
-            <div className="flex items-center justify-center gap-2">
-                {Array.from({ length: count }).map((_, i) => (
-                    <button
-                        key={i}
-                        onClick={() => scrollTo(i)}
-                        className={cn(
-                            "h-2 w-2 rounded-full transition-all",
-                            current === i ? "bg-white w-4" : "bg-white/50 hover:bg-white/75"
-                        )}
-                        aria-label={`Go to slide ${i + 1}`}
-                    />
-                ))}
-            </div>
-            <CarouselNext className="static -translate-y-0 text-white bg-black/20 hover:bg-black/40 hover:text-white border-white/50" />
-       </div>
+
+      {/* Navigation Dots + Prev/Next */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6">
+        <CarouselPrevious className="static -translate-y-0 text-white bg-black/20 hover:bg-black/40 hover:text-white border-white/50" />
+        <div className="flex items-center justify-center gap-2">
+          {Array.from({ length: count }).map((_, i) => (
+            <button
+              key={i}
+              onClick={() => scrollTo(i)}
+              className={cn(
+                "h-2 w-2 rounded-full transition-all",
+                current === i ? "bg-white w-4" : "bg-white/50 hover:bg-white/75"
+              )}
+              aria-label={`Go to slide ${i + 1}`}
+            />
+          ))}
+        </div>
+        <CarouselNext className="static -translate-y-0 text-white bg-black/20 hover:bg-black/40 hover:text-white border-white/50" />
+      </div>
     </Carousel>
   );
 }

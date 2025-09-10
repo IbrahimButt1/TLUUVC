@@ -13,7 +13,7 @@ import {
 import Image from "next/image";
 import { getSiteSettings } from "@/lib/site-settings";
 import React, { useState, useEffect } from "react";
-import NavLinks from "./nav-links";
+import NavLinks from "@/components/layout/nav-links";
 import { cn } from "@/lib/utils";
 
 export default function Header() {
@@ -29,34 +29,30 @@ export default function Header() {
   }
 
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 w-full bg-background shadow-md"
-      )}
-    >
-      <div className="container flex h-20 items-center justify-between gap-4">
-        <div className="flex items-center gap-6">
-            {/* Logo */}
-            <a href="#" className="flex items-center gap-2">
-              <Image
-                src={settings.logo}
-                alt="Company Logo"
-                width={100}
-                height={25}
-                className="object-contain"
-                data-ai-hint="logo"
-              />
-            </a>
+    <header className="fixed top-0 z-50 w-full bg-background shadow-md rounded-b-xl">
+      <div className="container flex h-20 items-center justify-between px-6">
+        <div className="flex items-center gap-8">
+          {/* Logo */}
+          <a href="#" className="flex items-center">
+            <Image
+              src={settings.logo}
+              alt="Company Logo"
+              width={80}
+              height={20}
+              className="object-contain"
+              data-ai-hint="logo"
+            />
+          </a>
 
-            {/* Navigation */}
-            <NavLinks className="hidden md:flex" />
+          {/* Navigation (Desktop) */}
+          <NavLinks className="hidden md:flex" />
         </div>
 
-        {/* Mobile Menu */}
-        <div className="flex items-center gap-4">
+        {/* Right Side: Mobile Menu */}
+        <div className="flex items-center md:hidden">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden">
+              <Button variant="outline" size="icon">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
@@ -67,8 +63,8 @@ export default function Header() {
                   <Image
                     src={settings.logo}
                     alt="Company Logo"
-                    width={100}
-                    height={25}
+                    width={80}
+                    height={20}
                     className="object-contain"
                   />
                 </SheetTitle>
@@ -77,6 +73,8 @@ export default function Header() {
                   <span className="sr-only">Close</span>
                 </SheetClose>
               </SheetHeader>
+
+              {/* Mobile Nav Links */}
               <div className="flex flex-col gap-6 pt-10">
                 <a
                   href="#"

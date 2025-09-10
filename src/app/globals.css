@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 🌍 Global Reset */
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+  }
+}
+
 @layer base {
   :root {
     --background: 220 13% 94%; /* Graphite Gray Light */
