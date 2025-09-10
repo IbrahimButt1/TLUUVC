@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useFormStatus } from 'react-dom';
+import { useFormState, useFormStatus } from 'react-dom';
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -19,7 +19,7 @@ function SubmitButton() {
 }
 
 export default function LoginForm() {
-  const [errorMessage, dispatch] = useActionState(authenticate, undefined);
+  const [errorMessage, dispatch] = useFormState(authenticate, undefined);
 
   return (
     <form action={dispatch} className="grid gap-6">
