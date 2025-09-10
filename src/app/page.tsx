@@ -7,6 +7,7 @@ import Testimonials from '@/components/home/testimonials';
 import KnowledgeBase from '@/components/home/knowledge-base';
 import Contact from '@/components/home/contact';
 import { getHeroImages } from '@/lib/hero-images';
+import { getSiteSettings } from '@/lib/site-settings';
 
 export default async function Home() {
   const heroImages = await getHeroImages();
@@ -14,7 +15,7 @@ export default async function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
-      <main className="flex-grow pt-20">
+      <main className="flex-grow">
         <Hero images={heroImages} />
         <Services />
         <About />

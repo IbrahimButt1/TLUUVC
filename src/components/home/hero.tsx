@@ -38,7 +38,7 @@ export default function Hero({ images }: { images: HeroImage[] }) {
 
   if (images.length === 0) {
     return (
-      <section id="hero" className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center text-center bg-muted">
+      <section id="hero" className="relative w-full h-[60vh] md:h-[80vh] flex items-center justify-center text-center bg-muted pt-20">
         <p className="text-muted-foreground">No hero images have been added yet.</p>
       </section>
     );
@@ -51,7 +51,7 @@ export default function Hero({ images }: { images: HeroImage[] }) {
       opts={{ loop: true }}
       onMouseEnter={plugin.current.stop}
       onMouseLeave={plugin.current.reset}
-      className="w-full"
+      className="w-full pt-20"
       id="hero"
     >
       <CarouselContent>
