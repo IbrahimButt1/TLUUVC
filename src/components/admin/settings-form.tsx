@@ -1,6 +1,6 @@
 'use client';
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useFormStatus } from 'react-dom';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,7 @@ export default function SettingsForm({ action, settings, submitText }: SettingsF
     const [logoPreview, setLogoPreview] = React.useState<string | null>(settings?.logo || null);
     const { toast } = useToast();
 
-    const [state, formAction] = useFormState(action, { message: '' });
+    const [state, formAction] = React.useActionState(action, { message: '' });
 
      React.useEffect(() => {
         if (state.message) {

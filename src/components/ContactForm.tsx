@@ -1,6 +1,6 @@
 "use client";
 
-import { useFormState, useFormStatus } from 'react-dom';
+import { useActionState, useFormStatus } from 'react-dom';
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
@@ -8,6 +8,7 @@ import Link from "next/link"
 import { authenticate } from '@/lib/auth';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { AlertCircle } from 'lucide-react';
+import React from 'react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -19,7 +20,7 @@ function SubmitButton() {
 }
 
 export default function LoginForm() {
-  const [errorMessage, dispatch] = useFormState(authenticate, undefined);
+  const [errorMessage, dispatch] = React.useActionState(authenticate, undefined);
 
   return (
     <form action={dispatch} className="grid gap-6">
