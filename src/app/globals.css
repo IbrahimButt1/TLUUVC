@@ -83,3 +83,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .nav-link::after {
+    @apply content-[''] absolute bottom-[-4px] left-0 w-full h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-center;
+  }
+}

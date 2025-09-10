@@ -35,32 +35,25 @@ export default function Header() {
       )}
     >
       <div className="container flex h-20 items-center justify-between gap-4">
-        {/* Logo */}
-        <a href="#" className="flex items-center gap-2">
-          <Image
-            src={settings.logo}
-            alt="Company Logo"
-            width={80}
-            height={20}
-            className="object-contain"
-            data-ai-hint="logo"
-          />
-        </a>
+        <div className="flex items-center gap-6">
+            {/* Logo */}
+            <a href="#" className="flex items-center gap-2">
+              <Image
+                src={settings.logo}
+                alt="Company Logo"
+                width={100}
+                height={25}
+                className="object-contain"
+                data-ai-hint="logo"
+              />
+            </a>
 
-        {/* Navigation + Buttons */}
+            {/* Navigation */}
+            <NavLinks className="hidden md:flex" />
+        </div>
+
+        {/* Mobile Menu */}
         <div className="flex items-center gap-4">
-          <NavLinks className="hidden md:flex" />
-
-          <Button
-            asChild
-            className="hidden md:inline-flex"
-            variant="secondary"
-            size="sm"
-          >
-            <a href="#contact">Get a Consultation</a>
-          </Button>
-
-          {/* Mobile Menu */}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="md:hidden">
@@ -74,8 +67,8 @@ export default function Header() {
                   <Image
                     src={settings.logo}
                     alt="Company Logo"
-                    width={80}
-                    height={20}
+                    width={100}
+                    height={25}
                     className="object-contain"
                   />
                 </SheetTitle>

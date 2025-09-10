@@ -19,7 +19,7 @@ export default function NavLinks({ className }: { className?: string }) {
         <a 
           key={link.href} 
           href={link.href}
-          className="text-foreground/80 hover:text-primary transition-colors font-medium"
+          className="nav-link text-foreground/80 hover:text-primary transition-colors font-medium relative"
         >
           {link.label}
         </a>
