@@ -39,7 +39,7 @@ export default function Header() {
               alt="Company Logo"
               width={280}
               height={70}
-              className="object-contain rounded-lg h-20 w-auto"
+              className="object-contain rounded-lg h-[70px] w-auto"
               data-ai-hint="logo"
             />
           </a>
@@ -69,7 +69,7 @@ export default function Header() {
                     alt="Company Logo"
                     width={280}
                     height={70}
-                    className="object-contain rounded-lg h-20 w-auto"
+                    className="object-contain rounded-lg h-[70px] w-auto"
                   />
                 </SheetTitle>
                 <SheetClose>
