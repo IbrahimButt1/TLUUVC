@@ -27,7 +27,7 @@ export default function Header() {
       <div className="container flex h-20 items-center">
         <div className="mr-auto flex items-center">
           <a href="#" className="flex items-center gap-3">
-            <Image src={settings.logo} alt="Company Logo" width={128} height={32} className="object-contain" data-ai-hint="logo" />
+            <Image src={settings.logo} alt="Company Logo" width={80} height={20} className="object-contain" data-ai-hint="logo" />
           </a>
         </div>
         
@@ -47,7 +47,7 @@ export default function Header() {
             <SheetContent side="left" className="w-[300px]">
                <SheetHeader className="flex flex-row items-center justify-between">
                 <SheetTitle className="flex items-center gap-2">
-                  <Image src={settings.logo} alt="Company Logo" width={128} height={32} className="object-contain" />
+                  <Image src={settings.logo} alt="Company Logo" width={80} height={20} className="object-contain" />
                 </SheetTitle>
                 <SheetClose>
                   <X className="h-5 w-5"/>

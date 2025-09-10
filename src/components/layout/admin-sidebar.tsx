@@ -26,7 +26,7 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
   return (
     <aside className="w-64 bg-background border-r">
       <Link href="/" className="flex items-center justify-center gap-2 h-14 border-b px-6 text-foreground hover:bg-muted transition-colors">
-        <Image src={settings.logo} alt="Company Logo" width={100} height={25} className="object-contain" data-ai-hint="logo" />
+        <Image src={settings.logo} alt="Company Logo" width={80} height={20} className="object-contain" data-ai-hint="logo" />
       </Link>
       <nav className="flex flex-col p-4">
         <p className="text-xs font-semibold text-muted-foreground px-3 pt-2 pb-1">Admin</p>
