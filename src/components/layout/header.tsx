@@ -29,9 +29,9 @@ export default function Header() {
   }
 
   return (
-    <header className="fixed top-0 z-50 w-full bg-background shadow-md rounded-b-xl">
+    <header className="sticky top-0 z-50 w-full bg-background shadow-md">
       <div className="container flex h-20 items-center justify-between px-6">
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4">
           {/* Logo */}
           <a href="#" className="flex items-center">
             <Image
@@ -96,7 +96,7 @@ export default function Header() {
                 </a>
                 <a
                   href="#knowledge"
-                  className="text-lg font-medium text-foreground hover:text-primary transition-colors"
+                  className="text-lg font-medium text,text-foreground hover:text-primary transition-colors"
                 >
                   Knowledge Base
                 </a>
