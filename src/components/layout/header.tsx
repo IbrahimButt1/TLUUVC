@@ -29,30 +29,34 @@ export default function Header() {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-background shadow-md">
+    <header className="sticky top-0 z-50 w-full bg-background/95 backdrop-blur-sm shadow-sm">
       <div className="container flex h-20 items-center justify-between px-6">
         <div className="flex items-center gap-4">
           {/* Logo */}
-          <a href="#" className="flex items-center">
+          <a href="#" className="flex items-center gap-2">
             <Image
               src={settings.logo}
               alt="Company Logo"
-              width={80}
-              height={20}
-              className="object-contain"
+              width={84}
+              height={21}
+              className="object-contain rounded-lg"
               data-ai-hint="logo"
             />
           </a>
 
           {/* Navigation (Desktop) */}
-          <NavLinks className="hidden md:flex" />
+          <NavLinks />
         </div>
 
-        {/* Right Side: Mobile Menu */}
-        <div className="flex items-center md:hidden">
+        {/* Right Side: CTA and Mobile Menu */}
+        <div className="flex items-center gap-4">
+          <Button asChild className="hidden md:flex">
+            <a href="#contact">Get a Consultation</a>
+          </Button>
+
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" className="md:hidden">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
@@ -63,9 +67,9 @@ export default function Header() {
                   <Image
                     src={settings.logo}
                     alt="Company Logo"
-                    width={80}
-                    height={20}
-                    className="object-contain"
+                    width={84}
+                    height={21}
+                    className="object-contain rounded-lg"
                   />
                 </SheetTitle>
                 <SheetClose>
@@ -96,7 +100,7 @@ export default function Header() {
                 </a>
                 <a
                   href="#knowledge"
-                  className="text-lg font-medium text,text-foreground hover:text-primary transition-colors"
+                  className="text-lg font-medium text-foreground hover:text-primary transition-colors"
                 >
                   Knowledge Base
                 </a>
