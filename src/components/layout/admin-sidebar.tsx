@@ -2,11 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Palette, KeyRound, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import type { SiteSettings } from '@/lib/site-settings';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -22,6 +23,8 @@ const settingsLink = { href: '/admin/settings', label: 'Site Settings', icon: Se
 
 export default function AdminSidebar({ emailCount, settings }: { emailCount: number, settings: SiteSettings }) {
   const pathname = usePathname();
+
+  const isSettingsActive = pathname.startsWith('/admin/settings');
 
   return (
     <aside className="w-64 bg-background border-r">
@@ -55,19 +58,29 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
             )
         })}
         <p className="text-xs font-semibold text-muted-foreground px-3 pt-4 pb-1">Configuration</p>
-         <Link
-            key={settingsLink.href}
-            href={settingsLink.href}
-            className={cn(
-            'flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted',
-            pathname.startsWith(settingsLink.href) && 'bg-muted text-foreground'
-            )}
-        >
-            <div className="flex items-center gap-3">
-                <settingsLink.icon className="h-4 w-4" />
-                {settingsLink.label}
-            </div>
-        </Link>
+         <Accordion type="single" collapsible defaultValue={isSettingsActive ? 'item-1' : ''}>
+            <AccordionItem value="item-1" className="border-b-0">
+                <AccordionTrigger className={cn(
+                    "flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted no-underline",
+                     isSettingsActive && "bg-muted text-foreground"
+                )}>
+                     <div className="flex items-center gap-3">
+                        <Settings className="h-4 w-4" />
+                        <span>Site Settings</span>
+                    </div>
+                </AccordionTrigger>
+                <AccordionContent className="pt-2 pb-0 pl-7 space-y-1">
+                    <Link href="/admin/settings?tab=branding" className={cn("flex items-center gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted", pathname.includes('branding') && 'bg-muted/80 text-foreground')}>
+                        <Palette className="h-4 w-4" />
+                        Logo Update
+                    </Link>
+                    <Link href="/admin/settings?tab=credentials" className={cn("flex items-center gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted", pathname.includes('credentials') && 'bg-muted/80 text-foreground')}>
+                        <KeyRound className="h-4 w-4" />
+                        Change Password
+                    </Link>
+                </AccordionContent>
+            </AccordionItem>
+        </Accordion>
       </nav>
     </aside>
   );

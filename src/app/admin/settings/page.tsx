@@ -1,25 +1,48 @@
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import { getSiteSettings, updateSiteSettings } from "@/lib/site-settings";
-import SettingsForm from "@/components/admin/settings-form";
+import { getSiteSettings } from "@/lib/site-settings";
+import BrandingForm from "@/components/admin/branding-form";
+import CredentialsForm from "@/components/admin/credentials-form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default async function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: { tab: string | undefined };
+}) {
     const settings = await getSiteSettings();
+    const activeTab = searchParams.tab || "branding";
 
     return (
         <div className="max-w-2xl mx-auto">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Site Settings</CardTitle>
-                    <CardDescription>Manage your website's general settings, branding, and administrator credentials.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <SettingsForm
-                        settings={settings}
-                        action={updateSiteSettings}
-                        submitText="Save Changes"
-                    />
-                </CardContent>
-            </Card>
+             <h1 className="text-3xl font-bold mb-6">Site Settings</h1>
+            <Tabs defaultValue={activeTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="branding">Branding</TabsTrigger>
+                    <TabsTrigger value="credentials">Credentials</TabsTrigger>
+                </TabsList>
+                <TabsContent value="branding">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Branding</CardTitle>
+                            <CardDescription>Update your company's logo.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <BrandingForm settings={settings} />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                 <TabsContent value="credentials">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Admin Credentials</CardTitle>
+                            <CardDescription>Manage administrator username and password.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <CredentialsForm settings={settings} />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+            </Tabs>
         </div>
     );
 }
