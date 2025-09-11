@@ -7,23 +7,24 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { authenticate } from '@/lib/auth';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Loader2 } from 'lucide-react';
 import React from 'react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
     <Button type="submit" className="w-full" disabled={pending}>
+      {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
       {pending ? 'Logging in...' : 'Login'}
     </Button>
   );
 }
 
 export default function LoginForm() {
-  const [errorMessage, dispatch] = React.useActionState(authenticate, undefined);
+  const [errorMessage, formAction] = useActionState(authenticate, undefined);
 
   return (
-    <form action={dispatch} className="grid gap-6">
+    <form action={formAction} className="grid gap-6">
         <div className="grid gap-4">
             <div className="grid gap-2">
                 <Label htmlFor="username">User Name</Label>
