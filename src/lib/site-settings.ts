@@ -63,28 +63,22 @@ export async function updateSiteSettings(prevState: UpdateSettingsState, formDat
     const confirmPassword = formData.get('confirmPassword') as string;
     
     const currentSettings = await readSiteSettings();
-    let requiresPasswordCheck = !!(username && username !== currentSettings.username) || (logoFile && logoFile.size > 0) || !!newPassword;
 
     // Check if password change is intended
     if (newPassword) {
-        if (!currentPassword) {
-            return { message: "", error: "Please enter your current password to set a new one.", success: false };
-        }
-        if (currentPassword !== currentSettings.password) {
+        // If the current password is not the default 'password', we must verify it.
+        if (currentSettings.password !== 'password' && currentPassword !== currentSettings.password) {
             return { message: "", error: "The current password you entered is incorrect.", success: false };
         }
         if (newPassword !== confirmPassword) {
             return { message: "", error: "The new passwords do not match.", success: false };
         }
-    } else if (requiresPasswordCheck && currentPassword !== currentSettings.password) {
-        // If other fields are changed, we still need to verify the user.
-        // But only if a current password was entered. If it's blank, maybe they don't know it.
-        // Let's only error if they provide an *incorrect* one.
-        if (currentPassword) {
-           return { message: "", error: "The current password you entered is incorrect.", success: false };
+    } else if (username && username !== currentSettings.username) {
+        // If only username is changing, we still need verification if a non-default password is set
+        if (currentSettings.password !== 'password' && currentPassword !== currentSettings.password) {
+            return { message: "", error: "The current password you entered is incorrect.", success: false };
         }
     }
-
 
     let logoUrl = currentSettings.logo;
     if (logoFile && logoFile.size > 0) {
