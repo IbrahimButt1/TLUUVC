@@ -2,8 +2,10 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { getSiteSettings } from "@/lib/site-settings";
 
-export default function AdminDashboard() {
+export default async function AdminDashboard() {
+  const settings = await getSiteSettings();
 
   return (
     <div>
@@ -13,7 +15,7 @@ export default function AdminDashboard() {
       <div className="grid gap-6">
         <Card>
             <CardHeader>
-                <CardTitle>Welcome</CardTitle>
+                <CardTitle>Welcome, {settings.username}!</CardTitle>
                 <CardDescription>
                     You can manage your website content from the sidebar.
                 </CardDescription>
