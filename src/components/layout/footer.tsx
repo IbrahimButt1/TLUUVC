@@ -1,4 +1,4 @@
-import { Plane, Twitter, Linkedin, Facebook, Instagram } from "lucide-react";
+import { Plane, Twitter, Linkedin, Facebook, Instagram, Phone } from "lucide-react";
 
 function WhatsAppIcon() {
     return (
@@ -42,6 +42,9 @@ export default function Footer() {
             </a>
              <a href="#" aria-label="WhatsApp" className="text-muted-foreground hover:text-primary transition-colors">
                 <WhatsAppIcon />
+            </a>
+             <a href="#" aria-label="Telephone" className="text-muted-foreground hover:text-primary transition-colors">
+                <Phone className="h-5 w-5" />
             </a>
           </div>
         </div>
