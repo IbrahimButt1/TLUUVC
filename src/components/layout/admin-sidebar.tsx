@@ -2,12 +2,13 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Palette, KeyRound, ChevronDown } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Palette, KeyRound, ChevronDown, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import type { SiteSettings } from '@/lib/site-settings';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
@@ -27,61 +28,79 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
   const isSettingsActive = pathname.startsWith('/admin/settings');
 
   return (
-    <aside className="w-64 bg-background border-r">
-      <Link href="/" className="flex items-center gap-2 h-14 border-b pr-4 text-foreground hover:bg-muted transition-colors">
+    <aside className="w-64 bg-background border-r flex flex-col">
+      <Link href="/" className="flex items-center gap-2 h-16 border-b px-4 text-foreground hover:bg-muted transition-colors shrink-0">
         <Image src={settings.logo} alt="Company Logo" width={38} height={38} className="object-contain rounded-md" data-ai-hint="logo" />
         <span className="font-bold text-sm">THE LUU VISA CONSULTANT</span>
       </Link>
-      <nav className="flex flex-col p-4">
-        <p className="text-xs font-semibold text-muted-foreground px-3 pt-2 pb-1">Admin</p>
-        {navLinks.map((link) => {
-            const isActive = pathname.startsWith(link.href) && (link.href !== '/admin' || pathname === '/admin');
-            return (
-                <Link
-                    key={link.href}
-                    href={link.href}
-                    className={cn(
-                    'flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted',
-                    isActive && 'bg-muted text-foreground'
-                    )}
-                >
-                    <div className="flex items-center gap-3">
-                    <link.icon className="h-4 w-4" />
-                    {link.label}
-                    </div>
-                    {link.href === '/admin/inbox' && emailCount > 0 && (
-                    <Badge className="bg-primary text-primary-foreground">
-                        {emailCount}
-                    </Badge>
-                    )}
-                </Link>
-            )
-        })}
-        <p className="text-xs font-semibold text-muted-foreground px-3 pt-4 pb-1">Configuration</p>
-         <Accordion type="single" collapsible defaultValue={isSettingsActive ? 'item-1' : ''}>
-            <AccordionItem value="item-1" className="border-b-0">
-                <AccordionTrigger className={cn(
-                    "flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted no-underline",
-                     isSettingsActive && "bg-muted text-foreground"
-                )}>
-                     <div className="flex items-center gap-3">
-                        <Settings className="h-4 w-4" />
-                        <span>Site Settings</span>
-                    </div>
-                </AccordionTrigger>
-                <AccordionContent className="pt-2 pb-0 pl-7 space-y-1">
-                    <Link href="/admin/settings?tab=branding" className={cn("flex items-center gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted", pathname.includes('branding') && 'bg-muted/80 text-foreground')}>
-                        <Palette className="h-4 w-4" />
-                        Logo Update
-                    </Link>
-                    <Link href="/admin/settings?tab=credentials" className={cn("flex items-center gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted", pathname.includes('credentials') && 'bg-muted/80 text-foreground')}>
-                        <KeyRound className="h-4 w-4" />
-                        Change Password
-                    </Link>
-                </AccordionContent>
-            </AccordionItem>
-        </Accordion>
-      </nav>
+
+      <div className="flex-grow overflow-y-auto">
+        <nav className="flex flex-col p-4">
+          <p className="text-xs font-semibold text-muted-foreground px-3 pt-2 pb-1">Admin</p>
+          {navLinks.map((link) => {
+              const isActive = (pathname === link.href) || (pathname.startsWith(link.href) && link.href !== '/admin');
+              return (
+                  <Link
+                      key={link.href}
+                      href={link.href}
+                      className={cn(
+                      'flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted',
+                      isActive && 'bg-muted text-foreground'
+                      )}
+                  >
+                      <div className="flex items-center gap-3">
+                      <link.icon className="h-4 w-4" />
+                      {link.label}
+                      </div>
+                      {link.href === '/admin/inbox' && emailCount > 0 && (
+                      <Badge className="bg-primary text-primary-foreground">
+                          {emailCount}
+                      </Badge>
+                      )}
+                  </Link>
+              )
+          })}
+          <p className="text-xs font-semibold text-muted-foreground px-3 pt-4 pb-1">Configuration</p>
+          <Accordion type="single" collapsible defaultValue={isSettingsActive ? 'item-1' : ''}>
+              <AccordionItem value="item-1" className="border-b-0">
+                  <AccordionTrigger className={cn(
+                      "flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted no-underline",
+                      isSettingsActive && "bg-muted text-foreground"
+                  )}>
+                      <div className="flex items-center gap-3">
+                          <Settings className="h-4 w-4" />
+                          <span>Site Settings</span>
+                      </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-2 pb-0 pl-7 space-y-1">
+                      <Link href="/admin/settings?tab=branding" className={cn("flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground hover:bg-muted", pathname.includes('branding') && 'bg-muted/80 text-foreground')}>
+                          <Palette className="h-4 w-4" />
+                          Logo Update
+                      </Link>
+                      <Link href="/admin/settings?tab=credentials" className={cn("flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground hover:bg-muted", pathname.includes('credentials') && 'bg-muted/80 text-foreground')}>
+                          <KeyRound className="h-4 w-4" />
+                          Change Password
+                      </Link>
+                  </AccordionContent>
+              </AccordionItem>
+          </Accordion>
+        </nav>
+      </div>
+
+       <div className="mt-auto p-4 border-t">
+          <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10 border">
+                  <AvatarImage src="https://picsum.photos/100" alt="Admin Avatar" data-ai-hint="person portrait" />
+                  <AvatarFallback>
+                      <User className="h-5 w-5" />
+                  </AvatarFallback>
+              </Avatar>
+              <div>
+                  <p className="text-sm font-semibold">{settings.username}</p>
+                  <p className="text-xs text-muted-foreground">Administrator</p>
+              </div>
+          </div>
+      </div>
     </aside>
   );
 }
