@@ -9,6 +9,7 @@ import KnowledgeBase from '@/components/home/knowledge-base';
 import Contact from '@/components/home/contact';
 import { getHeroImages } from '@/lib/hero-images';
 import { getSiteSettings } from '@/lib/site-settings';
+import { BackToTopButton } from '@/components/ui/back-to-top-button';
 
 export default async function Home() {
   const heroImages = await getHeroImages();
@@ -25,6 +26,7 @@ export default async function Home() {
         <Contact />
       </main>
       <Footer />
+      <BackToTopButton />
     </div>
   );
 }
