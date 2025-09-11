@@ -15,9 +15,9 @@ export default async function AdminDashboard() {
       <div className="grid gap-6">
         <Card>
             <CardHeader>
-                <CardTitle>Welcome, {settings.username}!</CardTitle>
+                <CardTitle>Welcome, {settings.username}</CardTitle>
                 <CardDescription>
-                    You can manage your website content from the sidebar.
+                    You are the manager of The LUU Visa Consultant.
                 </CardDescription>
             </CardHeader>
             <CardContent>
