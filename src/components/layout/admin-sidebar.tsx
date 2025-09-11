@@ -15,6 +15,7 @@ const navLinks = [
   { href: '/admin/services', label: 'Services', icon: Briefcase },
   { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquareQuote },
   { href: '/admin/hero', label: 'Hero Images', icon: ImageIcon },
+  { href: '/admin/about', label: 'About', icon: Info },
   { href: '/admin/inbox', label: 'Inbox', icon: Inbox },
   { href: '/admin/inbox/trash', label: 'Trash', icon: Trash2 },
 ];
