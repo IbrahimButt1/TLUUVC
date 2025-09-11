@@ -12,7 +12,7 @@ import { permanentlyDeleteTestimonial, restoreTestimonial } from '@/lib/testimon
 
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -132,72 +132,104 @@ export default function TrashClient({
 
   return (
     <div className="space-y-6">
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input
-          type="search"
-          placeholder="Search trash..."
-          className="pl-10 w-full"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
-      
-      {isPending && (
-        <div className="flex items-center justify-center py-4 text-muted-foreground">
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          <span>Processing...</span>
-        </div>
-      )}
-
-      <Tabs defaultValue="emails" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="emails">Emails ({filteredEmails.length})</TabsTrigger>
-          <TabsTrigger value="hero-images">Hero Images ({filteredHeroImages.length})</TabsTrigger>
-          <TabsTrigger value="services">Services ({filteredServices.length})</TabsTrigger>
-          <TabsTrigger value="testimonials">Testimonials ({filteredTestimonials.length})</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="emails">
-            <TrashEmails 
-                emails={filteredEmails} 
-                searchTerm={searchTerm} 
-                onRestore={(id) => handleAction(restoreEmail, id, 'email', "Email restored.")}
-                onDelete={(id) => handleAction(permanentlyDeleteEmail, id, 'email', "Email permanently deleted.")}
-                isPending={isPending}
+        <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+            type="search"
+            placeholder="Search all trashed items..."
+            className="pl-10 w-full"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             />
-        </TabsContent>
-        
-        <TabsContent value="hero-images">
-            <TrashHeroImages
-                images={filteredHeroImages}
-                searchTerm={searchTerm}
-                onRestore={(id) => handleAction(restoreHeroImage, id, 'heroImage', "Hero Image restored.")}
-                onDelete={(id) => handleAction(permanentlyDeleteHeroImage, id, 'heroImage', "Hero Image permanently deleted.")}
-                isPending={isPending}
-                />
-        </TabsContent>
+        </div>
+      
+        {isPending && (
+            <div className="flex items-center justify-center py-4 text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <span>Processing...</span>
+            </div>
+        )}
 
-        <TabsContent value="services">
-            <TrashServices
-                services={filteredServices}
-                searchTerm={searchTerm}
-                onRestore={(id) => handleAction(restoreService, id, 'service', "Service restored.")}
-                onDelete={(id) => handleAction(permanentlyDeleteService, id, 'service', "Service permanently deleted.")}
-                isPending={isPending}
-                />
-        </TabsContent>
-        
-        <TabsContent value="testimonials">
-              <TrashTestimonials
-                testimonials={filteredTestimonials}
-                searchTerm={searchTerm}
-                onRestore={(id) => handleAction(restoreTestimonial, id, 'testimonial', "Testimonial restored.")}
-                onDelete={(id) => handleAction(permanentlyDeleteTestimonial, id, 'testimonial', "Testimonial permanently deleted.")}
-                isPending={isPending}
-                />
-        </TabsContent>
-    </Tabs>
+        <Tabs defaultValue="emails" className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="emails">Emails ({filteredEmails.length})</TabsTrigger>
+                <TabsTrigger value="hero-images">Hero Images ({filteredHeroImages.length})</TabsTrigger>
+                <TabsTrigger value="services">Services ({filteredServices.length})</TabsTrigger>
+                <TabsTrigger value="testimonials">Testimonials ({filteredTestimonials.length})</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="emails">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Trashed Emails</CardTitle>
+                        <CardDescription>Emails that have been moved to the trash. Restore them or delete them permanently.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <TrashEmails 
+                            emails={filteredEmails} 
+                            searchTerm={searchTerm} 
+                            onRestore={(id) => handleAction(restoreEmail, id, 'email', "Email restored.")}
+                            onDelete={(id) => handleAction(permanentlyDeleteEmail, id, 'email', "Email permanently deleted.")}
+                            isPending={isPending}
+                        />
+                    </CardContent>
+                </Card>
+            </TabsContent>
+            
+            <TabsContent value="hero-images">
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Trashed Hero Images</CardTitle>
+                        <CardDescription>Hero images that have been moved to the trash. Restore them or delete them permanently.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <TrashHeroImages
+                            images={filteredHeroImages}
+                            searchTerm={searchTerm}
+                            onRestore={(id) => handleAction(restoreHeroImage, id, 'heroImage', "Hero Image restored.")}
+                            onDelete={(id) => handleAction(permanentlyDeleteHeroImage, id, 'heroImage', "Hero Image permanently deleted.")}
+                            isPending={isPending}
+                            />
+                    </CardContent>
+                </Card>
+            </TabsContent>
+
+            <TabsContent value="services">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Trashed Services</CardTitle>
+                        <CardDescription>Services that have been moved to the trash. Restore them or delete them permanently.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <TrashServices
+                            services={filteredServices}
+                            searchTerm={searchTerm}
+                            onRestore={(id) => handleAction(restoreService, id, 'service', "Service restored.")}
+                            onDelete={(id) => handleAction(permanentlyDeleteService, id, 'service', "Service permanently deleted.")}
+                            isPending={isPending}
+                            />
+                    </CardContent>
+                </Card>
+            </TabsContent>
+            
+            <TabsContent value="testimonials">
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Trashed Testimonials</CardTitle>
+                        <CardDescription>Testimonials that have been moved to the trash. Restore them or delete them permanently.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <TrashTestimonials
+                            testimonials={filteredTestimonials}
+                            searchTerm={searchTerm}
+                            onRestore={(id) => handleAction(restoreTestimonial, id, 'testimonial', "Testimonial restored.")}
+                            onDelete={(id) => handleAction(permanentlyDeleteTestimonial, id, 'testimonial', "Testimonial permanently deleted.")}
+                            isPending={isPending}
+                            />
+                    </CardContent>
+                </Card>
+            </TabsContent>
+        </Tabs>
     </div>
   );
 }
