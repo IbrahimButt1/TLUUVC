@@ -64,7 +64,7 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
           <Accordion type="single" collapsible defaultValue={isSettingsActive ? 'item-1' : ''}>
               <AccordionItem value="item-1" className="border-b-0">
                   <AccordionTrigger className={cn(
-                      "flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted no-underline",
+                      "flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted no-underline hover:no-underline",
                       isSettingsActive && "bg-muted text-foreground"
                   )}>
                       <div className="flex items-center gap-3">
