@@ -1,21 +1,22 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Loader2, Upload } from 'lucide-react';
+import { Loader2, Upload, Eye, EyeOff, AlertCircle } from 'lucide-react';
 import React from 'react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
-import type { SiteSettings } from '@/lib/site-settings';
+import type { SiteSettings, UpdateSettingsState } from '@/lib/site-settings';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from '@/components/ui/card';
 import { Separator } from '../ui/separator';
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert';
 
 interface SettingsFormProps {
-    action: (prevState: any, formData: FormData) => Promise<{ message: string; }>;
+    action: (prevState: UpdateSettingsState, formData: FormData) => Promise<UpdateSettingsState>;
     settings: SiteSettings;
     submitText: string;
 }
@@ -34,12 +35,16 @@ const MAX_FILE_SIZE_MB = 1;
 
 export default function SettingsForm({ action, settings, submitText }: SettingsFormProps) {
     const [logoPreview, setLogoPreview] = React.useState<string | null>(settings?.logo || null);
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    
     const { toast } = useToast();
 
-    const [state, formAction] = useActionState(action, { message: '' });
+    const [state, formAction] = useActionState(action, { message: '', error: null, success: false });
 
      React.useEffect(() => {
-        if (state.message) {
+        if (state.success && state.message) {
             toast({
                 title: 'Settings Saved',
                 description: state.message,
@@ -111,15 +116,53 @@ export default function SettingsForm({ action, settings, submitText }: SettingsF
                     </div>
                     <Separator />
                      <div className="space-y-2">
+                        <Label htmlFor="currentPassword">Current Password</Label>
+                        <div className="relative">
+                            <Input id="currentPassword" name="currentPassword" type={showCurrentPassword ? "text" : "password"} placeholder="Enter your current password to make changes" />
+                            <button 
+                                type="button" 
+                                onClick={() => setShowCurrentPassword(!showCurrentPassword)} 
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                            >
+                                {showCurrentPassword ? <Eye className="h-5 w-5 text-gray-500" /> : <EyeOff className="h-5 w-5 text-gray-500" />}
+                            </button>
+                        </div>
+                    </div>
+                     <div className="space-y-2">
                         <Label htmlFor="newPassword">New Password</Label>
-                        <Input id="newPassword" name="newPassword" type="password" placeholder="Leave blank to keep current password" />
+                        <div className="relative">
+                            <Input id="newPassword" name="newPassword" type={showNewPassword ? "text" : "password"} placeholder="Leave blank to keep current password" />
+                            <button 
+                                type="button" 
+                                onClick={() => setShowNewPassword(!showNewPassword)} 
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                            >
+                                {showNewPassword ? <Eye className="h-5 w-5 text-gray-500" /> : <EyeOff className="h-5 w-5 text-gray-500" />}
+                            </button>
+                        </div>
                     </div>
                      <div className="space-y-2">
                         <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                        <Input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm your new password" />
+                        <div className="relative">
+                            <Input id="confirmPassword" name="confirmPassword" type={showConfirmPassword ? "text" : "password"} placeholder="Confirm your new password" />
+                             <button 
+                                type="button" 
+                                onClick={() => setShowConfirmPassword(!showConfirmPassword)} 
+                                className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                            >
+                                {showConfirmPassword ? <Eye className="h-5 w-5 text-gray-500" /> : <EyeOff className="h-5 w-5 text-gray-500" />}
+                            </button>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
+            {state?.error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{state.error}</AlertDescription>
+              </Alert>
+            )}
 
             <div className="flex justify-end gap-2">
                 <Button variant="outline" asChild>

@@ -12,13 +12,18 @@ export interface SiteSettings {
     password?: string;
 }
 
+export type UpdateSettingsState = {
+    message: string;
+    error: string | null;
+    success: boolean;
+}
+
 const dataPath = path.join(process.cwd(), 'src', 'lib', 'site-settings.json');
 
 async function readSiteSettings(): Promise<SiteSettings> {
     try {
         const fileContent = await fs.readFile(dataPath, 'utf-8');
         const settings = JSON.parse(fileContent);
-        // Provide default credentials if they don't exist
         return {
             ...settings,
             username: settings.username || 'admin',
@@ -50,24 +55,35 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     return await readSiteSettings();
 }
 
-export async function updateSiteSettings(prevState: any, formData: FormData) {
+export async function updateSiteSettings(prevState: UpdateSettingsState, formData: FormData): Promise<UpdateSettingsState> {
     const logoFile = formData.get('logoFile') as File;
     const username = formData.get('username') as string;
+    const currentPassword = formData.get('currentPassword') as string;
     const newPassword = formData.get('newPassword') as string;
     const confirmPassword = formData.get('confirmPassword') as string;
     
     const currentSettings = await readSiteSettings();
 
-    if (newPassword && newPassword !== confirmPassword) {
-        return { message: "Passwords do not match." };
+    // Check if password change is intended
+    if (newPassword || confirmPassword) {
+        if (currentPassword !== currentSettings.password) {
+            return { message: "", error: "The current password you entered is incorrect.", success: false };
+        }
+        if (newPassword !== confirmPassword) {
+            return { message: "", error: "The new passwords do not match.", success: false };
+        }
     }
 
     let logoUrl = currentSettings.logo;
     if (logoFile && logoFile.size > 0) {
-        const arrayBuffer = await logoFile.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer);
-        const dataUri = `data:${logoFile.type};base64,${buffer.toString('base64')}`;
-        logoUrl = await uploadImage(dataUri, `logo-${Date.now()}`);
+        try {
+            const arrayBuffer = await logoFile.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            const dataUri = `data:${logoFile.type};base64,${buffer.toString('base64')}`;
+            logoUrl = await uploadImage(dataUri, `logo-${Date.now()}`);
+        } catch (e) {
+             return { message: "", error: "Failed to upload the logo. Please try again.", success: false };
+        }
     }
 
     const newSettings: SiteSettings = {
@@ -82,6 +98,5 @@ export async function updateSiteSettings(prevState: any, formData: FormData) {
     revalidatePath('/');
     revalidatePath('/admin', 'layout');
     
-    return { message: 'Settings updated successfully.'}
+    return { message: 'Settings updated successfully.', error: null, success: true }
 }
-
