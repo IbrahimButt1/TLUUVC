@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -50,8 +50,11 @@ export default function Header() {
 
         {/* Right Side: CTA and Mobile Menu */}
         <div className="flex items-center gap-4">
-          <Button asChild className="hidden md:inline-flex" variant="secondary">
-            <a href="/login">Sign In</a>
+          <Button asChild className="hidden md:inline-flex" variant="ghost" size="icon">
+            <a href="/login">
+              <User className="h-5 w-5" />
+              <span className="sr-only">Sign In</span>
+            </a>
           </Button>
 
           <Sheet>
