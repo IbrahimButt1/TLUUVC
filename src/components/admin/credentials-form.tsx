@@ -57,6 +57,7 @@ export default function CredentialsForm({ settings }: CredentialsFormProps) {
     return (
         <form action={formAction} className="space-y-6">
             <input type="hidden" name="logo" value={settings.logo} />
+            <input type="hidden" name="avatar" value={settings.avatar} />
              <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
                 <Input id="username" name="username" defaultValue={settings.username} required />

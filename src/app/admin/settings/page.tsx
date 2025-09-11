@@ -3,6 +3,7 @@ import { getSiteSettings } from "@/lib/site-settings";
 import BrandingForm from "@/components/admin/branding-form";
 import CredentialsForm from "@/components/admin/credentials-form";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ProfileForm from "@/components/admin/profile-form";
 
 export default async function SettingsPage({
   searchParams,
@@ -16,9 +17,10 @@ export default async function SettingsPage({
         <div className="max-w-2xl mx-auto">
              <h1 className="text-3xl font-bold mb-6">Site Settings</h1>
             <Tabs defaultValue={activeTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="branding">Branding</TabsTrigger>
                     <TabsTrigger value="credentials">Credentials</TabsTrigger>
+                    <TabsTrigger value="profile">Profile</TabsTrigger>
                 </TabsList>
                 <TabsContent value="branding">
                     <Card>
@@ -39,6 +41,17 @@ export default async function SettingsPage({
                         </CardHeader>
                         <CardContent>
                             <CredentialsForm settings={settings} />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="profile">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Admin Profile</CardTitle>
+                            <CardDescription>Update your administrator profile picture.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <ProfileForm settings={settings} />
                         </CardContent>
                     </Card>
                 </TabsContent>

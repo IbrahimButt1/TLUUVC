@@ -9,6 +9,7 @@ import { authenticate } from '@/lib/auth';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 import React, { useState } from 'react';
+import Link from 'next/link';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -24,6 +25,10 @@ export default function LoginForm() {
   const [errorMessage, formAction] = useActionState(authenticate, undefined);
   const [showPassword, setShowPassword] = useState(false);
 
+  const handleForgotPassword = () => {
+    alert("Please contact your administrator at 'theluuvisaconsultant@gmail.com' to reset your password.");
+  }
+
   return (
     <form action={formAction} className="grid gap-6">
         <div className="grid gap-4">
@@ -38,7 +43,16 @@ export default function LoginForm() {
                 />
             </div>
             <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
+                 <div className="flex items-center">
+                    <Label htmlFor="password">Password</Label>
+                    <button 
+                        type="button"
+                        onClick={handleForgotPassword}
+                        className="ml-auto inline-block text-sm underline"
+                    >
+                        Forgot Password?
+                    </button>
+                </div>
                 <div className="relative">
                     <Input id="password" name="password" type={showPassword ? "text" : "password"} required placeholder="••••••••" />
                     <button 
