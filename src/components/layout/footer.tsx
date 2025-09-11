@@ -5,10 +5,10 @@ export default function Footer() {
     <footer className="bg-secondary">
       <div className="container py-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center">
+          <a href="/" className="flex items-center">
             <Plane className="h-6 w-6 mr-2 text-primary" />
             <span className="font-bold font-headline text-lg">The LUU Visa Consultant</span>
-          </div>
+          </a>
           <div className="text-center md:text-left">
             <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} The LUU Visa Consultant. All rights reserved.</p>
           </div>
