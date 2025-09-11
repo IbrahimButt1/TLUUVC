@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { authenticate } from '@/lib/auth';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-import { AlertCircle, Loader2 } from 'lucide-react';
-import React from 'react';
+import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import React, { useState } from 'react';
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -23,6 +23,7 @@ function SubmitButton() {
 
 export default function LoginForm() {
   const [errorMessage, formAction] = useActionState(authenticate, undefined);
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <form action={formAction} className="grid gap-6">
@@ -47,7 +48,16 @@ export default function LoginForm() {
                     Forgot your password?
                     </Link>
                 </div>
-                <Input id="password" name="password" type="password" required />
+                <div className="relative">
+                    <Input id="password" name="password" type={showPassword ? "text" : "password"} required />
+                    <button 
+                        type="button" 
+                        onClick={() => setShowPassword(!showPassword)} 
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                    >
+                        {showPassword ? <EyeOff className="h-5 w-5 text-gray-500" /> : <Eye className="h-5 w-5 text-gray-500" />}
+                    </button>
+                </div>
             </div>
             <SubmitButton />
              {errorMessage && (
