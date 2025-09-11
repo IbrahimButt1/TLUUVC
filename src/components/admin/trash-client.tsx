@@ -65,17 +65,19 @@ export default function TrashClient({ initialEmails }: { initialEmails: Email[] 
   }, [emails, searchTerm]);
 
   return (
-    <Card className="shadow-none border-0">
-       <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input
-            type="search"
-            placeholder="Search trash..."
-            className="pl-10 w-full bg-card"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+    <div className="space-y-4">
+       <Card className="shadow-none">
+        <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+                type="search"
+                placeholder="Search trash..."
+                className="pl-10 w-full bg-card"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+        </div>
+       </Card>
       {isPending && (
         <div className="flex items-center justify-center py-4 text-muted-foreground">
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -89,6 +91,6 @@ export default function TrashClient({ initialEmails }: { initialEmails: Email[] 
         onDelete={handlePermanentDelete}
         isPending={isPending}
       />
-    </Card>
+    </div>
   );
 }

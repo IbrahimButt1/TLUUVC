@@ -96,23 +96,25 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
   }, [emails, searchTerm]);
 
   return (
-    <Card className="shadow-none border-0">
-       <div className="relative mb-4">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-        <Input
-            type="search"
-            placeholder="Search emails..."
-            className="pl-10 w-full bg-card"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+    <div className="space-y-4">
+       <Card className="shadow-none">
+           <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+                type="search"
+                placeholder="Search emails..."
+                className="pl-10 w-full bg-card"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+      </Card>
       <InboxList 
         groupedEmails={filteredAndGroupedEmails} 
         searchTerm={searchTerm} 
         onDelete={handleDelete}
         isPending={isPending}
       />
-    </Card>
+    </div>
   );
 }

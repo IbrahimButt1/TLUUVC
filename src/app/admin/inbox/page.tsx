@@ -6,8 +6,8 @@ export default async function InboxPage() {
     const initialEmails = await getEmails();
 
     return (
-        <div className="flex flex-col h-full">
-            <h1 className="text-3xl font-bold mb-6">Email Inbox</h1>
+        <div className="flex flex-col h-full space-y-6">
+            <h1 className="text-3xl font-bold">Email Inbox</h1>
             <div className="flex-grow">
               <InboxClient initialEmails={initialEmails} />
             </div>
