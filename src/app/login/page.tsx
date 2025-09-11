@@ -28,7 +28,7 @@ export default function LoginPage() {
             </div>
             <Card className={cn(
                 "w-full max-w-md transition-all duration-700 ease-out",
-                isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                isMounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-10"
             )}>
                 <CardHeader className="text-center">
                     <CardTitle className="text-2xl font-bold tracking-tight">Administrator Login</CardTitle>
