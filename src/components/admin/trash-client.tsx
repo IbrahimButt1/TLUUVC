@@ -140,11 +140,11 @@ export default function TrashClient({
   return (
     <div className="space-y-6">
         <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
             type="search"
             placeholder="Search all trashed items..."
-            className="pl-10 w-full"
+            className="pl-12 w-full"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             />
