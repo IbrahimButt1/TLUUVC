@@ -61,29 +61,18 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
               )
           })}
           <p className="text-xs font-semibold text-muted-foreground px-3 pt-4 pb-1">Configuration</p>
-          <Accordion type="single" collapsible defaultValue={isSettingsActive ? 'item-1' : ''}>
-              <AccordionItem value="item-1" className="border-b-0">
-                  <AccordionTrigger className={cn(
-                      "flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted no-underline hover:no-underline",
-                      isSettingsActive && "bg-muted text-foreground"
-                  )}>
-                      <div className="flex items-center gap-3">
-                          <Settings className="h-4 w-4" />
-                          <span>Site Settings</span>
-                      </div>
-                  </AccordionTrigger>
-                  <AccordionContent className="pt-2 pb-0 pl-7 space-y-1">
-                      <Link href="/admin/settings?tab=branding" className={cn("flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground hover:bg-muted", pathname.includes('branding') && 'bg-muted/80 text-foreground')}>
-                          <Palette className="h-4 w-4" />
-                          Logo Update
-                      </Link>
-                      <Link href="/admin/settings?tab=credentials" className={cn("flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground hover:bg-muted", pathname.includes('credentials') && 'bg-muted/80 text-foreground')}>
-                          <KeyRound className="h-4 w-4" />
-                          Change Password
-                      </Link>
-                  </AccordionContent>
-              </AccordionItem>
-          </Accordion>
+           <Link
+                href={settingsLink.href}
+                className={cn(
+                'flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted',
+                isSettingsActive && 'bg-muted text-foreground'
+                )}
+            >
+                <div className="flex items-center gap-3">
+                <settingsLink.icon className="h-4 w-4" />
+                {settingsLink.label}
+                </div>
+            </Link>
         </nav>
       </div>
 
