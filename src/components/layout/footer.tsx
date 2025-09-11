@@ -43,7 +43,7 @@ export default function Footer() {
              <a href="#" aria-label="WhatsApp" className="text-muted-foreground hover:text-primary transition-colors">
                 <WhatsAppIcon />
             </a>
-             <a href="#" aria-label="Telephone" className="text-muted-foreground hover:text-primary transition-colors">
+             <a href="tel:+923016680869" aria-label="Telephone" className="text-muted-foreground hover:text-primary transition-colors">
                 <Phone className="h-5 w-5" />
             </a>
           </div>
