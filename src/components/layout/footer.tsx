@@ -28,22 +28,22 @@ export default function Footer() {
             <p className="text-sm text-muted-foreground">&copy; {new Date().getFullYear()} The LUU Visa Consultant. All rights reserved.</p>
           </div>
           <div className="flex space-x-4">
-            <a href="#" aria-label="Twitter" className="text-muted-foreground hover:text-primary transition-colors">
+            <a href="#" aria-label="Twitter" className="text-muted-foreground hover:text-primary transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-110">
               <Twitter className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="LinkedIn" className="text-muted-foreground hover:text-primary transition-colors">
+            <a href="#" aria-label="LinkedIn" className="text-muted-foreground hover:text-primary transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-110">
               <Linkedin className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="Facebook" className="text-muted-foreground hover:text-primary transition-colors">
+            <a href="#" aria-label="Facebook" className="text-muted-foreground hover:text-primary transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-110">
               <Facebook className="h-5 w-5" />
             </a>
-            <a href="#" aria-label="Instagram" className="text-muted-foreground hover:text-primary transition-colors">
+            <a href="#" aria-label="Instagram" className="text-muted-foreground hover:text-primary transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-110">
               <Instagram className="h-5 w-5" />
             </a>
-             <a href="https://wa.me/923016680869" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-muted-foreground hover:text-primary transition-colors">
+             <a href="https://wa.me/923016680869" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" className="text-muted-foreground hover:text-primary transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-110">
                 <WhatsAppIcon />
             </a>
-             <a href="tel:+923016680869" aria-label="Telephone" className="text-muted-foreground hover:text-primary transition-colors">
+             <a href="tel:+923016680869" aria-label="Telephone" className="text-muted-foreground hover:text-primary transition-transform duration-200 ease-in-out hover:-translate-y-1 hover:scale-110">
                 <Phone className="h-5 w-5" />
             </a>
           </div>
