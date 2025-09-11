@@ -65,7 +65,7 @@ export default function Hero({ images }: { images: HeroImage[] }) {
                 className="object-cover"
                 priority={index === 0}
               />
-              <div className="absolute inset-0 bg-primary/60" />
+              <div className="absolute inset-0 bg-black/50" />
               <div className="relative z-10 p-4 max-w-4xl mx-auto">
                 <h1 className="text-4xl md:text-6xl font-headline font-bold tracking-tight" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.3)' }}>
                   {image.title}
@@ -74,7 +74,7 @@ export default function Hero({ images }: { images: HeroImage[] }) {
                   {image.description}
                 </p>
                 <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                  <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90" asChild>
+                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90" asChild>
                     <a href="#contact">Book a Consultation</a>
                   </Button>
                   <Button size="lg" variant="secondary" asChild>
