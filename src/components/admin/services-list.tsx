@@ -15,8 +15,8 @@ import { deleteService, type Service } from "@/lib/services";
 import { DeleteButton } from "@/components/admin/delete-button";
 import * as LucideIcons from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { MoreHorizontal } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, FilePenLine, Trash2 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 type IconName = keyof typeof LucideIcons;
 const DefaultIcon = LucideIcons.FileText;
@@ -90,12 +90,20 @@ export default function ServicesList({ services, searchTerm }: { services: Servi
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuItem asChild>
-                                                    <Link href={`/admin/services/edit/${service.id}`}>Edit</Link>
+                                                    <Link href={`/admin/services/edit/${service.id}`} className="flex items-center">
+                                                        <FilePenLine className="mr-2 h-4 w-4" />
+                                                        <span>Edit</span>
+                                                    </Link>
                                                 </DropdownMenuItem>
+                                                <DropdownMenuSeparator />
                                                  <AlertDialog>
                                                     <AlertDialogTrigger asChild>
-                                                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                                            Delete
+                                                        <DropdownMenuItem 
+                                                            className="text-destructive focus:text-destructive flex items-center"
+                                                            onSelect={(e) => e.preventDefault()}
+                                                        >
+                                                           <Trash2 className="mr-2 h-4 w-4" />
+                                                           <span>Delete</span>
                                                         </DropdownMenuItem>
                                                     </AlertDialogTrigger>
                                                     <AlertDialogContent>
