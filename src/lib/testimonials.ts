@@ -14,6 +14,7 @@ export interface Testimonial {
     image: string;
     role?: string;
     country?: string;
+    status?: 'active' | 'trash';
 }
 
 const dataPath = path.join(process.cwd(), 'src', 'lib', 'testimonials.json');
@@ -21,7 +22,8 @@ const dataPath = path.join(process.cwd(), 'src', 'lib', 'testimonials.json');
 async function readTestimonials(): Promise<Testimonial[]> {
     try {
         const fileContent = await fs.readFile(dataPath, 'utf-8');
-        return JSON.parse(fileContent);
+        const testimonials = JSON.parse(fileContent);
+        return testimonials.map((t: any) => ({ ...t, status: t.status || 'active' }));
     } catch (error) {
         console.error("Could not read testimonials.json:", error);
         return [];
@@ -32,9 +34,14 @@ async function writeTestimonials(testimonials: Testimonial[]): Promise<void> {
     await fs.writeFile(dataPath, JSON.stringify(testimonials, null, 2), 'utf-8');
 }
 
-
 export async function getTestimonials(): Promise<Testimonial[]> {
-    return await readTestimonials();
+    const testimonials = await readTestimonials();
+    return testimonials.filter(t => t.status === 'active');
+}
+
+export async function getTrashedTestimonials(): Promise<Testimonial[]> {
+    const testimonials = await readTestimonials();
+    return testimonials.filter(t => t.status === 'trash');
 }
 
 export async function getTestimonialById(id: string): Promise<Testimonial | undefined> {
@@ -62,7 +69,6 @@ export async function addTestimonial(imageDataUri: string, formData: FormData) {
         imageUrl = await uploadImage(imageDataUri, `testimonial-${Date.now()}`);
     }
 
-
     const newTestimonial: Testimonial = {
         id: generateId(name),
         name,
@@ -71,6 +77,7 @@ export async function addTestimonial(imageDataUri: string, formData: FormData) {
         image: imageUrl,
         role,
         country,
+        status: 'active',
     };
 
     const testimonials = await readTestimonials();
@@ -99,14 +106,13 @@ export async function updateTestimonial(imageDataUri: string, formData: FormData
         if (imageDataUri && imageDataUri.startsWith('data:image')) {
             imageUrl = await uploadImage(imageDataUri, `testimonial-${Date.now()}`);
         }
-        testimonials[testimonialIndex] = { id, name, destination, testimonial, image: imageUrl, role, country };
+        testimonials[testimonialIndex] = { ...testimonials[testimonialIndex], id, name, destination, testimonial, image: imageUrl, role, country };
         await writeTestimonials(testimonials);
     }
 
     revalidatePath('/');
     revalidatePath('/admin/testimonials');
     revalidatePath(`/admin/testimonials/edit/${id}`);
-
 
     redirect('/admin/testimonials');
 }
@@ -116,11 +122,37 @@ export async function deleteTestimonial(formData: FormData) {
     if (!id) return;
     
     let testimonials = await readTestimonials();
-    testimonials = testimonials.filter(t => t.id !== id);
+    testimonials = testimonials.map(t => t.id === id ? { ...t, status: 'trash' } : t);
     await writeTestimonials(testimonials);
 
     revalidatePath('/');
     revalidatePath('/admin/testimonials');
-    
-    redirect('/admin/testimonials');
+    revalidatePath('/admin/inbox/trash');
+}
+
+
+export async function permanentlyDeleteTestimonial(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
+
+    let testimonials = await readTestimonials();
+    testimonials = testimonials.filter(t => t.id !== id);
+    await writeTestimonials(testimonials);
+
+    revalidatePath('/admin/inbox/trash');
+    return { success: true };
+}
+
+export async function restoreTestimonial(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
+
+    let testimonials = await readTestimonials();
+    testimonials = testimonials.map(t => t.id === id ? { ...t, status: 'active' } : t);
+    await writeTestimonials(testimonials);
+
+    revalidatePath('/');
+    revalidatePath('/admin/testimonials');
+    revalidatePath('/admin/inbox/trash');
+    return { success: true };
 }

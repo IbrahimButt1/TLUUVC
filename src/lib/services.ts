@@ -14,6 +14,7 @@ export interface Service {
     longDescription?: string;
     requirements?: string[];
     image?: string;
+    status?: 'active' | 'trash';
 }
 
 // Path to the JSON file that acts as our database
@@ -23,7 +24,8 @@ const dataPath = path.join(process.cwd(), 'src', 'lib', 'services.json');
 async function readServices(): Promise<Service[]> {
     try {
         const fileContent = await fs.readFile(dataPath, 'utf-8');
-        return JSON.parse(fileContent);
+        const services = JSON.parse(fileContent);
+        return services.map((s: any) => ({ ...s, status: s.status || 'active' }));
     } catch (error) {
         // If the file doesn't exist or is empty, return an empty array
         console.error("Could not read services.json:", error);
@@ -38,7 +40,13 @@ async function writeServices(services: Service[]): Promise<void> {
 
 
 export async function getServices(): Promise<Service[]> {
-    return await readServices();
+    const services = await readServices();
+    return services.filter(s => s.status === 'active');
+}
+
+export async function getTrashedServices(): Promise<Service[]> {
+    const services = await readServices();
+    return services.filter(s => s.status === 'trash');
 }
 
 export async function getServiceById(id: string): Promise<Service | undefined> {
@@ -74,6 +82,7 @@ export async function addService(imageDataUri: string, formData: FormData) {
         longDescription,
         requirements: requirementsRaw.split('\n').filter(req => req.trim() !== ''),
         image: imageUrl,
+        status: 'active',
     };
 
     const services = await readServices();
@@ -128,11 +137,36 @@ export async function deleteService(formData: FormData) {
     if (!id) return;
     
     let services = await readServices();
-    services = services.filter(s => s.id !== id);
+    services = services.map(s => s.id === id ? { ...s, status: 'trash' } : s);
     await writeServices(services);
 
     revalidatePath('/');
     revalidatePath('/admin/services');
-    
-    redirect('/admin/services');
+    revalidatePath('/admin/inbox/trash');
+}
+
+export async function permanentlyDeleteService(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
+
+    let services = await readServices();
+    services = services.filter(s => s.id !== id);
+    await writeServices(services);
+
+    revalidatePath('/admin/inbox/trash');
+    return { success: true };
+}
+
+export async function restoreService(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
+
+    let services = await readServices();
+    services = services.map(s => s.id === id ? { ...s, status: 'active' } : s);
+    await writeServices(services);
+
+    revalidatePath('/');
+    revalidatePath('/admin/services');
+    revalidatePath('/admin/inbox/trash');
+    return { success: true };
 }

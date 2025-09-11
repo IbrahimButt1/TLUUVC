@@ -11,6 +11,7 @@ export interface HeroImage {
     title: string;
     description: string;
     image: string;
+    status?: 'active' | 'trash';
 }
 
 const dataPath = path.join(process.cwd(), 'src', 'lib', 'hero-images.json');
@@ -18,7 +19,8 @@ const dataPath = path.join(process.cwd(), 'src', 'lib', 'hero-images.json');
 async function readHeroImages(): Promise<HeroImage[]> {
     try {
         const fileContent = await fs.readFile(dataPath, 'utf-8');
-        return JSON.parse(fileContent);
+        const images = JSON.parse(fileContent);
+        return images.map((img: any) => ({ ...img, status: img.status || 'active' }));
     } catch (error) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
             return [];
@@ -32,13 +34,18 @@ async function writeHeroImages(images: HeroImage[]): Promise<void> {
     await fs.writeFile(dataPath, JSON.stringify(images, null, 2), 'utf-8');
 }
 
-
 export async function getHeroImages(): Promise<HeroImage[]> {
-    return await readHeroImages();
+    const images = await readHeroImages();
+    return images.filter(img => img.status === 'active');
+}
+
+export async function getTrashedHeroImages(): Promise<HeroImage[]> {
+    const images = await readHeroImages();
+    return images.filter(img => img.status === 'trash');
 }
 
 export async function getPaginatedHeroImages(page: number, limit: number) {
-    const allImages = await readHeroImages();
+    const allImages = await getHeroImages();
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
     const images = allImages.slice(startIndex, endIndex);
@@ -75,6 +82,7 @@ export async function addHeroImage(imageDataUri: string, formData: FormData) {
         title,
         description,
         image: imageUrl,
+        status: 'active',
     };
 
     const images = await readHeroImages();
@@ -118,11 +126,36 @@ export async function deleteHeroImage(formData: FormData) {
     if (!id) return;
     
     let images = await readHeroImages();
-    images = images.filter(s => s.id !== id);
+    images = images.map(img => img.id === id ? { ...img, status: 'trash' } : img);
     await writeHeroImages(images);
 
     revalidatePath('/');
     revalidatePath('/admin/hero');
+    revalidatePath('/admin/inbox/trash');
+}
+
+export async function permanentlyDeleteHeroImage(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
     
-    redirect('/admin/hero');
+    let images = await readHeroImages();
+    images = images.filter(img => img.id !== id);
+    await writeHeroImages(images);
+
+    revalidatePath('/admin/inbox/trash');
+    return { success: true };
+}
+
+export async function restoreHeroImage(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
+
+    let images = await readHeroImages();
+    images = images.map(img => img.id === id ? { ...img, status: 'active' } : img);
+    await writeHeroImages(images);
+
+    revalidatePath('/');
+    revalidatePath('/admin/hero');
+    revalidatePath('/admin/inbox/trash');
+    return { success: true };
 }

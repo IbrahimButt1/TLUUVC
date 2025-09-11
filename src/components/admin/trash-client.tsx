@@ -36,10 +36,10 @@ export default function TrashClient({
   initialServices,
   initialTestimonials
 }: TrashClientProps) {
-  const [emails, setEmails] = useState(initialEmails);
-  const [heroImages, setHeroImages] = useState(initialHeroImages);
-  const [services, setServices] = useState(initialServices);
-  const [testimonials, setTestimonials] = useState(initialTestimonials);
+  const [emails, setEmails] = useState(initialEmails || []);
+  const [heroImages, setHeroImages] = useState(initialHeroImages || []);
+  const [services, setServices] = useState(initialServices || []);
+  const [testimonials, setTestimonials] = useState(initialTestimonials || []);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [isPending, startTransition] = useTransition();
