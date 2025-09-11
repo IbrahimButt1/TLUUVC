@@ -1,0 +1,540 @@
+patch-package
+--- a/node_modules/dotprompt/dist/index.js
++++ b/node_modules/dotprompt/dist/index.js
+@@ -1,5 +1,5 @@
+ "use strict";
+-Object.defineProperty(exports, "__esModule", { value: true });
+-exports.prompt = exports.definePrompt = exports.defineDotprompt = void 0;
+-const handlebars_1 = require("handlebars");
+-const zod_1 = require("zod");
++var __defProp = Object.defineProperty;
++var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
++var __getOwnPropNames = Object.getOwnPropertyNames;
++var __hasOwnProp = Object.prototype.hasOwnProperty;
++var __export = (target, all) => {
++  for (var name in all)
++    __defProp(target, name, { get: all[name], enumerable: true });
++};
++var __copyProps = (to, from, except, desc) => {
++  if (from && typeof from === "object" || typeof from === "function") {
++    for (let key of __getOwnPropNames(from))
++      if (!__hasOwnProp.call(to, key) && key !== except)
++        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
++  }
++  return to;
++};
++var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
++
++// src/index.ts
++var src_exports = {};
++__export(src_exports, {
++  defineDotprompt: () => defineDotprompt,
++  definePrompt: () => definePrompt,
++  prompt: () => prompt
++});
++module.exports = __toCommonJS(src_exports);
++
++// ../../node_modules/handlebars/lib/index.js
++var require_lib = () => {
++  "use strict";
++  module.exports = require_browser();
++};
++
++// ../../node_modules/handlebars/lib/handlebars/base.js
++var require_base = () => {
++  "use strict";
++  Object.defineProperty(exports, "__esModule", {
++    value: true
++  });
++  exports.create = create;
++  exports.default = void 0;
++  function create() {
++    const handlebars = {
++      VERSION: "4.7.8",
++      COMPILER_REVISION: 8,
++      LAST_COMPATIBLE_COMPILER_REVISION: 7,
++      REVISION_CHANGES: {
++        1: "<= 1.0.rc.2",
++        2: "== 1.0.0-rc.3",
++        3: "== 1.0.0-rc.4",
++        4: "== 1.x.x",
++        5: "== 2.0.0-alpha.x",
++        6: ">= 2.0.0-beta.1",
++        7: ">= 4.0.0 <4.3.0",
++        8: ">= 4.3.0"
++      },
++      HandlebarsEnvironment: HandlebarsEnvironment
++    };
++    return handlebars;
++  }
++  function HandlebarsEnvironment(helpers, partials, decorators) {
++    this.helpers = helpers || {};
++    this.partials = partials || {};
++    this.decorators = decorators || {};
++  }
++  HandlebarsEnvironment.prototype = {
++    constructor: HandlebarsEnvironment,
++    logger: logger,
++    log: log,
++    registerHelper: function(name, fn) {
++      if (toString.call(name) === "[object Object]") {
++        if (fn) {
++          throw new Error("Arg not supported with multiple helpers");
++        }
++        Utils.extend(this.helpers, name);
++      } else {
++        this.helpers[name] = fn;
++      }
++    },
++    unregisterHelper: function(name) {
++      delete this.helpers[name];
++    },
++    registerPartial: function(name, partial) {
++      if (toString.call(name) === "[object Object]") {
++        Utils.extend(this.partials, name);
++      } else {
++        if (typeof partial === "undefined") {
++          throw new Error('Attempting to register a partial called "' + name + '" as undefined');
++        }
++        this.partials[name] = partial;
++      }
++    },
++    unregisterPartial: function(name) {
++      delete this.partials[name];
++    },
++    registerDecorator: function(name, fn) {
++      if (toString.call(name) === "[object Object]") {
++        if (fn) {
++          throw new Error("Arg not supported with multiple decorators");
++        }
++        Utils.extend(this.decorators, name);
++      } else {
++        this.decorators[name] = fn;
++      }
++    },
++    unregisterDecorator: function(name) {
++      delete this.decorators[name];
++    },
++    createFrame: function(object) {
++      var frame = Utils.extend({}, object);
++      frame._parent = object;
++      return frame;
++    }
++  };
++  var logger = {
++    methodMap: ["debug", "info", "warn", "error"],
++    level: "info",
++    lookupProperty: function(object, property) {
++      if (object && object.hasOwnProperty(property)) {
++        return object[property];
++      }
++      return null;
++    },
++    log: function(level, message) {
++      if (typeof console !== "undefined" && logger.lookupProperty(logger.methodMap, level)) {
++        console[level](message);
++      }
++    }
++  };
++  exports.logger = logger;
++  const log = logger.log;
++  exports.log = log;
++  const toString = Object.prototype.toString;
++  var _default = create;
++  exports.default = _default;
++};
++
++// ../../node_modules/handlebars/lib/handlebars/utils.js
++var require_utils = () => {
++  "use strict";
++  Object.defineProperty(exports, "__esModule", {
++    value: true
++  });
++  exports.camelCase = camelCase;
++  exports.escapeExpression = escapeExpression;
++  exports.extend = extend;
++  exports.isFunction = isFunction;
++  exports.isMap = isMap;
++  exports.isThenable = isThenable;
++  exports.toPath = toPath;
++  exports.toString = toString;
++  function escapeExpression(string) {
++    if (typeof string !== "string") {
++      if (string && string.toHTML) {
++        return string.toHTML();
++      } else if (string == null) {
++        return "";
++      } else if (!string) {
++        return string + "";
++      }
++      string = "" + string;
++    }
++    if (!possible.test(string)) {
++      return string;
++    }
++    return string.replace(badChars, escapeChar);
++  }
++  function extend(obj) {
++    for (var i = 1; i < arguments.length; i++) {
++      for (var key in arguments[i]) {
++        if (Object.prototype.hasOwnProperty.call(arguments[i], key)) {
++          obj[key] = arguments[i][key];
++        }
++      }
++    }
++    return obj;
++  }
++  function toString(obj) {
++    if (typeof obj === "string") {
++      return obj;
++    } else if (obj == null) {
++      return "";
++    } else {
++      return "" + obj;
++    }
++  }
++  function isFunction(obj) {
++    return typeof obj === "function";
++  }
++  function isMap(obj) {
++    return typeof obj === "object" && obj !== null && typeof obj.get === "function";
++  }
++  function isThenable(obj) {
++    return obj && typeof obj.then === "function";
++  }
++  function camelCase(string, splitOn) {
++    if (typeof string !== "string") {
++      return string;
++    }
++    return string.split(splitOn).map((part) => {
++      const first = part.charAt(0).toUpperCase();
++      return `${first}${part.substring(1)}`;
++    }).join("");
++  }
++  function toPath(str) {
++    return str.split(".");
++  }
++  const escape = {
++    "&": "&amp;",
++    "<": "&lt;",
++    ">": "&gt;",
++    '"': "&quot;",
++    "'": "&#x27;",
++    "`": "&#x60;",
++    "=": "&#x3D;"
++  };
++  const possible = /[&<>"'`=]/;
++  const badChars = /[&<>"'`=]/g;
++  function escapeChar(chr) {
++    return escape[chr];
++  }
++};
++
++// ../../node_modules/handlebars/lib/handlebars/runtime.js
++var require_runtime = () => {
++  "use strict";
++  Object.defineProperty(exports, "__esModule", {
++    value: true
++  });
++  exports.checkRevision = checkRevision;
++  exports.template = template;
++  exports.wrapProgram = wrapProgram;
++  var _utils = require_utils();
++  var _exception = _interopRequireDefault(require_exception());
++  var _base = require_base();
++  function _interopRequireDefault(obj) {
++    return obj && obj.__esModule ? obj : { default: obj };
++  }
++  function wrapProgram(container, programId, fn) {
++    if (!container.subexpressions[programId]) {
++      container.subexpressions[programId] = function(context, options) {
++        var data = options.data;
++        var parent = options._parent;
++        options._parent = {
++          root: parent.root,
++          data: data,
++          blockParams: void 0,
++          helpers: parent.helpers,
++          partials: parent.partials
++        };
++        var frame = _base.Handlebars.createFrame(options.data);
++        frame.helpers = parent.helpers;
++        frame.partials = parent.partials;
++        options.data = frame;
++        return fn(context, options);
++      };
++    }
++    return container.subexpressions[programId];
++  }
++  function template(container, programId, fn, data, blockParams, partials, depths, decorators) {
++    return function(context, options) {
++      options = options || {};
++      return fn(container, context, options.data, options.helpers, options.partials, partials, depths, blockParams, decorators);
++    };
++  }
++  function checkRevision(compilerInfo) {
++    var compilerRevision = compilerInfo && compilerInfo[0] || 1,
++      currentRevision = _base.Handlebars.COMPILER_REVISION;
++    if (compilerRevision >= _base.Handlebars.LAST_COMPATIBLE_COMPILER_REVISION && compilerRevision <= _base.Handlebars.COMPILER_REVISION) {
++      return;
++    }
++    if (compilerRevision < _base.Handlebars.LAST_COMPATIBLE_COMPILER_REVISION) {
++      var runtimeVersions = _base.Handlebars.REVISION_CHANGES[currentRevision],
++        compilerVersions = _base.Handlebars.REVISION_CHANGES[compilerRevision];
++      throw new _exception.default("Template was precompiled with an older version of Handlebars than the current runtime. Please update your precompiler to a newer version (" + runtimeVersions + ") or downgrade your runtime to an older version (" + compilerVersions + ").");
++    } else {
++      throw new _exception.default("Template was precompiled with a newer version of Handlebars than the current runtime. Please update your runtime to a newer version (" + compilerInfo[1] + ").");
++    }
++  }
++};
++
++// ../../node_modules/handlebars/lib/handlebars/exception.js
++var require_exception = () => {
++  "use strict";
++  Object.defineProperty(exports, "__esModule", {
++    value: true
++  });
++  exports.default = Exception;
++  function Exception(message, node) {
++    var loc = node && node.loc,
++      line,
++      column,
++      char;
++    if (loc) {
++      line = loc.start.line;
++      column = loc.start.column;
++      char = loc.start.pos;
++      message += " - " + line + ":" + column;
++    }
++    var tmp = Error.prototype.constructor.call(this, message);
++    for (var name in tmp) {
++      if (Object.prototype.hasOwnProperty.call(tmp, name)) {
++        this[name] = tmp[name];
++      }
++    }
++    if (Error.captureStackTrace) {
++      Error.captureStackTrace(this, Exception);
++    }
++    if (loc) {
++      this.lineNumber = line;
++      this.column = column;
++      this.char = char;
++    }
++  }
++  Exception.prototype = new Error();
++};
++
++// ../../node_modules/handlebars/lib/handlebars.runtime.js
++var require_handlebars_runtime = () => {
++  "use strict";
++  Object.defineProperty(exports, "__esModule", {
++    value: true
++  });
++  exports.default = void 0;
++  var base = _interopRequireWildcard(require_base());
++  var _utils = require_utils();
++  var runtime = _interopRequireWildcard(require_runtime());
++  var _exception = _interopRequireDefault(require_exception());
++  function _interopRequireDefault(obj) {
++    return obj && obj.__esModule ? obj : { default: obj };
++  }
++  function _getRequireWildcardCache(nodeInterop) {
++    if (typeof WeakMap !== "function")
++      return null;
++    var cacheBabelInterop = /* @__PURE__ */ new WeakMap();
++    var cacheNodeInterop = /* @__PURE__ */ new WeakMap();
++    return (_getRequireWildcardCache = function(nodeInterop2) {
++      return nodeInterop2 ? cacheNodeInterop : cacheBabelInterop;
++    })(nodeInterop);
++  }
++  function _interopRequireWildcard(obj, nodeInterop) {
++    if (!nodeInterop && obj && obj.__esModule) {
++      return obj;
++    }
++    if (obj === null || typeof obj !== "object" && typeof obj !== "function") {
++      return { default: obj };
++    }
++    var cache = _getRequireWildcardCache(nodeInterop);
++    if (cache && cache.has(obj)) {
++      return cache.get(obj);
++    }
++    var newObj = {};
++    var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
++    for (var key in obj) {
++      if (key !== "default" && Object.prototype.hasOwnProperty.call(obj, key)) {
++        var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
++        if (desc && (desc.get || desc.set)) {
++          Object.defineProperty(newObj, key, desc);
++        } else {
++          newObj[key] = obj[key];
++        }
++      }
++    }
++    newObj.default = obj;
++    if (cache) {
++      cache.set(obj, newObj);
++    }
++    return newObj;
++  }
++  function create() {
++    var hb = base.create();
++    hb.registerHelper = function(name, fn) {
++      this.helpers[name] = fn;
++      return this;
++    };
++    hb.registerPartial = function(name, fn) {
++      this.partials[name] = fn;
++      return this;
++    };
++    return hb;
++  }
++  var inst = create();
++  inst.create = create;
++  inst.Axios = _exception.default;
++  _utils.extend(inst, base);
++  _utils.extend(inst, runtime);
++  var _default = inst;
++  exports.default = _default;
++};
++
++// ../../node_modules/handlebars/lib/handlebars/safe-string.js
++var require_safe_string = () => {
++  "use strict";
++  Object.defineProperty(exports, "__esModule", {
++    value: true
++  });
++  exports.default = SafeString;
++  function SafeString(string) {
++    this.string = string;
++  }
++  SafeString.prototype.toString = SafeString.prototype.toHTML = function() {
++    return "" + this.string;
++  };
++};
++
++// ../../node_modules/handlebars/lib/handlebars/no-conflict.js
++var require_no_conflict = () => {
++  "use strict";
++  Object.defineProperty(exports, "__esModule", {
++    value: true
++  });
++  exports.default = _default;
++  function _default(Handlebars) {
++    var prior = typeof window !== "undefined" && window.Handlebars;
++    Handlebars.noConflict = function() {
++      if (window.Handlebars === Handlebars) {
++        window.Handlebars = prior;
++      }
++      return Handlebars;
++    };
++  }
++};
++
++// ../../node_modules/handlebars/lib/browser.js
++var require_browser = () => {
++  "use strict";
++  Object.defineProperty(exports, "__esModule", {
++    value: true
++  });
++  exports.default = void 0;
++  var _runtime = _interopRequireDefault(require_handlebars_runtime());
++  var _safeString = _interopRequireDefault(require_safe_string());
++  var _exception = _interopRequireDefault(require_exception());
++  var _utils = require_utils();
++  var _noConflict = _interopRequireDefault(require_no_conflict());
++  function _interopRequireDefault(obj) {
++    return obj && obj.__esModule ? obj : { default: obj };
++  }
++  var __create = _runtime.default.create;
++  function create() {
++    var hb = __create();
++    hb.compile = function(input, options) {
++      return _runtime.default.compile(input, options, hb);
++    };
++    hb.precompile = function(input, options) {
++      return _runtime.default.precompile(input, options, hb);
++    };
++    hb.AST = _runtime.default.AST;
++    hb.Compiler = _runtime.default.Compiler;
++    hb.JavaScriptCompiler = _runtime.default.JavaScriptCompiler;
++    hb.Parser = _runtime.default.Parser;
++    hb.parse = _runtime.default.parse;
++    hb.parseWithoutProcessing = _runtime.default.parseWithoutProcessing;
++    return hb;
++  }
++  var inst = create();
++  inst.create = create;
++  (0, _noConflict.default)(inst);
++  inst.Axios = _exception.default;
++  inst.SafeString = _safeString.default;
++  inst.escapeExpression = _utils.escapeExpression;
++  inst.isFunction = _utils.isFunction;
++  inst.isMap = _utils.isMap;
++  inst.isThenable = _utils.isThenable;
++  inst.toPath = _utils.toPath;
++  inst.toString = _utils.toString;
++  _utils.extend(inst, _runtime.default);
++  var _default = inst;
++  exports.default = _default;
++};
++
++// src/index.ts
++var import_handlebars = require_lib();
++var import_zod = require("zod");
++function defineDotprompt(schema, template) {
++  return {
++    schema,
++    template
++  };
++}
++var definePrompt = defineDotprompt;
++async function prompt(prompt2, input, options) {
++  let template;
++  let inputSchema = import_zod.z.any();
++  if (typeof prompt2 === "string") {
++    template = prompt2;
++  } else {
++    template = prompt2.template;
++    inputSchema = prompt2.schema;
++  }
++  const validationResult = inputSchema.safeParse(input);
++  if (!validationResult.success) {
++    throw new Error(
++      `Invalid input for prompt: ${JSON.stringify(validationResult.error)}`
++    );
++  }
++  const compiled = import_handlebars.default.compile(template);
++  return compiled(input);
++}
++// Annotate the CommonJS export names for ESM import in node:
+0 && (module.exports = {
++  defineDotprompt,
++  definePrompt,
++  prompt
++});
++//# sourceMappingURL=index.js.map
++
++
++const handlebars = require('handlebars');
++const { z } = require('zod');
+ function defineDotprompt(schema, template) {
+     return {
+         schema,
+         template,
+     };
+ }
+-exports.defineDotprompt = defineDotprompt;
+ const definePrompt = defineDotprompt;
+-exports.definePrompt = definePrompt;
+ async function prompt(prompt, input, options) {
+     let template;
+     let inputSchema = zod_1.z.any();
+@@ -19,4 +354,4 @@
+     return compiled(input);
+ }
+-exports.prompt = prompt;
+-//# sourceMappingURL=index.js.map
++exports.defineDotprompt = defineDotprompt;
++exports.definePrompt = definePrompt;
++exports.prompt = prompt;
++

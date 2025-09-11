@@ -1,0 +1,30 @@
+diff --git a/node_modules/dotprompt/dist/index.js b/node_modules/dotprompt/dist/index.js
+index 4554b52..467144e 100644
+--- a/node_modules/dotprompt/dist/index.js
++++ b/node_modules/dotprompt/dist/index.js
+@@ -104,7 +104,7 @@
+     return {
+         name,
+         prompt: async (vars) => {
+-            const template = Handlebars.compile(templateText, {
++            const template = (Handlebars.default ?? Handlebars).compile(templateText, {
+                 noEscape: true,
+             });
+             return template(vars);
+diff --git a/node_modules/dotprompt/dist/loader.js b/node_modules/dotprompt/dist/loader.js
+index 102f431..2937740 100644
+--- a/node_modules/dotprompt/dist/loader.js
++++ b/node_modules/dotprompt/dist/loader.js
+@@ -12,6 +12,7 @@
+ const fs_1 = require("fs");
+ const path_1 = require("path");
+ const __1 = require("..");
+-require.extensions['.prompt'] = function (module, filename) {
++if (typeof require !== 'undefined' && require.extensions) {
++  require.extensions['.prompt'] = function (module, filename) {
+     module.exports = (0, __1.defineDotprompt)({ name: (0, path_1.basename)(filename), template: (0, fs_1.readFileSync)(filename, 'utf-8') });
+-};
+\ No newline at end of file
++  };
++}
+\ No newline at end of file

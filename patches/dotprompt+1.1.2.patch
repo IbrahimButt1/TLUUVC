@@ -1,0 +1,14 @@
+diff --git a/node_modules/dotprompt/dist/index.js b/node_modules/dotprompt/dist/index.js
+index c8d83d1b74bd89851624c9c1b3f66c9ba4c01740..93c72b22f6a6230f3a61f9edb6b8026774653e00 100644
+--- a/node_modules/dotprompt/dist/index.js
++++ b/node_modules/dotprompt/dist/index.js
+@@ -40,9 +40,3 @@ Handlebars.registerHelper("toJSON", (obj) => {
+     return JSON.stringify(obj, null, 2);
+ });
+ exports.prompt = dotprompt;
+-require.extensions[".prompt"] = (module, filename) => {
+-    const fileContent = fs.readFileSync(filename, "utf8");
+-    module.exports = {
+-        prompt: fileContent,
+-    };
+-};
