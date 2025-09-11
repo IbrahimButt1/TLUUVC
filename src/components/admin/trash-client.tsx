@@ -12,11 +12,11 @@ import { permanentlyDeleteTestimonial, restoreTestimonial } from '@/lib/testimon
 
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TrashEmails from './trash-emails';
 import TrashHeroImages from './trash-hero-images';
 import TrashServices from './trash-services';
@@ -132,7 +132,7 @@ export default function TrashClient({
 
   return (
     <div className="space-y-4">
-      <Card className="shadow-none">
+      <Card className="shadow-none border-0 bg-transparent">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
@@ -152,50 +152,59 @@ export default function TrashClient({
         </div>
       )}
 
-      <Tabs defaultValue="emails" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="emails">Emails</TabsTrigger>
-            <TabsTrigger value="hero-images">Hero Images</TabsTrigger>
-            <TabsTrigger value="services">Services</TabsTrigger>
-            <TabsTrigger value="testimonials">Testimonials</TabsTrigger>
-        </TabsList>
-        <TabsContent value="emails">
-            <TrashEmails 
-              emails={filteredEmails} 
-              searchTerm={searchTerm} 
-              onRestore={(id) => handleAction(restoreEmail, id, 'email', "Email restored.")}
-              onDelete={(id) => handleAction(permanentlyDeleteEmail, id, 'email', "Email permanently deleted.")}
-              isPending={isPending}
-            />
-        </TabsContent>
-         <TabsContent value="hero-images">
-             <TrashHeroImages
-              images={filteredHeroImages}
-              searchTerm={searchTerm}
-              onRestore={(id) => handleAction(restoreHeroImage, id, 'heroImage', "Hero Image restored.")}
-              onDelete={(id) => handleAction(permanentlyDeleteHeroImage, id, 'heroImage', "Hero Image permanently deleted.")}
-              isPending={isPending}
-            />
-        </TabsContent>
-        <TabsContent value="services">
-             <TrashServices
-              services={filteredServices}
-              searchTerm={searchTerm}
-              onRestore={(id) => handleAction(restoreService, id, 'service', "Service restored.")}
-              onDelete={(id) => handleAction(permanentlyDeleteService, id, 'service', "Service permanently deleted.")}
-              isPending={isPending}
-            />
-        </TabsContent>
-        <TabsContent value="testimonials">
-            <TrashTestimonials
-              testimonials={filteredTestimonials}
-              searchTerm={searchTerm}
-              onRestore={(id) => handleAction(restoreTestimonial, id, 'testimonial', "Testimonial restored.")}
-              onDelete={(id) => handleAction(permanentlyDeleteTestimonial, id, 'testimonial', "Testimonial permanently deleted.")}
-              isPending={isPending}
-            />
-        </TabsContent>
-      </Tabs>
+       <Accordion type="multiple" className="w-full space-y-2">
+            <AccordionItem value="emails" className="border rounded-lg bg-card">
+                <AccordionTrigger className="px-6 py-4 font-semibold">Emails ({filteredEmails.length})</AccordionTrigger>
+                <AccordionContent className="px-6 pb-4">
+                    <TrashEmails 
+                        emails={filteredEmails} 
+                        searchTerm={searchTerm} 
+                        onRestore={(id) => handleAction(restoreEmail, id, 'email', "Email restored.")}
+                        onDelete={(id) => handleAction(permanentlyDeleteEmail, id, 'email', "Email permanently deleted.")}
+                        isPending={isPending}
+                    />
+                </AccordionContent>
+            </AccordionItem>
+            
+            <AccordionItem value="hero-images" className="border rounded-lg bg-card">
+                <AccordionTrigger className="px-6 py-4 font-semibold">Hero Images ({filteredHeroImages.length})</AccordionTrigger>
+                <AccordionContent className="px-2 pb-2">
+                    <TrashHeroImages
+                        images={filteredHeroImages}
+                        searchTerm={searchTerm}
+                        onRestore={(id) => handleAction(restoreHeroImage, id, 'heroImage', "Hero Image restored.")}
+                        onDelete={(id) => handleAction(permanentlyDeleteHeroImage, id, 'heroImage', "Hero Image permanently deleted.")}
+                        isPending={isPending}
+                        />
+                </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="services" className="border rounded-lg bg-card">
+                <AccordionTrigger className="px-6 py-4 font-semibold">Services ({filteredServices.length})</AccordionTrigger>
+                <AccordionContent className="px-2 pb-2">
+                    <TrashServices
+                        services={filteredServices}
+                        searchTerm={searchTerm}
+                        onRestore={(id) => handleAction(restoreService, id, 'service', "Service restored.")}
+                        onDelete={(id) => handleAction(permanentlyDeleteService, id, 'service', "Service permanently deleted.")}
+                        isPending={isPending}
+                        />
+                </AccordionContent>
+            </AccordionItem>
+            
+            <AccordionItem value="testimonials" className="border rounded-lg bg-card">
+                <AccordionTrigger className="px-6 py-4 font-semibold">Testimonials ({filteredTestimonials.length})</AccordionTrigger>
+                <AccordionContent className="px-2 pb-2">
+                     <TrashTestimonials
+                        testimonials={filteredTestimonials}
+                        searchTerm={searchTerm}
+                        onRestore={(id) => handleAction(restoreTestimonial, id, 'testimonial', "Testimonial restored.")}
+                        onDelete={(id) => handleAction(permanentlyDeleteTestimonial, id, 'testimonial', "Testimonial permanently deleted.")}
+                        isPending={isPending}
+                        />
+                </AccordionContent>
+            </AccordionItem>
+        </Accordion>
     </div>
   );
 }
