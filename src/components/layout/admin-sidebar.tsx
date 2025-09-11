@@ -87,7 +87,7 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
         </nav>
       </div>
 
-       <div className="mt-auto p-4 border-t">
+       <Link href="/admin/settings?tab=credentials" className="block mt-auto p-4 border-t hover:bg-muted transition-colors">
           <div className="flex items-center gap-3">
               <Avatar className="h-10 w-10 border">
                   <AvatarImage src="https://picsum.photos/100" alt="Admin Avatar" data-ai-hint="person portrait" />
@@ -100,7 +100,7 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
                   <p className="text-xs text-muted-foreground">Administrator</p>
               </div>
           </div>
-      </div>
+      </Link>
     </aside>
   );
 }
