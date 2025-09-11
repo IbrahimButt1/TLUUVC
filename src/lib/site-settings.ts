@@ -65,7 +65,10 @@ export async function updateSiteSettings(prevState: UpdateSettingsState, formDat
     const currentSettings = await readSiteSettings();
 
     // Check if password change is intended
-    if (newPassword || confirmPassword) {
+    if (newPassword) {
+        if (!currentPassword) {
+            return { message: "", error: "Please enter your current password to set a new one.", success: false };
+        }
         if (currentPassword !== currentSettings.password) {
             return { message: "", error: "The current password you entered is incorrect.", success: false };
         }
