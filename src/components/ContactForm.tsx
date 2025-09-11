@@ -5,7 +5,6 @@ import { useFormStatus } from 'react-dom';
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
 import { authenticate } from '@/lib/auth';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
 import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
@@ -39,23 +38,15 @@ export default function LoginForm() {
                 />
             </div>
             <div className="grid gap-2">
-                <div className="flex items-center">
-                    <Label htmlFor="password">Password</Label>
-                    <Link
-                    href="#"
-                    className="ml-auto inline-block text-sm underline"
-                    >
-                    Forgot your password?
-                    </Link>
-                </div>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
-                    <Input id="password" name="password" type={showPassword ? "text" : "password"} required />
+                    <Input id="password" name="password" type={showPassword ? "text" : "password"} required placeholder="••••••••" />
                     <button 
                         type="button" 
                         onClick={() => setShowPassword(!showPassword)} 
-                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 text-muted-foreground"
                     >
-                        {showPassword ? <Eye className="h-5 w-5 text-gray-500" /> : <EyeOff className="h-5 w-5 text-gray-500" />}
+                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                     </button>
                 </div>
             </div>
