@@ -67,7 +67,7 @@
     "message": "Details?",
     "receivedAt": "2025-09-11T12:14:58.756Z",
     "read": true,
-    "status": "inbox",
+    "status": "trash",
     "favorited": true
   },
   {
@@ -78,7 +78,7 @@
     "message": "Hi",
     "receivedAt": "2025-09-12T23:13:49.392Z",
     "read": true,
-    "status": "inbox",
+    "status": "trash",
     "favorited": false
   },
   {
@@ -111,7 +111,7 @@
     "message": "OK",
     "receivedAt": "2025-09-12T23:25:16.978Z",
     "read": true,
-    "status": "inbox",
+    "status": "trash",
     "favorited": false
   },
   {
@@ -122,7 +122,7 @@
     "message": "Nice",
     "receivedAt": "2025-09-12T23:25:38.463Z",
     "read": true,
-    "status": "inbox",
+    "status": "trash",
     "favorited": false
   }
 ]

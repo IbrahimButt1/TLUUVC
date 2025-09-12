@@ -54,7 +54,7 @@ export default function EmailList({ emails, selectedEmails, onSelectEmail, onVie
     <div className="overflow-auto">
         <Table>
             <TableHeader>
-                <TableRow>
+                <TableRow className="bg-muted/50 hover:bg-muted/50">
                     <TableHead className="w-[80px]">Select</TableHead>
                     <TableHead className="w-[80px]">Favorite</TableHead>
                     <TableHead className="w-[180px]">Client</TableHead>
@@ -88,7 +88,7 @@ export default function EmailList({ emails, selectedEmails, onSelectEmail, onVie
                             >
                             <Star className={cn(
                                 "h-5 w-5 text-muted-foreground transition-colors",
-                                email.favorited && "text-orange-500 fill-orange-400"
+                                email.favorited && "text-yellow-500 fill-yellow-400"
                             )} />
                             </Button>
                         </TableCell>
