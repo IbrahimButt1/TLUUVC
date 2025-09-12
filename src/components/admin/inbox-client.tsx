@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useTransition } from 'react';
+import { useState, useMemo, useTransition, useEffect } from 'react';
 import type { Email } from '@/lib/emails';
 import { deleteEmail, markAllEmailsAsRead } from '@/lib/emails';
 import { Button } from '@/components/ui/button';
@@ -20,7 +20,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
-  useMemo(() => {
+  useEffect(() => {
     markAllEmailsAsRead();
   }, []);
 
