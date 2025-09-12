@@ -39,13 +39,19 @@ export default function ManifestForm({ action }: ManifestFormProps) {
     
     return (
         <form action={action} className="space-y-6">
-            <div className="space-y-2">
-                <Label htmlFor="clientName">Client Name</Label>
-                <Input id="clientName" name="clientName" required placeholder="e.g. Ali" />
+            <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-2">
+                    <Label htmlFor="clientName">Client Name</Label>
+                    <Input id="clientName" name="clientName" required placeholder="e.g. Ali" />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="date">Date</Label>
+                    <Input id="date" name="date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} />
+                </div>
             </div>
              <div className="space-y-2">
-                <Label htmlFor="date">Date</Label>
-                <Input id="date" name="date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} />
+                <Label htmlFor="transactionId">Transaction ID</Label>
+                <Input id="transactionId" name="transactionId" value="[Auto-Generated]" readOnly disabled />
             </div>
             <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>

@@ -15,6 +15,7 @@ export default function ManifestList({ entries }: { entries: ManifestEntry[]}) {
                         <TableHead className="w-[150px]">Date</TableHead>
                         <TableHead className="w-[200px]">Client Name</TableHead>
                         <TableHead>Description</TableHead>
+                        <TableHead className="w-[120px]">Transaction ID</TableHead>
                         <TableHead className="w-[120px] text-center">Type</TableHead>
                         <TableHead className="w-[120px] text-right">Amount</TableHead>
                     </TableRow>
@@ -25,6 +26,7 @@ export default function ManifestList({ entries }: { entries: ManifestEntry[]}) {
                             <TableCell className="text-muted-foreground">{format(new Date(entry.date), "MMM d, yyyy")}</TableCell>
                             <TableCell className="font-medium">{entry.clientName}</TableCell>
                             <TableCell className="text-muted-foreground">{entry.description}</TableCell>
+                            <TableCell><code className="text-xs text-muted-foreground">{entry.id}</code></TableCell>
                             <TableCell className="text-center">
                                 <Badge variant={entry.type === 'credit' ? 'default' : 'destructive'} 
                                        className={cn(
