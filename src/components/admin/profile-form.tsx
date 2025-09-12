@@ -5,7 +5,7 @@ import { useFormStatus } from 'react-dom';
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2, Upload, AlertCircle, XCircle } from 'lucide-react';
+import { Loader2, AlertCircle, XCircle } from 'lucide-react';
 import React from 'react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
@@ -85,7 +85,7 @@ export default function ProfileForm({ settings }: ProfileFormProps) {
             <div className="space-y-4">
                 <Label htmlFor="avatar-upload">Profile Picture</Label>
                 <div className="flex items-center gap-4">
-                    <div className="w-24 h-24 relative rounded-full border border-dashed flex items-center justify-center bg-muted overflow-hidden">
+                     <div className="w-24 h-24 relative rounded-full border border-dashed flex items-center justify-center bg-muted overflow-hidden">
                         {avatarPreview ? (
                             <>
                                 <Image src={avatarPreview} alt="Avatar preview" width={96} height={96} className="w-full h-full object-cover" />
@@ -100,9 +100,15 @@ export default function ProfileForm({ settings }: ProfileFormProps) {
                                 </Button>
                             </>
                         ) : (
-                             <div className="text-center text-muted-foreground text-sm p-2">
-                                <Upload className="mx-auto h-6 w-6" />
-                                <span>Preview</span>
+                             <div className="text-center text-muted-foreground p-2 w-full h-full flex items-center justify-center">
+                               <svg className="w-16 h-16" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <circle cx="50" cy="50" r="50" fill="hsl(var(--muted-foreground)/0.1)"/>
+                                    <path d="M50 42.5C54.1421 42.5 57.5 39.1421 57.5 35C57.5 30.8579 54.1421 27.5 50 27.5C45.8579 27.5 42.5 30.8579 42.5 35C42.5 39.1421 45.8579 42.5 50 42.5Z" stroke="hsl(var(--muted-foreground)/0.6)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M65.625 72.5C65.625 65.6528 60.2972 60 54.375 60H45.625C39.7028 60 34.375 65.6528 34.375 72.5" stroke="hsl(var(--muted-foreground)/0.6)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <circle cx="70" cy="70" r="12" fill="hsl(var(--primary))" stroke="hsl(var(--card))" strokeWidth="2"/>
+                                    <path d="M70 66V74" stroke="hsl(var(--primary-foreground))" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                    <path d="M66 70H74" stroke="hsl(var(--primary-foreground))" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
                             </div>
                         )}
                     </div>
