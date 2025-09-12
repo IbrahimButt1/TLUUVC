@@ -14,7 +14,7 @@ const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/about', label: 'About', icon: Info },
   { href: '/admin/client-balances', label: 'Opening Balances', icon: BookUser },
-  { href: '/admin/emails', label: 'Emails', icon: Inbox },
+  { href: '/admin/inbox', label: 'Emails', icon: Inbox },
   { href: '/admin/hero', label: 'Hero Images', icon: ImageIcon },
   { href: '/admin/manifest', label: 'Manifest', icon: BookUser },
   { href: '/admin/services', label: 'Services', icon: Briefcase },
@@ -60,7 +60,7 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
                       <link.icon className="h-4 w-4" />
                       {link.label}
                       </div>
-                      {link.href === '/admin/emails' && emailCount > 0 && (
+                      {link.href === '/admin/inbox' && emailCount > 0 && (
                       <Badge className="bg-primary text-primary-foreground">
                           {emailCount}
                       </Badge>
