@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { HeroImage } from "@/lib/hero-images";
 import { Loader2, Upload, XCircle } from 'lucide-react';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 
@@ -32,11 +32,12 @@ function SubmitButton({ submitText }: { submitText: string }) {
 const MAX_FILE_SIZE_MB = 1;
 
 export default function HeroImageForm({ action, image, submitText }: HeroImageFormProps) {
-    const [imagePreview, setImagePreview] = React.useState<string | null>(image?.image || null);
-    const [imageDataUri, setImageDataUri] = React.useState("");
+    const [imagePreview, setImagePreview] = useState<string | null>(image?.image || null);
+    const [imageDataUri, setImageDataUri] = useState("");
+    const [imageRemoved, setImageRemoved] = useState(false);
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [fileInputKey, setFileInputKey] = React.useState(Date.now());
+    const [fileInputKey, setFileInputKey] = useState(Date.now());
 
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -63,6 +64,7 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
                 const dataUrl = event.target?.result as string;
                 setImagePreview(dataUrl);
                 setImageDataUri(dataUrl);
+                setImageRemoved(false);
             };
             reader.readAsDataURL(file);
         }
@@ -73,6 +75,7 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
     const handleRemoveImage = () => {
         setImagePreview(null);
         setImageDataUri("");
+        setImageRemoved(true);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -82,6 +85,7 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
     return (
         <form action={formAction} className="space-y-6">
             {image && <input type="hidden" name="id" value={image.id} />}
+            <input type="hidden" name="imageRemoved" value={imageRemoved.toString()} />
             <div className="space-y-2">
                 <Label htmlFor="title">Image Title</Label>
                 <Input id="title" name="title" defaultValue={image?.title} required placeholder="e.g. Your Gateway to Global Opportunities" />

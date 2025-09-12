@@ -37,6 +37,7 @@ const MAX_FILE_SIZE_MB = 1;
 
 export default function AboutForm({ content, action }: AboutFormProps) {
     const [imagePreview, setImagePreview] = useState<string | null>(content?.image || null);
+    const [imageRemoved, setImageRemoved] = useState(false);
     const { toast } = useToast();
     const [state, formAction] = useActionState(action, { message: '', error: null, success: false });
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -67,6 +68,7 @@ export default function AboutForm({ content, action }: AboutFormProps) {
             reader.onload = (event) => {
                 const dataUrl = event.target?.result as string;
                 setImagePreview(dataUrl);
+                setImageRemoved(false);
             };
             reader.readAsDataURL(file);
         }
@@ -74,6 +76,7 @@ export default function AboutForm({ content, action }: AboutFormProps) {
     
     const handleRemoveImage = () => {
         setImagePreview(null);
+        setImageRemoved(true);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -82,6 +85,7 @@ export default function AboutForm({ content, action }: AboutFormProps) {
         
     return (
         <form action={formAction} className="space-y-6">
+            <input type="hidden" name="imageRemoved" value={imageRemoved.toString()} />
             <div className="space-y-2">
                 <Label htmlFor="title">Title</Label>
                 <Input id="title" name="title" defaultValue={content.title} required />

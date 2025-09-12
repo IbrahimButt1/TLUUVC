@@ -76,6 +76,8 @@ export async function updateSiteSettings(prevState: UpdateSettingsState, formDat
     const confirmPassword = formData.get('confirmPassword') as string;
     const secretQuestion = formData.get('secretQuestion') as string;
     const secretAnswer = formData.get('secretAnswer') as string;
+    const logoRemoved = formData.get('logoRemoved') === 'true';
+    const avatarRemoved = formData.get('avatarRemoved') === 'true';
     
     const currentSettings = await readSiteSettings();
 
@@ -99,7 +101,9 @@ export async function updateSiteSettings(prevState: UpdateSettingsState, formDat
 
 
     let logoUrl = currentSettings.logo;
-    if (logoFile && logoFile.size > 0) {
+    if (logoRemoved) {
+        logoUrl = "";
+    } else if (logoFile && logoFile.size > 0) {
         try {
             const arrayBuffer = await logoFile.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
@@ -111,7 +115,9 @@ export async function updateSiteSettings(prevState: UpdateSettingsState, formDat
     }
 
     let avatarUrl = currentSettings.avatar;
-    if (avatarFile && avatarFile.size > 0) {
+    if (avatarRemoved) {
+        avatarUrl = "";
+    } else if (avatarFile && avatarFile.size > 0) {
         try {
             const arrayBuffer = await avatarFile.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);

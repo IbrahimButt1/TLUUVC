@@ -10,7 +10,7 @@ import type { Service } from "@/lib/services";
 import { Loader2, University, Briefcase, Users, FileText, Landmark, Plane, Ship, Hotel, Home, Globe, Award, ThumbsUp, Upload, Check, ChevronsUpDown, XCircle } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import * as LucideIcons from "lucide-react";
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -53,13 +53,14 @@ function SubmitButton({ submitText }: { submitText: string }) {
 const MAX_FILE_SIZE_MB = 1;
 
 export default function ServiceForm({ action, service, submitText }: ServiceFormProps) {
-    const [imagePreview, setImagePreview] = React.useState<string | null>(service?.image || null);
-    const [imageDataUri, setImageDataUri] = React.useState("");
+    const [imagePreview, setImagePreview] = useState<string | null>(service?.image || null);
+    const [imageDataUri, setImageDataUri] = useState("");
+    const [imageRemoved, setImageRemoved] = useState(false);
     const { toast } = useToast();
-    const [title, setTitle] = React.useState(service?.title || "");
-    const [titlePopoverOpen, setTitlePopoverOpen] = React.useState(false);
+    const [title, setTitle] = useState(service?.title || "");
+    const [titlePopoverOpen, setTitlePopoverOpen] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [fileInputKey, setFileInputKey] = React.useState(Date.now());
+    const [fileInputKey, setFileInputKey] = useState(Date.now());
 
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +87,7 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
                 const dataUrl = event.target?.result as string;
                 setImagePreview(dataUrl);
                 setImageDataUri(dataUrl);
+                setImageRemoved(false);
             };
             reader.readAsDataURL(file);
         }
@@ -96,6 +98,7 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
     const handleRemoveImage = () => {
         setImagePreview(null);
         setImageDataUri("");
+        setImageRemoved(true);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -105,6 +108,7 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
     return (
         <form action={formAction} className="space-y-6">
             {service && <input type="hidden" name="id" value={service.id} />}
+            <input type="hidden" name="imageRemoved" value={imageRemoved.toString()} />
             <div className="space-y-2">
                 <Label htmlFor="title">Service Title</Label>
                 <input type="hidden" name="title" value={title} />

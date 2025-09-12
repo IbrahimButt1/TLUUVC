@@ -31,6 +31,7 @@ const MAX_FILE_SIZE_MB = 1;
 
 export default function ProfileForm({ settings }: ProfileFormProps) {
     const [avatarPreview, setAvatarPreview] = React.useState<string | null>(settings?.avatar || null);
+    const [avatarRemoved, setAvatarRemoved] = useState(false);
     const { toast } = useToast();
     const [state, formAction] = useActionState(updateSiteSettings, { message: '', error: null, success: false });
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,6 +62,7 @@ export default function ProfileForm({ settings }: ProfileFormProps) {
             reader.onload = (event) => {
                 const dataUrl = event.target?.result as string;
                 setAvatarPreview(dataUrl);
+                setAvatarRemoved(false);
             };
             reader.readAsDataURL(file);
         }
@@ -68,6 +70,7 @@ export default function ProfileForm({ settings }: ProfileFormProps) {
     
     const handleRemoveImage = () => {
         setAvatarPreview(null);
+        setAvatarRemoved(true);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -78,6 +81,7 @@ export default function ProfileForm({ settings }: ProfileFormProps) {
         <form action={formAction} className="space-y-6">
             <input type="hidden" name="username" defaultValue={settings.username} />
             <input type="hidden" name="logo" value={settings.logo} />
+            <input type="hidden" name="avatarRemoved" value={avatarRemoved.toString()} />
             <div className="space-y-4">
                 <Label htmlFor="avatar-upload">Profile Picture</Label>
                 <div className="flex items-center gap-4">

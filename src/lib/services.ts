@@ -74,13 +74,16 @@ export async function addService(imageDataUri: string, formData: FormData) {
     const icon = formData.get('icon') as string;
     const longDescription = formData.get('longDescription') as string;
     const requirementsRaw = formData.get('requirements') as string;
+    const imageRemoved = formData.get('imageRemoved') === 'true';
 
     if (!title || !description || !icon) {
         return;
     }
     
     let imageUrl = 'https://picsum.photos/800/600';
-    if (imageDataUri) {
+    if(imageRemoved) {
+        imageUrl = "";
+    } else if (imageDataUri) {
         imageUrl = await uploadImage(imageDataUri, `service-${Date.now()}`);
     }
 
@@ -112,13 +115,16 @@ export async function updateService(imageDataUri: string, formData: FormData) {
     const icon = formData.get('icon') as string;
     const longDescription = formData.get('longDescription') as string;
     const requirementsRaw = formData.get('requirements') as string;
+    const imageRemoved = formData.get('imageRemoved') === 'true';
     
     const services = await readServices();
     const serviceIndex = services.findIndex(s => s.id === id);
 
     if (serviceIndex !== -1) {
         let imageUrl = services[serviceIndex].image;
-        if (imageDataUri && imageDataUri.startsWith('data:image')) {
+         if (imageRemoved) {
+            imageUrl = "";
+        } else if (imageDataUri && imageDataUri.startsWith('data:image')) {
             imageUrl = await uploadImage(imageDataUri, `service-${Date.now()}`);
         }
         

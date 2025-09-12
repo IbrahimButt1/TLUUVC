@@ -59,13 +59,16 @@ export async function addTestimonial(imageDataUri: string, formData: FormData) {
     const testimonial = formData.get('testimonial') as string;
     const role = formData.get('role') as string;
     const country = formData.get('country') as string;
+    const imageRemoved = formData.get('imageRemoved') === 'true';
 
     if (!name || !destination || !testimonial || !role || !country) {
         return;
     }
 
     let imageUrl = 'https://picsum.photos/100/100';
-    if (imageDataUri) {
+    if(imageRemoved) {
+        imageUrl = "";
+    } else if (imageDataUri) {
         imageUrl = await uploadImage(imageDataUri, `testimonial-${Date.now()}`);
     }
 
@@ -97,13 +100,17 @@ export async function updateTestimonial(imageDataUri: string, formData: FormData
     const testimonial = formData.get('testimonial') as string;
     const role = formData.get('role') as string;
     const country = formData.get('country') as string;
+    const imageRemoved = formData.get('imageRemoved') === 'true';
+
     
     const testimonials = await readTestimonials();
     const testimonialIndex = testimonials.findIndex(t => t.id === id);
 
     if (testimonialIndex !== -1) {
         let imageUrl = testimonials[testimonialIndex].image;
-        if (imageDataUri && imageDataUri.startsWith('data:image')) {
+        if (imageRemoved) {
+            imageUrl = "";
+        } else if (imageDataUri && imageDataUri.startsWith('data:image')) {
             imageUrl = await uploadImage(imageDataUri, `testimonial-${Date.now()}`);
         }
         testimonials[testimonialIndex] = { ...testimonials[testimonialIndex], id, name, destination, testimonial, image: imageUrl, role, country };

@@ -42,6 +42,8 @@ export async function updateAboutContent(prevState: any, formData: FormData) {
     const paragraph1 = formData.get('paragraph1') as string;
     const paragraph2 = formData.get('paragraph2') as string;
     const imageFile = formData.get('imageFile') as File | null;
+    const imageRemoved = formData.get('imageRemoved') === 'true';
+
     
     if (!title || !paragraph1 || !paragraph2) {
         return { message: "", error: "Please fill out all text fields.", success: false };
@@ -50,7 +52,9 @@ export async function updateAboutContent(prevState: any, formData: FormData) {
     const currentContent = await readAboutContent();
     let imageUrl = currentContent.image;
     
-    if (imageFile && imageFile.size > 0) {
+    if (imageRemoved) {
+        imageUrl = "";
+    } else if (imageFile && imageFile.size > 0) {
         try {
             const arrayBuffer = await imageFile.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);

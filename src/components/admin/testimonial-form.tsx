@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Testimonial } from "@/lib/testimonials";
 import { Loader2, Check, ChevronsUpDown, GraduationCap, Globe, Upload, XCircle } from 'lucide-react';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { countries, Country } from '@/lib/countries';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
@@ -59,16 +59,17 @@ const MAX_FILE_SIZE_MB = 1;
 
 
 export default function TestimonialForm({ action, testimonial, submitText }: TestimonialFormProps) {
-    const [rolePopoverOpen, setRolePopoverOpen] = React.useState(false);
-    const [countryPopoverOpen, setCountryPopoverOpen] = React.useState(false);
+    const [rolePopoverOpen, setRolePopoverOpen] = useState(false);
+    const [countryPopoverOpen, setCountryPopoverOpen] = useState(false);
 
-    const [selectedRole, setSelectedRole] = React.useState(testimonial?.role || "");
-    const [selectedCountry, setSelectedCountry] = React.useState(testimonial?.country || "");
-    const [imagePreview, setImagePreview] = React.useState(testimonial?.image || null);
-    const [imageDataUri, setImageDataUri] = React.useState("");
+    const [selectedRole, setSelectedRole] = useState(testimonial?.role || "");
+    const [selectedCountry, setSelectedCountry] = useState(testimonial?.country || "");
+    const [imagePreview, setImagePreview] = useState(testimonial?.image || null);
+    const [imageDataUri, setImageDataUri] = useState("");
+    const [imageRemoved, setImageRemoved] = useState(false);
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [fileInputKey, setFileInputKey] = React.useState(Date.now());
+    const [fileInputKey, setFileInputKey] = useState(Date.now());
 
 
     const destinationValue = `${selectedRole} in ${selectedCountry}`;
@@ -91,6 +92,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                 const dataUrl = event.target?.result as string;
                 setImagePreview(dataUrl);
                 setImageDataUri(dataUrl);
+                setImageRemoved(false);
             };
             reader.readAsDataURL(file);
         }
@@ -101,6 +103,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
     const handleRemoveImage = () => {
         setImagePreview(null);
         setImageDataUri("");
+        setImageRemoved(true);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -114,6 +117,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
             <input type="hidden" name="destination" value={destinationValue} />
             <input type="hidden" name="role" value={selectedRole} />
             <input type="hidden" name="country" value={selectedCountry} />
+            <input type="hidden" name="imageRemoved" value={imageRemoved.toString()} />
 
 
             <div className="space-y-2">
@@ -265,7 +269,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                         )}
                     </div>
                     <div className="flex-1">
-                        <Input key={fileInputKey} id="image-upload" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                        <Input key={fileInputKey} id="image-upload" name="imageFile" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
                             Upload a photo of the client. A square image works best. Max file size: ${MAX_FILE_SIZE_MB}MB.
                         </p>

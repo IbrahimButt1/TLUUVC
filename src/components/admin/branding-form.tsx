@@ -31,6 +31,7 @@ const MAX_FILE_SIZE_MB = 1;
 
 export default function BrandingForm({ settings }: BrandingFormProps) {
     const [logoPreview, setLogoPreview] = React.useState<string | null>(settings?.logo || null);
+    const [logoRemoved, setLogoRemoved] = useState(false);
     const { toast } = useToast();
     const [state, formAction] = useActionState(updateSiteSettings, { message: '', error: null, success: false });
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,6 +62,7 @@ export default function BrandingForm({ settings }: BrandingFormProps) {
             reader.onload = (event) => {
                 const dataUrl = event.target?.result as string;
                 setLogoPreview(dataUrl);
+                setLogoRemoved(false);
             };
             reader.readAsDataURL(file);
         }
@@ -68,6 +70,7 @@ export default function BrandingForm({ settings }: BrandingFormProps) {
     
     const handleRemoveImage = () => {
         setLogoPreview(null);
+        setLogoRemoved(true);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
         }
@@ -77,6 +80,7 @@ export default function BrandingForm({ settings }: BrandingFormProps) {
     return (
         <form action={formAction} className="space-y-6">
             <input type="hidden" name="username" defaultValue={settings.username} />
+            <input type="hidden" name="logoRemoved" value={logoRemoved.toString()} />
             <div className="space-y-4">
                 <Label htmlFor="logo-upload">Company Logo</Label>
                 <div className="flex items-center gap-4">
