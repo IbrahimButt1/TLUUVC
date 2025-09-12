@@ -42,7 +42,7 @@ function DeleteConfirmationButton({ isPending }: ActionButtonProps) {
 
 function RestoreButton({ isPending }: ActionButtonProps) {
     return (
-        <Button variant="outline" size="sm" type="submit" disabled={isPending}>
+        <Button variant="outline" size="sm" type="submit" disabled={isPending} className="w-40 justify-center">
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isPending && <Undo className="mr-2 h-4 w-4" />}
             Restore
@@ -87,7 +87,7 @@ export default function TrashTestimonials({ testimonials, searchTerm, onRestore,
                                     </form>
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
-                                            <Button variant="destructive" size="sm" disabled={isPending}>
+                                            <Button variant="destructive" size="sm" disabled={isPending} className="w-40 justify-center">
                                                 <Trash2 className="mr-2 h-4 w-4" />
                                                 Delete Permanently
                                             </Button>

@@ -103,14 +103,14 @@ export default function TrashEmails({ emails, searchTerm, onRestore, onDelete, i
                                         <p className="whitespace-pre-wrap text-sm leading-relaxed">
                                             <HighlightedText text={email.message} highlight={searchTerm} />
                                         </p>
-                                        <div className="flex justify-end pt-2 gap-2">
-                                            <form action={() => onRestore(email.id)}>
+                                        <div className="flex justify-end pt-2 gap-2 w-full">
+                                            <form className="inline-block" action={() => onRestore(email.id)}>
                                                 <input type="hidden" name="id" value={email.id} />
                                                 <RestoreButton isPending={isPending} />
                                             </form>
                                             <AlertDialog open={openDialogId === email.id} onOpenChange={(isOpen) => setOpenDialogId(isOpen ? email.id : null)}>
                                                 <AlertDialogTrigger asChild>
-                                                    <Button variant="destructive" size="sm" disabled={isPending}>
+                                                    <Button variant="destructive" size="sm" disabled={isPending} className="w-40 justify-center">
                                                         <Trash2 className="mr-2 h-4 w-4" />
                                                         Delete Permanently
                                                     </Button>
