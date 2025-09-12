@@ -44,14 +44,14 @@ export default function EmailList({ emails, selectedEmails, onSelectEmail, onVie
                             "cursor-pointer",
                             selectedEmails.includes(email.id) && "bg-muted/50"
                         )}
+                        onClick={() => onViewEmail(email)}
                     >
-                        <TableCell className="w-12 px-4">
+                        <TableCell className="w-12 px-4" onClick={(e) => e.stopPropagation()}>
                            <div className="flex items-center gap-2">
                              <Checkbox 
                                 id={`select-${email.id}`} 
                                 checked={selectedEmails.includes(email.id)}
                                 onCheckedChange={(checked) => onSelectEmail(email.id, checked)}
-                                onClick={(e) => e.stopPropagation()}
                               />
                               <Button
                                 variant="ghost"
@@ -66,14 +66,14 @@ export default function EmailList({ emails, selectedEmails, onSelectEmail, onVie
                               </Button>
                            </div>
                         </TableCell>
-                        <TableCell className={cn("w-48 font-medium", !email.read && "font-bold")} onClick={() => onViewEmail(email)}>
+                        <TableCell className={cn("w-48 font-medium", !email.read && "font-bold")}>
                             {email.name}
                         </TableCell>
-                        <TableCell onClick={() => onViewEmail(email)}>
+                        <TableCell>
                             <span className={cn("font-medium", !email.read && "font-bold")}>{email.subject}</span>
                             <span className="text-muted-foreground"> - {email.message.substring(0, 100)}...</span>
                         </TableCell>
-                        <TableCell className={cn("w-24 text-right text-sm text-muted-foreground", !email.read && "font-bold text-foreground")} onClick={() => onViewEmail(email)}>
+                        <TableCell className={cn("w-24 text-right text-sm text-muted-foreground", !email.read && "font-bold text-foreground")}>
                             {formatDate(email.receivedAt)}
                         </TableCell>
                     </TableRow>

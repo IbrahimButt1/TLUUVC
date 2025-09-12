@@ -29,6 +29,11 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
     });
   }, []);
 
+  useEffect(() => {
+    setEmails(initialEmails);
+  }, [initialEmails]);
+
+
   const filteredEmails = useMemo(() => {
     let tabFiltered = emails;
     if (activeTab === 'unread') {
@@ -178,6 +183,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
                 id="select-all"
                 checked={isAllSelected || isIndeterminate}
                 onCheckedChange={handleSelectAll}
+                onClick={(e) => e.stopPropagation()}
               />
               <Button variant="ghost" size="icon" onClick={() => window.location.reload()}>
                 <RefreshCw className="h-5 w-5" />
