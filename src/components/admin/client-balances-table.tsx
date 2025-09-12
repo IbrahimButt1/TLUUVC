@@ -1,6 +1,5 @@
 'use client';
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { type Client, type ClientBalance, updateClientBalance } from "@/lib/client-balances";
 import ClientBalanceTableRow from "./client-balance-table-row";
 
@@ -21,30 +20,28 @@ export default function ClientBalancesTable({ clients, allBalances }: ClientBala
 
     return (
         <div className="border rounded-md">
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                        <TableHead className="w-1/4">Client Name</TableHead>
-                        <TableHead className="w-1/4 text-center">Current Balance</TableHead>
-                        <TableHead className="w-1/4">New Balance Amount</TableHead>
-                        <TableHead className="w-1/4">Type</TableHead>
-                        <TableHead className="text-right">Action</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody className="contents">
-                    {clients.map(client => {
-                        const balance = allBalances.find(b => b.clientName === client.name);
-                        return (
-                           <ClientBalanceTableRow 
-                                key={client.name}
-                                clientName={client.name}
-                                currentBalance={balance}
-                                action={updateClientBalance}
-                           />
-                        );
-                    })}
-                </TableBody>
-            </Table>
+            {/* Header */}
+            <div className="grid grid-cols-[1fr,1fr,1fr,1fr,auto] gap-4 p-4 border-b bg-muted/50 font-medium text-muted-foreground text-sm">
+                <div>Client Name</div>
+                <div className="text-center">Current Balance</div>
+                <div>New Balance Amount</div>
+                <div>Type</div>
+                <div className="text-right">Action</div>
+            </div>
+            {/* Body */}
+            <div>
+                {clients.map(client => {
+                    const balance = allBalances.find(b => b.clientName === client.name);
+                    return (
+                       <ClientBalanceTableRow 
+                            key={client.name}
+                            clientName={client.name}
+                            currentBalance={balance}
+                            action={updateClientBalance}
+                       />
+                    );
+                })}
+            </div>
         </div>
     );
 }
