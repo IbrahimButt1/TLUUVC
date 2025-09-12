@@ -7,9 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Loader2 } from 'lucide-react';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { getServiceTitles, type ServiceTitle } from '@/lib/services';
 
 interface ManifestFormProps {
     action: (formData: FormData) => Promise<void>;
@@ -26,6 +27,15 @@ function SubmitButton() {
 }
 
 export default function ManifestForm({ action }: ManifestFormProps) {
+    const [services, setServices] = useState<ServiceTitle[]>([]);
+
+    useEffect(() => {
+        async function fetchServices() {
+            const serviceTitles = await getServiceTitles();
+            setServices(serviceTitles);
+        }
+        fetchServices();
+    }, []);
     
     return (
         <form action={action} className="space-y-6">
@@ -39,7 +49,21 @@ export default function ManifestForm({ action }: ManifestFormProps) {
             </div>
             <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Textarea id="description" name="description" rows={3} required placeholder="e.g. Payment for student visa application"/>
+                <Select name="description" required>
+                    <SelectTrigger id="description">
+                        <SelectValue placeholder="Select a transaction description..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {services.map((service) => (
+                            <SelectItem key={service.id} value={`Payment for ${service.title}`}>
+                                Payment for {service.title}
+                            </SelectItem>
+                        ))}
+                        <SelectItem value="Consultation Fee">Consultation Fee</SelectItem>
+                        <SelectItem value="Document Processing Fee">Document Processing Fee</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
             <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">

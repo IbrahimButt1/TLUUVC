@@ -17,6 +17,11 @@ export interface Service {
     status?: 'active' | 'trash';
 }
 
+export interface ServiceTitle {
+    id: string;
+    title: string;
+}
+
 // Path to the JSON file that acts as our database
 const dataPath = path.join(process.cwd(), 'src', 'lib', 'services.json');
 
@@ -42,6 +47,11 @@ async function writeServices(services: Service[]): Promise<void> {
 export async function getServices(): Promise<Service[]> {
     const services = await readServices();
     return services.filter(s => s.status === 'active');
+}
+
+export async function getServiceTitles(): Promise<ServiceTitle[]> {
+    const services = await getServices();
+    return services.map(s => ({ id: s.id, title: s.title }));
 }
 
 export async function getTrashedServices(): Promise<Service[]> {
