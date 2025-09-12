@@ -7,10 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Service } from "@/lib/services";
-import { Loader2, University, Briefcase, Users, FileText, Landmark, Plane, Ship, Hotel, Home, Globe, Award, ThumbsUp, Upload, Check, ChevronsUpDown } from 'lucide-react';
+import { Loader2, University, Briefcase, Users, FileText, Landmark, Plane, Ship, Hotel, Home, Globe, Award, ThumbsUp, Upload, Check, ChevronsUpDown, XCircle } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import * as LucideIcons from "lucide-react";
-import React from 'react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -58,6 +58,8 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
     const { toast } = useToast();
     const [title, setTitle] = React.useState(service?.title || "");
     const [titlePopoverOpen, setTitlePopoverOpen] = React.useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [fileInputKey, setFileInputKey] = React.useState(Date.now());
 
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,6 +92,15 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
     };
     
     const formAction = action.bind(null, imageDataUri);
+
+    const handleRemoveImage = () => {
+        setImagePreview(null);
+        setImageDataUri("");
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+        setFileInputKey(Date.now());
+    };
 
     return (
         <form action={formAction} className="space-y-6">
@@ -165,9 +176,20 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
             <div className="space-y-4">
                 <Label htmlFor="image-upload">Service Image</Label>
                 <div className="flex items-center gap-4">
-                    <div className="w-32 h-20 rounded-md border border-dashed flex items-center justify-center bg-muted overflow-hidden">
+                    <div className="w-32 h-20 relative rounded-md border border-dashed flex items-center justify-center bg-muted overflow-hidden">
                         {imagePreview ? (
-                            <Image src={imagePreview} alt="Service image preview" width={128} height={80} className="w-full h-full object-cover" />
+                            <>
+                                <Image src={imagePreview} alt="Service image preview" width={128} height={80} className="w-full h-full object-cover" />
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute top-1 right-1 h-6 w-6 text-white bg-black/50 hover:bg-black/75 hover:text-white"
+                                    onClick={handleRemoveImage}
+                                >
+                                    <XCircle className="h-4 w-4" />
+                                </Button>
+                            </>
                         ) : (
                              <div className="text-center text-muted-foreground text-sm p-2">
                                 <Upload className="mx-auto h-6 w-6" />
@@ -176,7 +198,7 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
                         )}
                     </div>
                     <div className="flex-1">
-                        <Input id="image-upload" name="imageFile" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                        <Input key={fileInputKey} id="image-upload" name="imageFile" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
                            Max file size: ${MAX_FILE_SIZE_MB}MB.
                         </p>

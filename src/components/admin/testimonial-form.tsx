@@ -7,8 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { Testimonial } from "@/lib/testimonials";
-import { Loader2, Check, ChevronsUpDown, GraduationCap, Globe, Upload } from 'lucide-react';
-import React from 'react';
+import { Loader2, Check, ChevronsUpDown, GraduationCap, Globe, Upload, XCircle } from 'lucide-react';
+import React, { useRef } from 'react';
 import { countries, Country } from '@/lib/countries';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
@@ -67,6 +67,9 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
     const [imagePreview, setImagePreview] = React.useState(testimonial?.image || null);
     const [imageDataUri, setImageDataUri] = React.useState("");
     const { toast } = useToast();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [fileInputKey, setFileInputKey] = React.useState(Date.now());
+
 
     const destinationValue = `${selectedRole} in ${selectedCountry}`;
     
@@ -94,6 +97,15 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
     };
 
     const formAction = action.bind(null, imageDataUri);
+
+    const handleRemoveImage = () => {
+        setImagePreview(null);
+        setImageDataUri("");
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+        setFileInputKey(Date.now());
+    };
 
 
     return (
@@ -231,9 +243,20 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
             <div className="space-y-4">
                 <Label htmlFor="image-upload">Client Image</Label>
                 <div className="flex items-center gap-4">
-                    <div className="w-24 h-24 rounded-full border border-dashed flex items-center justify-center bg-muted overflow-hidden">
+                    <div className="w-24 h-24 relative rounded-full border border-dashed flex items-center justify-center bg-muted overflow-hidden">
                         {imagePreview ? (
-                            <Image src={imagePreview} alt="Client image preview" width={96} height={96} className="w-full h-full object-cover" />
+                            <>
+                                <Image src={imagePreview} alt="Client image preview" width={96} height={96} className="w-full h-full object-cover" />
+                                 <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute top-0 right-0 h-6 w-6 text-white bg-black/50 hover:bg-black/75 hover:text-white"
+                                    onClick={handleRemoveImage}
+                                >
+                                    <XCircle className="h-4 w-4" />
+                                </Button>
+                            </>
                         ) : (
                              <div className="text-center text-muted-foreground text-sm p-2">
                                 <Upload className="mx-auto h-6 w-6" />
@@ -242,7 +265,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
                         )}
                     </div>
                     <div className="flex-1">
-                        <Input id="image-upload" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                        <Input key={fileInputKey} id="image-upload" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
                             Upload a photo of the client. A square image works best. Max file size: ${MAX_FILE_SIZE_MB}MB.
                         </p>

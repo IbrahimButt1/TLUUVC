@@ -7,8 +7,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import type { HeroImage } from "@/lib/hero-images";
-import { Loader2, Upload } from 'lucide-react';
-import React from 'react';
+import { Loader2, Upload, XCircle } from 'lucide-react';
+import React, { useRef } from 'react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 
@@ -35,6 +35,9 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
     const [imagePreview, setImagePreview] = React.useState<string | null>(image?.image || null);
     const [imageDataUri, setImageDataUri] = React.useState("");
     const { toast } = useToast();
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [fileInputKey, setFileInputKey] = React.useState(Date.now());
+
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -67,6 +70,15 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
     
     const formAction = action.bind(null, imageDataUri);
     
+    const handleRemoveImage = () => {
+        setImagePreview(null);
+        setImageDataUri("");
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+        setFileInputKey(Date.now());
+    };
+    
     return (
         <form action={formAction} className="space-y-6">
             {image && <input type="hidden" name="id" value={image.id} />}
@@ -81,9 +93,20 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
              <div className="space-y-4">
                 <Label htmlFor="image-upload">Hero Image</Label>
                 <div className="flex items-center gap-4">
-                    <div className="w-32 h-20 rounded-md border border-dashed flex items-center justify-center bg-muted overflow-hidden">
+                    <div className="w-32 h-20 relative rounded-md border border-dashed flex items-center justify-center bg-muted overflow-hidden">
                         {imagePreview ? (
-                            <Image src={imagePreview} alt="Hero image preview" width={128} height={80} className="w-full h-full object-cover" />
+                           <>
+                                <Image src={imagePreview} alt="Hero image preview" width={128} height={80} className="w-full h-full object-cover" />
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="icon"
+                                    className="absolute top-1 right-1 h-6 w-6 text-white bg-black/50 hover:bg-black/75 hover:text-white"
+                                    onClick={handleRemoveImage}
+                                >
+                                    <XCircle className="h-4 w-4" />
+                                </Button>
+                            </>
                         ) : (
                              <div className="text-center text-muted-foreground text-sm p-2">
                                 <Upload className="mx-auto h-6 w-6" />
@@ -92,7 +115,7 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
                         )}
                     </div>
                     <div className="flex-1">
-                        <Input id="image-upload" name="imageFile" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
+                        <Input key={fileInputKey} id="image-upload" name="imageFile" type="file" accept="image/jpeg, image/png, image/webp" onChange={handleImageChange} className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20" />
                         <p className="text-sm text-muted-foreground mt-2">
                             Upload a landscape image (e.g. 1920x1080). Max file size: ${MAX_FILE_SIZE_MB}MB.
                         </p>
