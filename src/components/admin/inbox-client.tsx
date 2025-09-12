@@ -16,9 +16,17 @@ export interface GroupedEmails {
     older: Email[];
 }
 
+const emptyGroups: GroupedEmails = {
+  today: [],
+  yesterday: [],
+  last7Days: [],
+  older: []
+};
+
 export default function InboxClient({ initialEmails }: { initialEmails: Email[] }) {
   const [emails, setEmails] = useState(initialEmails);
   const [searchTerm, setSearchTerm] = useState('');
+  const [groupedEmails, setGroupedEmails] = useState<GroupedEmails>(emptyGroups);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
@@ -28,35 +36,8 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
     markAllEmailsAsRead();
   }, []);
 
-  const handleDelete = (emailId: string) => {
-    startTransition(async () => {
-      // Optimistically update the UI
-      const originalEmails = emails;
-      setEmails(currentEmails => currentEmails.filter(e => e.id !== emailId));
-      
-      const formData = new FormData();
-      formData.append('id', emailId);
-
-      try {
-        await deleteEmail(formData);
-        toast({
-          title: "Email moved to trash",
-        });
-        // We need to refetch the initialEmails or just accept the optimistic update
-        // For simplicity, we'll just let the optimistic update stand.
-      } catch (error) {
-        // Revert the optimistic update on error
-        setEmails(originalEmails); 
-        toast({
-          title: "Error",
-          description: "Failed to move email to trash. Please try again.",
-          variant: "destructive",
-        });
-      }
-    });
-  };
-
-  const filteredAndGroupedEmails: GroupedEmails = useMemo(() => {
+  useEffect(() => {
+    // This effect handles filtering and grouping, and runs only on the client.
     const filtered = searchTerm
       ? emails.filter(email =>
           email.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -91,9 +72,37 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
         }
     });
 
-    return groups;
-
+    setGroupedEmails(groups);
   }, [emails, searchTerm]);
+
+
+  const handleDelete = (emailId: string) => {
+    startTransition(async () => {
+      // Optimistically update the UI
+      const originalEmails = emails;
+      setEmails(currentEmails => currentEmails.filter(e => e.id !== emailId));
+      
+      const formData = new FormData();
+      formData.append('id', emailId);
+
+      try {
+        await deleteEmail(formData);
+        toast({
+          title: "Email moved to trash",
+        });
+        // We need to refetch the initialEmails or just accept the optimistic update
+        // For simplicity, we'll just let the optimistic update stand.
+      } catch (error) {
+        // Revert the optimistic update on error
+        setEmails(originalEmails); 
+        toast({
+          title: "Error",
+          description: "Failed to move email to trash. Please try again.",
+          variant: "destructive",
+        });
+      }
+    });
+  };
 
   return (
     <div className="space-y-4">
@@ -110,7 +119,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
           </div>
       </Card>
       <InboxList 
-        groupedEmails={filteredAndGroupedEmails} 
+        groupedEmails={groupedEmails} 
         searchTerm={searchTerm} 
         onDelete={handleDelete}
         isPending={isPending}

@@ -54,9 +54,13 @@ function DeleteConfirmationButton({isPending}: DeleteButtonProps) {
     )
 }
 
-function EmailGroup({ title, emails, searchTerm, isClient, onDelete, isPending }: { title: string; emails: Email[]; searchTerm: string, isClient: boolean, onDelete: (id: string) => void, isPending: boolean }) {
+function EmailGroup({ title, emails, searchTerm, onDelete, isPending }: { title: string; emails: Email[]; searchTerm: string, onDelete: (id: string) => void, isPending: boolean }) {
     if (emails.length === 0) return null;
     const [openDialog, setOpenDialog] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     return (
         <>
@@ -129,11 +133,6 @@ function EmailGroup({ title, emails, searchTerm, isClient, onDelete, isPending }
 }
 
 export default function InboxList({ groupedEmails, searchTerm, onDelete, isPending }: { groupedEmails: GroupedEmails, searchTerm: string, onDelete: (id: string) => void, isPending: boolean }) {
-    const [isClient, setIsClient] = useState(false);
-
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
 
     const hasEmails = Object.values(groupedEmails).some(group => group.length > 0);
 
@@ -144,10 +143,10 @@ export default function InboxList({ groupedEmails, searchTerm, onDelete, isPendi
                     <p className="p-6 text-center text-muted-foreground">No emails found matching your search.</p>
                 ) : (
                     <Accordion type="single" collapsible className="w-full">
-                        <EmailGroup title="Today" emails={groupedEmails.today} searchTerm={searchTerm} isClient={isClient} onDelete={onDelete} isPending={isPending} />
-                        <EmailGroup title="Yesterday" emails={groupedEmails.yesterday} searchTerm={searchTerm} isClient={isClient} onDelete={onDelete} isPending={isPending} />
-                        <EmailGroup title="Last 7 Days" emails={groupedEmails.last7Days} searchTerm={searchTerm} isClient={isClient} onDelete={onDelete} isPending={isPending} />
-                        <EmailGroup title="Older" emails={groupedEmails.older} searchTerm={searchTerm} isClient={isClient} onDelete={onDelete} isPending={isPending} />
+                        <EmailGroup title="Today" emails={groupedEmails.today} searchTerm={searchTerm} onDelete={onDelete} isPending={isPending} />
+                        <EmailGroup title="Yesterday" emails={groupedEmails.yesterday} searchTerm={searchTerm} onDelete={onDelete} isPending={isPending} />
+                        <EmailGroup title="Last 7 Days" emails={groupedEmails.last7Days} searchTerm={searchTerm} onDelete={onDelete} isPending={isPending} />
+                        <EmailGroup title="Older" emails={groupedEmails.older} searchTerm={searchTerm} onDelete={onDelete} isPending={isPending} />
                     </Accordion>
                 )}
             </CardContent>
