@@ -5,7 +5,7 @@ import { useFormStatus } from 'react-dom';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Loader2, AlertCircle, Check, ChevronsUpDown, Wallet } from 'lucide-react';
+import { Loader2, AlertCircle, Check, ChevronsUpDown, Wallet, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Client, ClientBalance, updateClientBalance } from '@/lib/client-balances';
 import { cn } from '@/lib/utils';
@@ -132,18 +132,30 @@ export default function ClientBalanceForm({ clients, balances }: ClientBalanceFo
                     <Label htmlFor="type">Balance Type</Label>
                      <Select name="type" value={type} onValueChange={(value) => setType(value as 'credit' | 'debit')}>
                         <SelectTrigger id="type">
-                            <SelectValue placeholder="Select balance type..." />
+                            <SelectValue>
+                                {type === 'credit' ? (
+                                    <div className="flex items-center gap-2 text-green-600">
+                                        <ArrowDownLeft className="h-4 w-4" />
+                                        <span>Payment In (Credit)</span>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-2 text-red-600">
+                                        <ArrowUpRight className="h-4 w-4" />
+                                        <span>Payment Out (Debit)</span>
+                                    </div>
+                                )}
+                            </SelectValue>
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="credit">
-                                <div className="flex items-center gap-2">
-                                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                                <div className="flex items-center gap-2 text-green-600">
+                                    <ArrowDownLeft className="h-4 w-4" />
                                     <span>Payment In (Credit)</span>
                                 </div>
                             </SelectItem>
                             <SelectItem value="debit">
-                                 <div className="flex items-center gap-2">
-                                    <span className="h-2 w-2 rounded-full bg-red-500"></span>
+                                 <div className="flex items-center gap-2 text-red-600">
+                                    <ArrowUpRight className="h-4 w-4" />
                                     <span>Payment Out (Debit)</span>
                                 </div>
                             </SelectItem>
