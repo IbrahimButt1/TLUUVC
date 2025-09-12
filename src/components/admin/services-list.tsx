@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
     AlertDialog,
+    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -13,18 +15,24 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { deleteService, type Service } from "@/lib/services";
-import { DeleteButton } from "@/components/admin/delete-button";
+import type { Service } from "@/lib/services";
 import * as LucideIcons from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { MoreHorizontal, FilePenLine, Trash2 } from "lucide-react";
+import { MoreHorizontal, FilePenLine, Trash2, Loader2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 
 type IconName = keyof typeof LucideIcons;
 const DefaultIcon = LucideIcons.FileText;
 
+interface ServicesListProps {
+    services: Service[];
+    searchTerm: string;
+    onDelete: (id: string) => void;
+    isPending: boolean;
+}
+
 function HighlightedText({ text, highlight }: { text: string; highlight: string }) {
-    if (!highlight.trim()) {
+    if (!highlight || !text) {
         return <span>{text}</span>;
     }
     const regex = new RegExp(`(${highlight.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi');
@@ -44,7 +52,18 @@ function HighlightedText({ text, highlight }: { text: string; highlight: string 
     );
 }
 
-export default function ServicesList({ services, searchTerm }: { services: Service[], searchTerm: string }) {
+function DeleteConfirmationButton({ isPending }: { isPending: boolean }) {
+    return (
+        <Button variant="destructive" type="submit" disabled={isPending}>
+            {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Delete
+        </Button>
+    )
+}
+
+export default function ServicesList({ services, searchTerm, onDelete, isPending }: ServicesListProps) {
+    const [openDialogId, setOpenDialogId] = useState<string | null>(null);
+
     return (
         <Card>
             <CardContent>
@@ -98,7 +117,7 @@ export default function ServicesList({ services, searchTerm }: { services: Servi
                                                     </Link>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
-                                                 <AlertDialog>
+                                                 <AlertDialog open={openDialogId === service.id} onOpenChange={(isOpen) => setOpenDialogId(isOpen ? service.id : null)}>
                                                     <AlertDialogTrigger asChild>
                                                         <DropdownMenuItem 
                                                             className="text-destructive focus:text-destructive flex items-center"
@@ -112,14 +131,17 @@ export default function ServicesList({ services, searchTerm }: { services: Servi
                                                         <AlertDialogHeader>
                                                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                                             <AlertDialogDescription>
-                                                                This action cannot be undone. This will permanently delete this service.
+                                                                This action cannot be undone. This will move this service to the trash.
                                                             </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>
                                                             <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                            <form action={deleteService}>
+                                                            <form action={() => {
+                                                                onDelete(service.id)
+                                                                setOpenDialogId(null);
+                                                            }}>
                                                                 <input type="hidden" name="id" value={service.id} />
-                                                                <DeleteButton />
+                                                                <DeleteConfirmationButton isPending={isPending} />
                                                             </form>
                                                         </AlertDialogFooter>
                                                     </AlertDialogContent>

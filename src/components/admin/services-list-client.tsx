@@ -1,15 +1,43 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useTransition } from 'react';
 import type { Service } from '@/lib/services';
+import { deleteService } from '@/lib/services';
 import ServicesList from './services-list';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 
 export default function ServicesListClient({ initialServices }: { initialServices: Service[] }) {
   const [services, setServices] = useState(initialServices);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+
+  const handleDelete = (serviceId: string) => {
+    startTransition(async () => {
+        const originalServices = services;
+        setServices(currentServices => currentServices.filter(s => s.id !== serviceId));
+        
+        const formData = new FormData();
+        formData.append('id', serviceId);
+
+        try {
+            await deleteService(formData);
+            toast({
+                title: "Service moved to trash",
+            });
+        } catch (error) {
+            setServices(originalServices);
+            toast({
+                title: "Error",
+                description: "Failed to move service to trash. Please try again.",
+                variant: "destructive",
+            });
+        }
+    });
+  };
 
   const filteredServices = useMemo(() => {
     if (!searchTerm) {
@@ -18,7 +46,7 @@ export default function ServicesListClient({ initialServices }: { initialService
     return services.filter(service =>
         service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
         service.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        service.icon.toLowerCase().includes(searchTerm.toLowerCase())
+        (service.icon && service.icon.toLowerCase().includes(searchTerm.toLowerCase()))
     );
   }, [services, searchTerm]);
 
@@ -38,7 +66,12 @@ export default function ServicesListClient({ initialServices }: { initialService
             </div>
         </Card>
       </div>
-      <ServicesList services={filteredServices} searchTerm={searchTerm} />
+      <ServicesList 
+        services={filteredServices} 
+        searchTerm={searchTerm} 
+        onDelete={handleDelete}
+        isPending={isPending}
+      />
     </div>
   );
 }

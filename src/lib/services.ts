@@ -155,6 +155,7 @@ export async function deleteService(formData: FormData) {
     revalidatePath('/admin/inbox/trash');
 }
 
+
 export async function permanentlyDeleteService(formData: FormData): Promise<{ success: boolean; error?: string }> {
     const id = formData.get('id') as string;
     if (!id) return { success: false, error: 'ID not provided' };
