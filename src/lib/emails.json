@@ -6,7 +6,7 @@
     "subject": "Student Visa Prive in UK",
     "message": "Reply my Question?",
     "receivedAt": "2025-09-08T10:36:57.813Z",
-    "read": false,
+    "read": true,
     "status": "inbox"
   },
   {
@@ -16,7 +16,7 @@
     "subject": "Dubai",
     "message": "Urgent",
     "receivedAt": "2025-09-08T11:18:06.070Z",
-    "read": false,
+    "read": true,
     "status": "inbox"
   },
   {
@@ -36,7 +36,7 @@
     "subject": "i need UAE Visa",
     "message": "Give me details",
     "receivedAt": "2025-09-09T14:19:38.129Z",
-    "read": false,
+    "read": true,
     "status": "inbox"
   },
   {
@@ -46,7 +46,7 @@
     "subject": "Eid Offer 20% off",
     "message": "Nice Offer",
     "receivedAt": "2025-09-09T14:23:47.527Z",
-    "read": false,
+    "read": true,
     "status": "inbox"
   },
   {
@@ -56,7 +56,7 @@
     "subject": "Work Visas",
     "message": "I want to go Italy how much price of  Visa?",
     "receivedAt": "2025-09-11T00:15:31.300Z",
-    "read": false,
+    "read": true,
     "status": "inbox"
   },
   {
@@ -66,7 +66,7 @@
     "subject": "Work Visas",
     "message": "Details?",
     "receivedAt": "2025-09-11T12:14:58.756Z",
-    "read": false,
+    "read": true,
     "status": "inbox",
     "favorited": true
   },
@@ -77,7 +77,7 @@
     "subject": "Work Visas",
     "message": "Hi",
     "receivedAt": "2025-09-12T23:13:49.392Z",
-    "read": false,
+    "read": true,
     "status": "inbox",
     "favorited": false
   },
@@ -88,7 +88,7 @@
     "subject": "Application Review",
     "message": "Hi",
     "receivedAt": "2025-09-12T23:18:32.333Z",
-    "read": false,
+    "read": true,
     "status": "inbox",
     "favorited": false
   },
@@ -99,7 +99,7 @@
     "subject": "Family & Partner Visas",
     "message": "Ok",
     "receivedAt": "2025-09-12T23:22:41.840Z",
-    "read": false,
+    "read": true,
     "status": "inbox",
     "favorited": false
   },
@@ -110,7 +110,7 @@
     "subject": "Work Visas",
     "message": "OK",
     "receivedAt": "2025-09-12T23:25:16.978Z",
-    "read": false,
+    "read": true,
     "status": "inbox",
     "favorited": false
   },
@@ -121,7 +121,7 @@
     "subject": "Application Review",
     "message": "Nice",
     "receivedAt": "2025-09-12T23:25:38.463Z",
-    "read": false,
+    "read": true,
     "status": "inbox",
     "favorited": false
   }
