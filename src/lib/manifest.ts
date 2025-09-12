@@ -41,10 +41,15 @@ export async function getManifestEntries(): Promise<ManifestEntry[]> {
 export async function addManifestEntry(formData: FormData) {
     const clientName = formData.get('clientName') as string;
     const date = formData.get('date') as string;
-    const description = formData.get('description') as string;
+    let description = formData.get('description') as string;
+    const otherDescription = formData.get('otherDescription') as string;
     const type = formData.get('type') as 'credit' | 'debit';
     const amount = parseFloat(formData.get('amount') as string);
     
+    if (description === 'Other' && otherDescription) {
+        description = otherDescription;
+    }
+
     if (!clientName || !date || !description || !type || isNaN(amount)) {
         // Simple validation
         return;
