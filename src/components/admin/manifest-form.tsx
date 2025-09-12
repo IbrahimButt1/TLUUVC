@@ -6,9 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Loader2, TrendingUp, TrendingDown } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getServiceTitles, type ServiceTitle } from '@/lib/services';
 import { transactionCategories } from '@/lib/service-data';
 
@@ -43,7 +43,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
             <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                     <Label htmlFor="clientName">Client Name</Label>
-                    <Input id="clientName" name="clientName" required placeholder="e.g. Ali" />
+                    <Input id="clientName" name="clientName" required placeholder="e.g. John Doe" />
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="date">Date</Label>
@@ -53,24 +53,31 @@ export default function ManifestForm({ action }: ManifestFormProps) {
             
             <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Select name="description" required onValueChange={setDescription} >
-                    <SelectTrigger id="description">
-                        <SelectValue placeholder="Select a transaction description..." />
-                    </SelectTrigger>
-                    <SelectContent>
+                <select 
+                    id="description"
+                    name="description"
+                    required 
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                    <option value="" disabled>Select a transaction description...</option>
+                    <optgroup label="Standard Transactions">
                         {transactionCategories.map((cat) => (
-                             <SelectItem key={cat.value} value={cat.label}>
+                             <option key={cat.value} value={cat.label}>
                                 {cat.label}
-                            </SelectItem>
+                            </option>
                         ))}
+                    </optgroup>
+                    <optgroup label="Service Payments">
                         {services.map((service) => (
-                            <SelectItem key={service.id} value={`Payment for ${service.title}`}>
+                            <option key={service.id} value={`Payment for ${service.title}`}>
                                 Payment for {service.title}
-                            </SelectItem>
+                            </option>
                         ))}
-                        <SelectItem value="Other">Other</SelectItem>
-                    </SelectContent>
-                </Select>
+                    </optgroup>
+                    <option value="Other">Other</option>
+                </select>
                  {description === 'Other' && (
                     <Textarea 
                         name="otherDescription"
@@ -80,36 +87,20 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                     />
                 )}
             </div>
-            <div className="space-y-2">
-                <Label htmlFor="notes">Notes (Optional)</Label>
-                <Textarea 
-                    id="notes"
-                    name="notes"
-                    placeholder="Add any additional details about the transaction"
-                />
-            </div>
+            
             <div className="grid grid-cols-2 gap-6">
                  <div className="space-y-2">
                     <Label htmlFor="type">Transaction Type</Label>
-                     <Select name="type" required defaultValue="credit">
-                        <SelectTrigger id="type">
-                            <SelectValue placeholder="Select a transaction type..." />
-                        </SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="credit">
-                                <div className="flex items-center gap-2 text-green-600">
-                                    <TrendingUp className="h-4 w-4" />
-                                    <span>Client Payment Received</span>
-                                </div>
-                            </SelectItem>
-                            <SelectItem value="debit">
-                                 <div className="flex items-center gap-2 text-red-600">
-                                    <TrendingDown className="h-4 w-4" />
-                                    <span>Vendor Payment Payout</span>
-                                </div>
-                            </SelectItem>
-                        </SelectContent>
-                    </Select>
+                    <RadioGroup defaultValue="credit" name="type" className="flex gap-4 pt-2">
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="credit" id="credit" />
+                            <Label htmlFor="credit">Credit</Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <RadioGroupItem value="debit" id="debit" />
+                            <Label htmlFor="debit">Debit</Label>
+                        </div>
+                    </RadioGroup>
                 </div>
                  <div className="space-y-2">
                     <Label htmlFor="amount">Amount ($)</Label>
