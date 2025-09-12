@@ -2,9 +2,9 @@ import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { getManifestEntries } from "@/lib/manifest";
-import ManifestList from "@/components/admin/manifest-list";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import ManifestChart from "@/components/admin/manifest-chart";
+import ManifestClient from "@/components/admin/manifest-client";
 
 export default async function ManifestPage() {
   const entries = await getManifestEntries();
@@ -75,15 +75,7 @@ export default async function ManifestPage() {
             </Card>
         </div>
         
-        <Card>
-            <CardHeader>
-                <CardTitle>Transaction History</CardTitle>
-                <CardDescription>A complete log of all debit and credit entries.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                 <ManifestList entries={entries} />
-            </CardContent>
-        </Card>
+        <ManifestClient initialEntries={entries} />
     </div>
   );
 }
