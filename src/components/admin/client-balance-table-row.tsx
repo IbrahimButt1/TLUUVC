@@ -57,8 +57,8 @@ export default function ClientBalanceTableRow({ clientName, currentBalance, acti
     const defaultAmount = currentBalance?.amount || 0;
 
     return (
-        <TableRow key={key}>
-             <form action={formAction} ref={formRef} className="contents">
+         <form action={formAction} ref={formRef} className="contents" key={key}>
+            <TableRow>
                 <input type="hidden" name="clientName" value={clientName} />
                 <TableCell className="font-medium">{clientName}</TableCell>
                 <TableCell className="text-center">
@@ -96,7 +96,7 @@ export default function ClientBalanceTableRow({ clientName, currentBalance, acti
                 <TableCell className="text-right">
                     <SubmitButton />
                 </TableCell>
-            </form>
-        </TableRow>
+            </TableRow>
+        </form>
     );
 }

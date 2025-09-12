@@ -31,7 +31,7 @@ export default function ClientBalancesTable({ clients, allBalances }: ClientBala
                         <TableHead className="text-right">Action</TableHead>
                     </TableRow>
                 </TableHeader>
-                <TableBody>
+                <TableBody className="contents">
                     {clients.map(client => {
                         const balance = allBalances.find(b => b.clientName === client.name);
                         return (
