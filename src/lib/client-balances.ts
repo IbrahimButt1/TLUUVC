@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
+import type { ManifestEntry } from './manifest';
 
 export interface ClientBalance {
     clientName: string;
@@ -18,7 +19,7 @@ const manifestDataPath = path.join(process.cwd(), 'src', 'lib', 'manifest.json')
 const balancesDataPath = path.join(process.cwd(), 'src', 'lib', 'client-balances.json');
 
 
-async function readManifestEntries(): Promise<{ clientName: string }[]> {
+async function readManifestEntries(): Promise<ManifestEntry[]> {
     try {
         const fileContent = await fs.readFile(manifestDataPath, 'utf-8');
         return JSON.parse(fileContent);
@@ -63,8 +64,11 @@ export async function updateClientBalance(
     const type = formData.get('type') as 'credit' | 'debit';
     const amount = parseFloat(amountStr);
 
-    if (!clientName || !type || isNaN(amount)) {
-        return { success: false, error: 'Invalid data provided.' };
+    if (!clientName) {
+        return { success: false, error: 'Please select a client.' };
+    }
+     if (!type || isNaN(amount)) {
+        return { success: false, error: 'Invalid amount or balance type provided.' };
     }
 
     const balances = await readClientBalances();
@@ -73,18 +77,16 @@ export async function updateClientBalance(
     const newBalance: ClientBalance = { clientName, amount, type };
 
     if (clientIndex !== -1) {
-        // Update existing balance
         balances[clientIndex] = newBalance;
     } else {
-        // Add new balance
         balances.push(newBalance);
     }
 
     try {
         await writeClientBalances(balances);
         revalidatePath('/admin/client-balances');
-        return { success: true, message: `Balance for ${clientName} saved.` };
+        return { success: true, message: `Opening balance for ${clientName} has been saved successfully.` };
     } catch (error) {
-        return { success: false, error: 'Failed to save balance.' };
+        return { success: false, error: 'Failed to save the opening balance. Please try again.' };
     }
 }
