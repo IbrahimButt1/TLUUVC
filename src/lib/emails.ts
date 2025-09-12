@@ -86,16 +86,21 @@ export async function markEmailAsRead(formData: FormData): Promise<{ success: bo
     const id = formData.get('id') as string;
     if (!id) return { success: false, error: 'ID not provided' };
 
-    const emails = await readEmails();
-    const updatedEmails = emails.map(email => 
-        email.id === id ? { ...email, read: true } : email
-    );
-    await writeEmails(updatedEmails);
+    try {
+        const emails = await readEmails();
+        const updatedEmails = emails.map(email => 
+            email.id === id ? { ...email, read: true } : email
+        );
+        await writeEmails(updatedEmails);
 
-    revalidatePath('/admin/emails');
-    revalidatePath('/admin');
+        revalidatePath('/admin/emails');
+        revalidatePath('/admin');
 
-    return { success: true };
+        return { success: true };
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        return { success: false, error: errorMessage };
+    }
 }
 
 export async function markAllEmailsAsRead() {

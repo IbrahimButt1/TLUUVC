@@ -33,8 +33,15 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
     // Poll for new emails every 5 seconds
     const interval = setInterval(async () => {
       const latestEmails = await getEmails();
-      if (JSON.stringify(latestEmails) !== JSON.stringify(emails)) {
-        setEmails(latestEmails);
+      // Only update state if the email lists are different to avoid unnecessary re-renders
+      if (JSON.stringify(latestEmails) !== JSON.stringify(emails.filter(e => e.status === 'inbox'))) {
+         // This logic ensures existing state (like selections) isn't wiped out
+         // by a simple poll update.
+         setEmails(currentEmails => {
+            const currentIds = new Set(currentEmails.map(e => e.id));
+            const newEmails = latestEmails.filter(e => !currentIds.has(e.id));
+            return [...newEmails, ...currentEmails];
+         });
       }
     }, 5000);
 
@@ -43,11 +50,11 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
 
 
   const filteredEmails = useMemo(() => {
-    let tabFiltered = emails;
+    let tabFiltered = emails.filter(e => e.status === 'inbox');
     if (activeTab === 'unread') {
-      tabFiltered = emails.filter(email => !email.read);
+      tabFiltered = emails.filter(email => email.status === 'inbox' && !email.read);
     } else if (activeTab === 'favorites') {
-      tabFiltered = emails.filter(email => email.favorited);
+      tabFiltered = emails.filter(email => email.status === 'inbox' && email.favorited);
     }
     
     return searchTerm
@@ -85,7 +92,8 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
 
     startTransition(async () => {
       const originalEmails = [...emails];
-      setEmails(current => current.filter(e => !ids.includes(e.id)));
+      // Optimistic update: mark as trash
+      setEmails(current => current.map(e => ids.includes(e.id) ? { ...e, status: 'trash' } : e));
       
       try {
         for (const id of ids) {
@@ -113,7 +121,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
   const handleMarkAllAsRead = () => {
     startTransition(async () => {
         const originalEmails = [...emails];
-        const allReadEmails = emails.map(e => ({ ...e, read: true }));
+        const allReadEmails = emails.map(e => e.status === 'inbox' ? { ...e, read: true } : e);
         setEmails(allReadEmails);
 
         try {
@@ -162,28 +170,32 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
   };
 
   const handleViewEmail = (email: Email) => {
-    // Mark email as read on view
+    setCurrentEmail(email);
+    // Mark email as read on view if it's unread
     if (!email.read) {
         startTransition(async () => {
             const originalEmails = [...emails];
+            // Optimistic UI update
             setEmails(current => current.map(e => e.id === email.id ? { ...e, read: true } : e));
             
             const formData = new FormData();
             formData.append('id', email.id);
             try {
-                await markEmailAsRead(formData);
+                const result = await markEmailAsRead(formData);
+                if (!result.success) {
+                   setEmails(originalEmails); // Revert on error
+                }
             } catch (error) {
                 setEmails(originalEmails); // Revert on error
             }
         });
     }
-    setCurrentEmail(email);
   }
   
   const isAllSelected = filteredEmails.length > 0 && selectedEmails.length === filteredEmails.length;
   const isIndeterminate = selectedEmails.length > 0 && selectedEmails.length < filteredEmails.length;
 
-  const unreadCount = useMemo(() => emails.filter(e => !e.read).length, [emails]);
+  const unreadCount = useMemo(() => emails.filter(e => e.status === 'inbox' && !e.read).length, [emails]);
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">

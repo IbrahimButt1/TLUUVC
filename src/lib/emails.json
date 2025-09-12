@@ -91,5 +91,38 @@
     "read": true,
     "status": "inbox",
     "favorited": false
+  },
+  {
+    "id": "1757719361840-ouf3xab",
+    "name": "Butt",
+    "email": "Bk1414551@gmail.com",
+    "subject": "Family & Partner Visas",
+    "message": "Ok",
+    "receivedAt": "2025-09-12T23:22:41.840Z",
+    "read": true,
+    "status": "inbox",
+    "favorited": false
+  },
+  {
+    "id": "1757719516978-qe2ddq2",
+    "name": "Ibrahim Butt",
+    "email": "Bk1414551@gmail.com",
+    "subject": "Work Visas",
+    "message": "OK",
+    "receivedAt": "2025-09-12T23:25:16.978Z",
+    "read": false,
+    "status": "inbox",
+    "favorited": false
+  },
+  {
+    "id": "1757719538462-gzr4kmi",
+    "name": "Tahir Butt",
+    "email": "Bk1414551@gmail.com",
+    "subject": "Application Review",
+    "message": "Nice",
+    "receivedAt": "2025-09-12T23:25:38.463Z",
+    "read": false,
+    "status": "inbox",
+    "favorited": false
   }
 ]
