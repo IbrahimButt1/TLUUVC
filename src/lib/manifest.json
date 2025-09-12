@@ -30,5 +30,13 @@
     "description": "Payment for Visa",
     "type": "debit",
     "amount": 3500
+  },
+  {
+    "id": "1757706318410-0u1k5q2",
+    "clientName": "Ali",
+    "date": "2025-09-12",
+    "description": "France Visa ",
+    "type": "credit",
+    "amount": 5000
   }
 ]

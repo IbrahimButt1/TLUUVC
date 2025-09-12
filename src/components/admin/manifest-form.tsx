@@ -28,7 +28,6 @@ function SubmitButton() {
 
 export default function ManifestForm({ action }: ManifestFormProps) {
     const [services, setServices] = useState<ServiceTitle[]>([]);
-    const [descriptionValue, setDescriptionValue] = useState('');
 
     useEffect(() => {
         async function fetchServices() {
@@ -50,7 +49,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
             </div>
             <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Select name="description" required onValueChange={setDescriptionValue}>
+                <Select name="description" required>
                     <SelectTrigger id="description">
                         <SelectValue placeholder="Select a transaction description..." />
                     </SelectTrigger>
@@ -66,17 +65,14 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                     </SelectContent>
                 </Select>
             </div>
-            {descriptionValue === 'Other' && (
-                 <div className="space-y-2">
-                    <Label htmlFor="otherDescription">Custom Description</Label>
-                    <Textarea 
-                        id="otherDescription"
-                        name="otherDescription"
-                        placeholder="Please specify the transaction details"
-                        required
-                    />
-                </div>
-            )}
+            <div className="space-y-2">
+                <Label htmlFor="notes">Notes (Optional)</Label>
+                <Textarea 
+                    id="notes"
+                    name="notes"
+                    placeholder="Add any additional details about the transaction"
+                />
+            </div>
             <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                     <Label htmlFor="type">Transaction Type</Label>

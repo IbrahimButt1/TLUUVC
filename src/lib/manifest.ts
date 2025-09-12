@@ -42,15 +42,17 @@ export async function addManifestEntry(formData: FormData) {
     const clientName = formData.get('clientName') as string;
     const date = formData.get('date') as string;
     let description = formData.get('description') as string;
-    const otherDescription = formData.get('otherDescription') as string;
+    const notes = formData.get('notes') as string;
     const type = formData.get('type') as 'credit' | 'debit';
     const amount = parseFloat(formData.get('amount') as string);
     
-    if (description === 'Other' && otherDescription) {
-        description = otherDescription;
+    let finalDescription = description;
+    if (notes) {
+        finalDescription = `${description} - ${notes}`;
     }
 
-    if (!clientName || !date || !description || !type || isNaN(amount)) {
+
+    if (!clientName || !date || !finalDescription || !type || isNaN(amount)) {
         // Simple validation
         return;
     }
@@ -59,7 +61,7 @@ export async function addManifestEntry(formData: FormData) {
         id: `${new Date().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
         clientName,
         date,
-        description,
+        description: finalDescription,
         type,
         amount,
     };
