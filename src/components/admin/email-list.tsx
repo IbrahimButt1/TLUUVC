@@ -7,6 +7,7 @@ import { Star } from 'lucide-react';
 import { format, isToday, isThisYear } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
+import { useState, useEffect } from 'react';
 
 interface EmailListProps {
   emails: Email[];
@@ -16,19 +17,35 @@ interface EmailListProps {
   onToggleFavorite: (id: string, isFavorited: boolean) => void;
 }
 
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  if (isToday(date)) {
+    return format(date, 'p'); // e.g., 4:30 PM
+  }
+  if (isThisYear(date)) {
+    return format(date, 'MMM d'); // e.g., Jun 5
+  }
+  return format(date, 'P'); // e.g., 06/05/2023
+};
+
+function EmailDate({ dateString, isRead }: { dateString: string, isRead: boolean }) {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    const formattedDate = isMounted ? formatDate(dateString) : '';
+
+    return (
+        <TableCell className={cn("w-24 text-right text-sm text-muted-foreground", !isRead && "font-bold text-foreground")}>
+            {isMounted ? formattedDate : '...'}
+        </TableCell>
+    );
+}
+
 export default function EmailList({ emails, selectedEmails, onSelectEmail, onViewEmail, onToggleFavorite }: EmailListProps) {
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    if (isToday(date)) {
-      return format(date, 'p'); // e.g., 4:30 PM
-    }
-    if (isThisYear(date)) {
-      return format(date, 'MMM d'); // e.g., Jun 5
-    }
-    return format(date, 'P'); // e.g., 06/05/2023
-  };
-
+  
   if (emails.length === 0) {
     return <div className="text-center text-muted-foreground p-12">No emails found.</div>;
   }
@@ -73,9 +90,7 @@ export default function EmailList({ emails, selectedEmails, onSelectEmail, onVie
                             <span className={cn("font-medium", !email.read && "font-bold")}>{email.subject}</span>
                             <span className="text-muted-foreground"> - {email.message.substring(0, 100)}...</span>
                         </TableCell>
-                        <TableCell className={cn("w-24 text-right text-sm text-muted-foreground", !email.read && "font-bold text-foreground")}>
-                            {formatDate(email.receivedAt)}
-                        </TableCell>
+                        <EmailDate dateString={email.receivedAt} isRead={email.read} />
                     </TableRow>
                 ))}
             </TableBody>
