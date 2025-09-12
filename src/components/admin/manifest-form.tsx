@@ -9,9 +9,7 @@ import Link from "next/link";
 import { Loader2, TrendingUp, TrendingDown } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getServiceTitles, type ServiceTitle } from '@/lib/services';
-import { cn } from '@/lib/utils';
 
 interface ManifestFormProps {
     action: (formData: FormData) => Promise<void>;
@@ -51,10 +49,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                     <Input id="date" name="date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} />
                 </div>
             </div>
-             <div className="space-y-2 text-right">
-                <Label htmlFor="transactionId">Transaction ID</Label>
-                <Input id="transactionId" name="transactionId" value="" readOnly disabled className="text-muted-foreground text-right" />
-            </div>
+            
             <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
                 <Select name="description" required onValueChange={setDescription} >
