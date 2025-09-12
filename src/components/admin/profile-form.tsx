@@ -85,10 +85,10 @@ export default function ProfileForm({ settings }: ProfileFormProps) {
             <div className="space-y-4">
                 <Label htmlFor="avatar-upload">Profile Picture</Label>
                 <div className="flex items-center gap-4">
-                    <div className="w-32 h-16 relative rounded-md border border-dashed flex items-center justify-center bg-muted overflow-hidden">
+                    <div className="w-24 h-24 relative rounded-full border border-dashed flex items-center justify-center bg-muted overflow-hidden">
                         {avatarPreview ? (
                             <>
-                                <Image src={avatarPreview} alt="Avatar preview" width={128} height={64} className="w-full h-full object-contain" />
+                                <Image src={avatarPreview} alt="Avatar preview" width={96} height={96} className="w-full h-full object-cover" />
                                 <Button
                                     type="button"
                                     variant="ghost"
@@ -101,8 +101,7 @@ export default function ProfileForm({ settings }: ProfileFormProps) {
                             </>
                         ) : (
                             <div className="text-center text-muted-foreground text-sm p-2">
-                                <Upload className="mx-auto h-6 w-6" />
-                                <span>Preview</span>
+                                <Upload className="mx-auto h-8 w-8" />
                             </div>
                         )}
                     </div>

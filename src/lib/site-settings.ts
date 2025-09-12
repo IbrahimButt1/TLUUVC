@@ -31,7 +31,7 @@ async function readSiteSettings(): Promise<SiteSettings> {
             ...settings,
             username: settings.username || 'admin',
             password: settings.password || 'password',
-            avatar: settings.avatar || 'https://picsum.photos/100',
+            avatar: settings.avatar || '',
             secretQuestion: settings.secretQuestion || '',
             secretAnswer: settings.secretAnswer || '',
         };
@@ -41,7 +41,7 @@ async function readSiteSettings(): Promise<SiteSettings> {
                 logo: 'https://picsum.photos/32/32',
                 username: 'admin',
                 password: 'password',
-                avatar: 'https://picsum.photos/100',
+                avatar: '',
                 secretQuestion: '',
                 secretAnswer: '',
             };
@@ -51,7 +51,7 @@ async function readSiteSettings(): Promise<SiteSettings> {
             logo: 'https://picsum.photos/32/32',
             username: 'admin',
             password: 'password',
-            avatar: 'https://picsum.photos/100',
+            avatar: '',
             secretQuestion: '',
             secretAnswer: '',
         };

@@ -106,7 +106,7 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
        <Link href="/admin/settings?tab=profile" className="block mt-auto p-4 border-t hover:bg-muted transition-colors">
           <div className="flex items-center gap-3">
               <Avatar className="h-10 w-10 border">
-                  <AvatarImage src={settings.avatar || "https://picsum.photos/100"} alt="Admin Avatar" data-ai-hint="person portrait" />
+                  <AvatarImage src={settings.avatar} alt="Admin Avatar" data-ai-hint="person portrait" />
                   <AvatarFallback>
                       <User className="h-5 w-5" />
                   </AvatarFallback>
