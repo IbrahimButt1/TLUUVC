@@ -1,129 +1,137 @@
 'use client';
 
-import { useState, useEffect, useMemo, useTransition } from 'react';
-import { deleteEmail, markAllEmailsAsRead, type Email } from '@/lib/emails';
-import InboxList from './inbox-list';
+import { useState, useMemo, useTransition } from 'react';
+import type { Email } from '@/lib/emails';
+import { deleteEmail, markAllEmailsAsRead } from '@/lib/emails';
+import { Button } from '@/components/ui/button';
+import EmailList from './email-list';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
-import { isToday, isYesterday, isWithinInterval, subDays, startOfDay } from 'date-fns';
-import { Card } from '@/components/ui/card';
+import { Search, RefreshCw, MoreVertical, Trash2 } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-
-export interface GroupedEmails {
-    today: Email[];
-    yesterday: Email[];
-    last7Days: Email[];
-    older: Email[];
-}
-
-const emptyGroups: GroupedEmails = {
-  today: [],
-  yesterday: [],
-  last7Days: [],
-  older: []
-};
+import { Checkbox } from '@/components/ui/checkbox';
+import EmailView from './email-view';
 
 export default function InboxClient({ initialEmails }: { initialEmails: Email[] }) {
   const [emails, setEmails] = useState(initialEmails);
   const [searchTerm, setSearchTerm] = useState('');
-  const [groupedEmails, setGroupedEmails] = useState<GroupedEmails>(emptyGroups);
+  const [selectedEmails, setSelectedEmails] = useState<string[]>([]);
+  const [currentEmail, setCurrentEmail] = useState<Email | null>(null);
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
-  useEffect(() => {
-    // This function will run on the client after the component mounts
-    // to mark emails as read.
+  useMemo(() => {
     markAllEmailsAsRead();
   }, []);
 
-  useEffect(() => {
-    // This effect handles filtering and grouping, and runs only on the client.
-    const filtered = searchTerm
+  const filteredEmails = useMemo(() => {
+    return searchTerm
       ? emails.filter(email =>
           email.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           email.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          email.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          email.message.toLowerCase().includes(searchTerm.toLowerCase())
+          email.subject.toLowerCase().includes(searchTerm.toLowerCase())
         )
       : emails;
-
-    const groups: GroupedEmails = {
-        today: [],
-        yesterday: [],
-        last7Days: [],
-        older: []
-    };
-    
-    const now = new Date();
-    const startOfToday = startOfDay(now);
-    const startOfYesterday = startOfDay(subDays(now, 1));
-    const startOfLastWeek = startOfDay(subDays(now, 7));
-
-    filtered.forEach(email => {
-        const emailDate = new Date(email.receivedAt);
-        if (isToday(emailDate)) {
-            groups.today.push(email);
-        } else if (isYesterday(emailDate)) {
-            groups.yesterday.push(email);
-        } else if (isWithinInterval(emailDate, { start: startOfLastWeek, end: startOfYesterday })) {
-            groups.last7Days.push(email);
-        } else {
-            groups.older.push(email);
-        }
-    });
-
-    setGroupedEmails(groups);
   }, [emails, searchTerm]);
 
+  const handleSelectEmail = (id: string, checked: boolean | 'indeterminate') => {
+    if (checked) {
+      setSelectedEmails(prev => [...prev, id]);
+    } else {
+      setSelectedEmails(prev => prev.filter(emailId => emailId !== id));
+    }
+  };
 
-  const handleDelete = (emailId: string) => {
+  const handleSelectAll = (checked: boolean | 'indeterminate') => {
+    if (checked) {
+      setSelectedEmails(filteredEmails.map(e => e.id));
+    } else {
+      setSelectedEmails([]);
+    }
+  };
+
+  const handleDeleteSelected = () => {
     startTransition(async () => {
-      // Optimistically update the UI
-      const originalEmails = emails;
-      setEmails(currentEmails => currentEmails.filter(e => e.id !== emailId));
+      const originalEmails = [...emails];
+      setEmails(current => current.filter(e => !selectedEmails.includes(e.id)));
       
-      const formData = new FormData();
-      formData.append('id', emailId);
-
       try {
-        await deleteEmail(formData);
+        for (const id of selectedEmails) {
+          const formData = new FormData();
+          formData.append('id', id);
+          await deleteEmail(formData);
+        }
         toast({
-          title: "Email moved to trash",
+          title: `${selectedEmails.length} email(s) moved to trash.`,
         });
-        // We need to refetch the initialEmails or just accept the optimistic update
-        // For simplicity, we'll just let the optimistic update stand.
+        setSelectedEmails([]);
       } catch (error) {
-        // Revert the optimistic update on error
-        setEmails(originalEmails); 
+        setEmails(originalEmails);
         toast({
           title: "Error",
-          description: "Failed to move email to trash. Please try again.",
+          description: "Failed to move emails to trash.",
           variant: "destructive",
         });
       }
     });
   };
 
+  const isAllSelected = filteredEmails.length > 0 && selectedEmails.length === filteredEmails.length;
+  const isIndeterminate = selectedEmails.length > 0 && selectedEmails.length < filteredEmails.length;
+
   return (
-    <div className="space-y-4">
-       <Card className="shadow-none">
-           <div className="relative">
-            <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+    <Card className="shadow-sm border">
+      <CardContent className="p-0">
+        <div className="p-2 border-b">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
                 type="search"
                 placeholder="Search emails..."
-                className="pr-12 pl-4 w-full bg-card"
+                className="pl-10 w-full bg-background"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-      </Card>
-      <InboxList 
-        groupedEmails={groupedEmails} 
-        searchTerm={searchTerm} 
-        onDelete={handleDelete}
-        isPending={isPending}
-      />
-    </div>
+        </div>
+
+        <div className="flex items-center p-2 border-b h-14">
+          <div className="flex items-center gap-2">
+            <Checkbox 
+              id="select-all"
+              checked={isAllSelected || isIndeterminate}
+              onCheckedChange={handleSelectAll}
+            />
+            <Button variant="ghost" size="icon" onClick={() => window.location.reload()}>
+              <RefreshCw className="h-5 w-5" />
+            </Button>
+            {selectedEmails.length > 0 && (
+              <Button variant="ghost" size="icon" onClick={handleDeleteSelected}>
+                <Trash2 className="h-5 w-5" />
+              </Button>
+            )}
+            <Button variant="ghost" size="icon">
+              <MoreVertical className="h-5 w-5" />
+            </Button>
+          </div>
+        </div>
+
+        <EmailList 
+          emails={filteredEmails} 
+          selectedEmails={selectedEmails}
+          onSelectEmail={handleSelectEmail}
+          onViewEmail={setCurrentEmail}
+        />
+        {currentEmail && (
+            <EmailView 
+                email={currentEmail}
+                open={!!currentEmail}
+                onOpenChange={(isOpen) => {
+                    if(!isOpen) setCurrentEmail(null);
+                }}
+            />
+        )}
+      </CardContent>
+    </Card>
   );
 }
