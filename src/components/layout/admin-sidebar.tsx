@@ -16,7 +16,7 @@ const navLinks = [
   { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquareQuote },
   { href: '/admin/hero', label: 'Hero Images', icon: ImageIcon },
   { href: '/admin/about', label: 'About', icon: Info },
-  { href: '/admin/inbox', label: 'Inbox', icon: Inbox },
+  { href: '/admin/inbox', label: 'Emails', icon: Inbox },
   { href: '/admin/manifest', label: 'Manifest', icon: BookUser },
   { href: '/admin/client-balances', label: 'Opening Balances', icon: BookUser },
 ];
