@@ -14,5 +14,21 @@
     "description": "Payment of Work Visa in UAE",
     "type": "credit",
     "amount": 1200
+  },
+  {
+    "id": "1757679560920-p7rmoev",
+    "clientName": "Vendor ",
+    "date": "2025-09-13",
+    "description": "Payment for Processing Visa",
+    "type": "credit",
+    "amount": 3000
+  },
+  {
+    "id": "1757679615194-bgqx74m",
+    "clientName": "Ali",
+    "date": "2025-09-13",
+    "description": "Payment for Visa",
+    "type": "debit",
+    "amount": 3500
   }
 ]

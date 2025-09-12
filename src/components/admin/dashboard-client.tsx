@@ -126,41 +126,44 @@ export default function DashboardClient({
 
        <div>
         <h2 className="text-2xl font-bold mb-4">Recent Activity</h2>
-         <Card
+         <div
             className={cn(
-                'transition-all duration-500 ease-out',
+                'relative group p-[2px] rounded-lg transition-all duration-500 ease-out',
+                'bg-gradient-to-br from-border via-border to-border',
+                'hover:bg-gradient-to-br hover:from-primary/50 hover:via-primary/20 hover:to-primary/50',
                 isMounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
             )}
             style={{ transitionDelay: `${(stats.length + financialStats.length) * 100}ms` }}
         >
-            <CardHeader>
-                <CardTitle>Last Manifest Entry</CardTitle>
-                <CardDescription>The most recent transaction recorded.</CardDescription>
-            </CardHeader>
-            <CardContent>
-                {lastManifestEntry ? (
-                     <div className="flex items-center space-x-4">
-                        <div className="p-3 bg-muted rounded-full">
-                           <BookUser className="h-6 w-6 text-muted-foreground" />
+            <Card>
+                <CardHeader>
+                    <CardTitle>Last Manifest Entry</CardTitle>
+                    <CardDescription>The most recent transaction recorded.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {lastManifestEntry ? (
+                        <div className="flex items-center space-x-4">
+                            <div className="p-3 bg-muted rounded-full">
+                            <BookUser className="h-6 w-6 text-muted-foreground" />
+                            </div>
+                            <div className="flex-1">
+                                <p className="font-semibold">{lastManifestEntry.clientName}</p>
+                                <p className="text-sm text-muted-foreground">{lastManifestEntry.description}</p>
+                            </div>
+                            <div className="text-right">
+                            <p className={cn("font-bold text-lg", lastManifestEntry.type === 'credit' ? 'text-green-600' : 'text-red-600')}>
+                                {lastManifestEntry.type === 'credit' ? '+' : '-'}${lastManifestEntry.amount.toFixed(2)}
+                            </p>
+                            <p className="text-xs text-muted-foreground">{format(new Date(lastManifestEntry.date), 'MMM d, yyyy')}</p>
+                            </div>
                         </div>
-                        <div className="flex-1">
-                            <p className="font-semibold">{lastManifestEntry.clientName}</p>
-                            <p className="text-sm text-muted-foreground">{lastManifestEntry.description}</p>
-                        </div>
-                        <div className="text-right">
-                           <p className={cn("font-bold text-lg", lastManifestEntry.type === 'credit' ? 'text-green-600' : 'text-red-600')}>
-                             {lastManifestEntry.type === 'credit' ? '+' : '-'}${lastManifestEntry.amount.toFixed(2)}
-                           </p>
-                           <p className="text-xs text-muted-foreground">{format(new Date(lastManifestEntry.date), 'MMM d, yyyy')}</p>
-                        </div>
-                     </div>
-                ) : (
-                    <p className="text-muted-foreground">No manifest entries have been recorded yet.</p>
-                )}
-            </CardContent>
-        </Card>
+                    ) : (
+                        <p className="text-muted-foreground">No manifest entries have been recorded yet.</p>
+                    )}
+                </CardContent>
+            </Card>
+        </div>
       </div>
-
     </div>
   );
 }
