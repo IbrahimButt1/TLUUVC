@@ -6,12 +6,19 @@ import { deleteEmail, markAllEmailsAsRead, toggleEmailFavorite } from '@/lib/ema
 import { Button } from '@/components/ui/button';
 import EmailList from './email-list';
 import { Input } from '@/components/ui/input';
-import { Search, RefreshCw, MoreVertical, Trash2 } from 'lucide-react';
+import { Search, RefreshCw, MoreVertical, Trash2, MailCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Checkbox } from '@/components/ui/checkbox';
 import EmailView from './email-view';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
 
 export default function InboxClient({ initialEmails }: { initialEmails: Email[] }) {
   const [emails, setEmails] = useState(initialEmails);
@@ -101,6 +108,28 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
       }
     });
   };
+  
+  const handleMarkAllAsRead = () => {
+    startTransition(async () => {
+        const originalEmails = [...emails];
+        const allReadEmails = emails.map(e => ({ ...e, read: true }));
+        setEmails(allReadEmails);
+
+        try {
+            await markAllEmailsAsRead();
+            toast({
+                title: "All emails marked as read."
+            })
+        } catch (error) {
+            setEmails(originalEmails);
+            toast({
+                title: "Error",
+                description: "Failed to mark emails as read.",
+                variant: "destructive",
+            });
+        }
+    })
+  }
 
   const handleToggleFavorite = (id: string, isFavorited: boolean) => {
     startTransition(async () => {
@@ -185,17 +214,27 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
                 onCheckedChange={handleSelectAll}
                 onClick={(e) => e.stopPropagation()}
               />
-              <Button variant="ghost" size="icon" onClick={() => window.location.reload()}>
+              <Button variant="ghost" size="icon" onClick={() => window.location.reload()} disabled={isPending}>
                 <RefreshCw className="h-5 w-5" />
               </Button>
               {selectedEmails.length > 0 && (
-                <Button variant="ghost" size="icon" onClick={() => handleDeleteSelected()}>
+                <Button variant="ghost" size="icon" onClick={() => handleDeleteSelected()} disabled={isPending}>
                   <Trash2 className="h-5 w-5" />
                 </Button>
               )}
-              <Button variant="ghost" size="icon">
-                <MoreVertical className="h-5 w-5" />
-              </Button>
+               <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" disabled={isPending}>
+                            <MoreVertical className="h-5 w-5" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start">
+                        <DropdownMenuItem onSelect={handleMarkAllAsRead}>
+                            <MailCheck className="mr-2 h-4 w-4" />
+                            <span>Mark all as read</span>
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
           </div>
 
