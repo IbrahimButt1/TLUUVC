@@ -54,7 +54,7 @@ function DeleteConfirmationButton({ isPending }: ActionButtonProps) {
 
 function RestoreButton({ isPending }: ActionButtonProps) {
     return (
-        <Button variant="outline" size="sm" type="submit" disabled={isPending}>
+        <Button variant="outline" size="sm" type="submit" disabled={isPending} className="w-40 justify-center">
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {!isPending && <Undo className="mr-2 h-4 w-4" />}
             Restore

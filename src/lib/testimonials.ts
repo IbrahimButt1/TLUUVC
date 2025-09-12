@@ -134,7 +134,7 @@ export async function deleteTestimonial(formData: FormData) {
 
     revalidatePath('/');
     revalidatePath('/admin/testimonials');
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails/trash');
 }
 
 
@@ -146,7 +146,7 @@ export async function permanentlyDeleteTestimonial(formData: FormData): Promise<
     testimonials = testimonials.filter(t => t.id !== id);
     await writeTestimonials(testimonials);
 
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails/trash');
     return { success: true };
 }
 
@@ -160,6 +160,6 @@ export async function restoreTestimonial(formData: FormData): Promise<{ success:
 
     revalidatePath('/');
     revalidatePath('/admin/testimonials');
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails/trash');
     return { success: true };
 }

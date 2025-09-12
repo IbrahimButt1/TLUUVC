@@ -7,7 +7,7 @@
     "message": "Reply my Question?",
     "receivedAt": "2025-09-08T10:36:57.813Z",
     "read": true,
-    "status": "inbox"
+    "status": "trash"
   },
   {
     "id": "1757330286070-froan9s",
@@ -17,7 +17,7 @@
     "message": "Urgent",
     "receivedAt": "2025-09-08T11:18:06.070Z",
     "read": true,
-    "status": "inbox"
+    "status": "trash"
   },
   {
     "id": "1757330367338-cc078lz",
@@ -27,7 +27,7 @@
     "message": "Give me details",
     "receivedAt": "2025-09-08T11:19:27.338Z",
     "read": true,
-    "status": "inbox"
+    "status": "trash"
   },
   {
     "id": "1757427578129-10203tt",
@@ -37,7 +37,7 @@
     "message": "Give me details",
     "receivedAt": "2025-09-09T14:19:38.129Z",
     "read": true,
-    "status": "inbox"
+    "status": "trash"
   },
   {
     "id": "1757427827527-lj5le7s",
@@ -67,6 +67,6 @@
     "message": "Details?",
     "receivedAt": "2025-09-11T12:14:58.756Z",
     "read": true,
-    "status": "inbox"
+    "status": "trash"
   }
 ]

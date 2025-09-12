@@ -138,7 +138,7 @@ export async function deleteHeroImage(formData: FormData) {
 
     revalidatePath('/');
     revalidatePath('/admin/hero');
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails/trash');
 }
 
 export async function permanentlyDeleteHeroImage(formData: FormData): Promise<{ success: boolean; error?: string }> {
@@ -149,7 +149,7 @@ export async function permanentlyDeleteHeroImage(formData: FormData): Promise<{ 
     images = images.filter(img => img.id !== id);
     await writeHeroImages(images);
 
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails/trash');
     return { success: true };
 }
 
@@ -163,6 +163,6 @@ export async function restoreHeroImage(formData: FormData): Promise<{ success: b
 
     revalidatePath('/');
     revalidatePath('/admin/hero');
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails/trash');
     return { success: true };
 }

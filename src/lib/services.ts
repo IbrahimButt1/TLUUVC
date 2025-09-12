@@ -158,7 +158,7 @@ export async function deleteService(formData: FormData) {
 
     revalidatePath('/');
     revalidatePath('/admin/services');
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails/trash');
 }
 
 
@@ -170,20 +170,20 @@ export async function permanentlyDeleteService(formData: FormData): Promise<{ su
     services = services.filter(s => s.id !== id);
     await writeServices(services);
 
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails/trash');
     return { success: true };
 }
 
 export async function restoreService(formData: FormData): Promise<{ success: boolean; error?: string }> {
     const id = formData.get('id') as string;
     if (!id) return { success: false, error: 'ID not provided' };
-
+    
     let services = await readServices();
     services = services.map(s => s.id === id ? { ...s, status: 'active' } : s);
     await writeServices(services);
 
     revalidatePath('/');
     revalidatePath('/admin/services');
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails/trash');
     return { success: true };
 }

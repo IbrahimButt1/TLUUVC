@@ -69,7 +69,7 @@ export async function addEmail(emailData: { name: string; email: string; subject
     emails.push(newEmail);
     await writeEmails(emails);
     
-    revalidatePath('/admin/inbox');
+    revalidatePath('/admin/emails');
     revalidatePath('/admin');
 }
 
@@ -79,7 +79,7 @@ export async function markAllEmailsAsRead() {
         email.status === 'inbox' ? { ...email, read: true } : email
     );
     await writeEmails(updatedEmails);
-    revalidatePath('/admin/inbox');
+    revalidatePath('/admin/emails');
     revalidatePath('/admin');
 }
 
@@ -89,27 +89,29 @@ export async function deleteEmail(formData: FormData) {
     const emails = await readEmails();
     const updatedEmails = emails.map(e => e.id === id ? { ...e, status: 'trash' as const } : e);
     await writeEmails(updatedEmails);
-    revalidatePath('/admin/inbox');
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails');
+    revalidatePath('/admin/emails/trash');
     revalidatePath('/admin');
 }
 
-export async function permanentlyDeleteEmail(formData: FormData) {
+export async function permanentlyDeleteEmail(formData: FormData): Promise<{ success: boolean; error?: string }> {
     const id = formData.get('id') as string;
-    if (!id) return;
+    if (!id) return { success: false, error: 'ID not provided' };
     let emails = await readEmails();
     emails = emails.filter(e => e.id !== id);
     await writeEmails(emails);
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails/trash');
+    return { success: true };
 }
 
-export async function restoreEmail(formData: FormData) {
+export async function restoreEmail(formData: FormData): Promise<{ success: boolean; error?: string }> {
     const id = formData.get('id') as string;
-    if (!id) return;
+    if (!id) return { success: false, error: 'ID not provided' };
     const emails = await readEmails();
-    const updatedEmails = emails.map(e => e.id === id ? { ...e, status: 'inbox' as const } : e);
+    const updatedEmails = emails.map(e => e.id === id ? { ...e, status: 'inbox' as const, read: false } : e);
     await writeEmails(updatedEmails);
-    revalidatePath('/admin/inbox');
-    revalidatePath('/admin/inbox/trash');
+    revalidatePath('/admin/emails');
+    revalidatePath('/admin/emails/trash');
     revalidatePath('/admin');
+    return { success: true };
 }
