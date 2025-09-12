@@ -11,3 +11,9 @@ export const serviceTitles = [
     { value: 'Express Entry', label: 'Express Entry' },
     { value: 'Asylum & Refugee Claims', label: 'Asylum & Refugee Claims' },
 ];
+
+export const transactionCategories = [
+    { value: 'Client Opening Balance', label: 'Client Opening Balance' },
+    { value: 'Consultation Fee', label: 'Consultation Fee' },
+    { value: 'Document Processing Fee', label: 'Document Processing Fee' },
+];

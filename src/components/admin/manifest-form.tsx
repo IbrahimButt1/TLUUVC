@@ -10,6 +10,7 @@ import { Loader2, TrendingUp, TrendingDown } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { getServiceTitles, type ServiceTitle } from '@/lib/services';
+import { transactionCategories } from '@/lib/service-data';
 
 interface ManifestFormProps {
     action: (formData: FormData) => Promise<void>;
@@ -57,13 +58,16 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                         <SelectValue placeholder="Select a transaction description..." />
                     </SelectTrigger>
                     <SelectContent>
+                        {transactionCategories.map((cat) => (
+                             <SelectItem key={cat.value} value={cat.label}>
+                                {cat.label}
+                            </SelectItem>
+                        ))}
                         {services.map((service) => (
                             <SelectItem key={service.id} value={`Payment for ${service.title}`}>
                                 Payment for {service.title}
                             </SelectItem>
                         ))}
-                        <SelectItem value="Consultation Fee">Consultation Fee</SelectItem>
-                        <SelectItem value="Document Processing Fee">Document Processing Fee</SelectItem>
                         <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                 </Select>
