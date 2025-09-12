@@ -18,7 +18,7 @@ const navLinks = [
   { href: '/admin/about', label: 'About', icon: Info },
   { href: '/admin/inbox', label: 'Inbox', icon: Inbox },
   { href: '/admin/manifest', label: 'Manifest', icon: BookUser },
-  { href: '/admin/client-balances', label: 'Client Balances', icon: BookUser },
+  { href: '/admin/client-balances', label: 'Opening Balances', icon: BookUser },
 ];
 
 const maintenanceLinks = [
