@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition, useEffect } from 'react';
 import type { Email } from '@/lib/emails';
-import { deleteEmail, markAllEmailsAsRead, toggleEmailFavorite } from '@/lib/emails';
+import { deleteEmail, getEmails, markAllEmailsAsRead, toggleEmailFavorite } from '@/lib/emails';
 import { Button } from '@/components/ui/button';
 import EmailList from './email-list';
 import { Input } from '@/components/ui/input';
@@ -37,8 +37,16 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
   }, []);
 
   useEffect(() => {
-    setEmails(initialEmails);
-  }, [initialEmails]);
+    // Poll for new emails every 5 seconds
+    const interval = setInterval(async () => {
+      const latestEmails = await getEmails();
+      if (latestEmails.length !== emails.length) {
+        setEmails(latestEmails);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [emails.length]);
 
 
   const filteredEmails = useMemo(() => {
@@ -135,10 +143,11 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
     startTransition(async () => {
       const originalEmails = [...emails];
       // Optimistic update
-      const updatedEmails = emails.map(e => 
-        e.id === id ? { ...e, favorited: !e.favorited } : e
+      setEmails(current => 
+        current.map(e => 
+          e.id === id ? { ...e, favorited: !e.favorited } : e
+        )
       );
-      setEmails(updatedEmails);
       
       const formData = new FormData();
       formData.append('id', id);

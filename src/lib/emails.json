@@ -69,5 +69,16 @@
     "read": true,
     "status": "inbox",
     "favorited": true
+  },
+  {
+    "id": "1757718829392-sdw0na7",
+    "name": "Shoaib Butt",
+    "email": "Bk1414551@gmail.com",
+    "subject": "Work Visas",
+    "message": "Hi",
+    "receivedAt": "2025-09-12T23:13:49.392Z",
+    "read": true,
+    "status": "inbox",
+    "favorited": false
   }
 ]

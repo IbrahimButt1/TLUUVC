@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useActionState, useState, useEffect } from "react";
+import { useActionState, useState, useEffect, useRef } from "react";
 import { sendContactEmail } from "@/ai/flows/send-contact-email";
 import { useFormStatus } from "react-dom";
 import { Loader2 } from "lucide-react";
@@ -35,6 +35,7 @@ export default function Contact() {
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
   const [services, setServices] = useState<Service[]>([]);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     getServices().then(setServices);
@@ -65,6 +66,7 @@ export default function Contact() {
           title: "Inquiry Sent!",
           description: "Thank you for your message. We will get back to you shortly.",
         });
+        formRef.current?.reset();
         setName('');
         setContact('');
         setSubject('');
@@ -102,7 +104,7 @@ export default function Contact() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form className="space-y-6" action={formAction}>
+            <form className="space-y-6" action={formAction} ref={formRef}>
                 <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <Label htmlFor="name">Full Name</Label>

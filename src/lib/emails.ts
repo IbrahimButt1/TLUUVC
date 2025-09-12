@@ -100,7 +100,6 @@ export async function deleteEmail(formData: FormData) {
     await writeEmails(updatedEmails);
     revalidatePath('/admin/emails');
     revalidatePath('/admin/emails/trash');
-    revalidatePath('/admin/emails/favorites');
     revalidatePath('/admin');
 }
 
@@ -111,7 +110,6 @@ export async function permanentlyDeleteEmail(formData: FormData): Promise<{ succ
     emails = emails.filter(e => e.id !== id);
     await writeEmails(emails);
     revalidatePath('/admin/emails/trash');
-    revalidatePath('/admin/emails/favorites');
     return { success: true };
 }
 
@@ -123,7 +121,6 @@ export async function restoreEmail(formData: FormData): Promise<{ success: boole
     await writeEmails(updatedEmails);
     revalidatePath('/admin/emails');
     revalidatePath('/admin/emails/trash');
-    revalidatePath('/admin/emails/favorites');
     revalidatePath('/admin');
     return { success: true };
 }
@@ -143,7 +140,6 @@ export async function toggleEmailFavorite(formData: FormData): Promise<{ success
     await writeEmails(emails);
 
     revalidatePath('/admin/emails');
-    revalidatePath('/admin/emails/favorites');
 
     return { success: true };
 }
