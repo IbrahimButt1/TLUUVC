@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition, useEffect } from 'react';
 import type { Email } from '@/lib/emails';
-import { deleteEmail, getEmails, markAllEmailsAsRead, toggleEmailFavorite } from '@/lib/emails';
+import { deleteEmail, getEmails, markAllEmailsAsRead, markEmailAsRead, toggleEmailFavorite } from '@/lib/emails';
 import { Button } from '@/components/ui/button';
 import EmailList from './email-list';
 import { Input } from '@/components/ui/input';
@@ -30,23 +30,16 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
   const { toast } = useToast();
 
   useEffect(() => {
-    // This now correctly runs after the component mounts
-    startTransition(() => {
-        markAllEmailsAsRead();
-    });
-  }, []);
-
-  useEffect(() => {
     // Poll for new emails every 5 seconds
     const interval = setInterval(async () => {
       const latestEmails = await getEmails();
-      if (latestEmails.length !== emails.length) {
+      if (JSON.stringify(latestEmails) !== JSON.stringify(emails)) {
         setEmails(latestEmails);
       }
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [emails.length]);
+  }, [emails]);
 
 
   const filteredEmails = useMemo(() => {
@@ -167,6 +160,25 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
       }
     });
   };
+
+  const handleViewEmail = (email: Email) => {
+    // Mark email as read on view
+    if (!email.read) {
+        startTransition(async () => {
+            const originalEmails = [...emails];
+            setEmails(current => current.map(e => e.id === email.id ? { ...e, read: true } : e));
+            
+            const formData = new FormData();
+            formData.append('id', email.id);
+            try {
+                await markEmailAsRead(formData);
+            } catch (error) {
+                setEmails(originalEmails); // Revert on error
+            }
+        });
+    }
+    setCurrentEmail(email);
+  }
   
   const isAllSelected = filteredEmails.length > 0 && selectedEmails.length === filteredEmails.length;
   const isIndeterminate = selectedEmails.length > 0 && selectedEmails.length < filteredEmails.length;
@@ -251,13 +263,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
             emails={filteredEmails} 
             selectedEmails={selectedEmails}
             onSelectEmail={handleSelectEmail}
-            onViewEmail={(email) => {
-              // Mark email as read on view
-              if (!email.read) {
-                 setEmails(current => current.map(e => e.id === email.id ? { ...e, read: true } : e));
-              }
-              setCurrentEmail(email);
-            }}
+            onViewEmail={handleViewEmail}
             onToggleFavorite={handleToggleFavorite}
           />
           {currentEmail && (

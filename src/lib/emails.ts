@@ -82,6 +82,22 @@ export async function addEmail(emailData: { name: string; email: string; subject
     revalidatePath('/admin');
 }
 
+export async function markEmailAsRead(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
+
+    const emails = await readEmails();
+    const updatedEmails = emails.map(email => 
+        email.id === id ? { ...email, read: true } : email
+    );
+    await writeEmails(updatedEmails);
+
+    revalidatePath('/admin/emails');
+    revalidatePath('/admin');
+
+    return { success: true };
+}
+
 export async function markAllEmailsAsRead() {
     const emails = await readEmails();
     const updatedEmails = emails.map(email => 

@@ -80,5 +80,16 @@
     "read": true,
     "status": "inbox",
     "favorited": false
+  },
+  {
+    "id": "1757719112333-q6z22sy",
+    "name": "Ibrahim Butt",
+    "email": "Bk1414551@gmail.com",
+    "subject": "Application Review",
+    "message": "Hi",
+    "receivedAt": "2025-09-12T23:18:32.333Z",
+    "read": true,
+    "status": "inbox",
+    "favorited": false
   }
 ]
