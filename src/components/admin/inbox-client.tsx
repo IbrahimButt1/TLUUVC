@@ -199,47 +199,34 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <div className="flex items-center px-4 py-2">
+      <div className="flex items-center justify-between px-1">
         <h1 className="text-xl font-bold">Email Inbox</h1>
-        <TabsList className="ml-auto">
-          <TabsTrigger value="all">All</TabsTrigger>
-          <TabsTrigger value="unread" className="relative">
-            Unread
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
-                {unreadCount}
-              </span>
-            )}
-          </TabsTrigger>
-          <TabsTrigger value="favorites">Favorites</TabsTrigger>
-        </TabsList>
-      </div>
-      <TabsContent value="all" className="m-0">
-        {/* We use a shared component and just change the emails */}
-      </TabsContent>
-      <TabsContent value="unread" className="m-0">
-        {/* We use a shared component and just change the emails */}
-      </TabsContent>
-      <TabsContent value="favorites" className="m-0">
-        {/* We use a shared component and just change the emails */}
-      </TabsContent>
-
-      <Card className="shadow-sm border">
-        <CardContent className="p-0">
-          <div className="p-2 border-b">
+        <div className="flex items-center gap-2">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                   type="search"
                   placeholder="Search emails..."
-                  className="pr-10 w-full bg-background"
+                  className="pr-10 w-full md:w-80 bg-background"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-          </div>
-
-          <div className="flex items-center p-2 border-b h-14">
+            <TabsList>
+            <TabsTrigger value="all">All</TabsTrigger>
+            <TabsTrigger value="unread" className="relative">
+                Unread
+                {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">
+                    {unreadCount}
+                </span>
+                )}
+            </TabsTrigger>
+            <TabsTrigger value="favorites">Favorites</TabsTrigger>
+            </TabsList>
+        </div>
+      </div>
+        <div className="flex items-center p-2 border-t border-b h-14 mt-4">
             <div className="flex items-center gap-2">
               <Checkbox 
                 id="select-all"
@@ -270,7 +257,18 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
                 </DropdownMenu>
             </div>
           </div>
+      <TabsContent value="all" className="m-0">
+        {/* We use a shared component and just change the emails */}
+      </TabsContent>
+      <TabsContent value="unread" className="m-0">
+        {/* We use a shared component and just change the emails */}
+      </TabsContent>
+      <TabsContent value="favorites" className="m-0">
+        {/* We use a shared component and just change the emails */}
+      </TabsContent>
 
+      <Card className="shadow-sm border">
+        <CardContent className="p-0">
           <EmailList 
             emails={filteredEmails} 
             selectedEmails={selectedEmails}

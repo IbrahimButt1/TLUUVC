@@ -89,7 +89,7 @@
     "message": "Hi",
     "receivedAt": "2025-09-12T23:18:32.333Z",
     "read": true,
-    "status": "inbox",
+    "status": "trash",
     "favorited": false
   },
   {
@@ -100,7 +100,7 @@
     "message": "Ok",
     "receivedAt": "2025-09-12T23:22:41.840Z",
     "read": true,
-    "status": "inbox",
+    "status": "trash",
     "favorited": false
   },
   {
@@ -110,7 +110,7 @@
     "subject": "Work Visas",
     "message": "OK",
     "receivedAt": "2025-09-12T23:25:16.978Z",
-    "read": false,
+    "read": true,
     "status": "inbox",
     "favorited": false
   },
@@ -121,7 +121,7 @@
     "subject": "Application Review",
     "message": "Nice",
     "receivedAt": "2025-09-12T23:25:38.463Z",
-    "read": false,
+    "read": true,
     "status": "inbox",
     "favorited": false
   }

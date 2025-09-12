@@ -1,7 +1,7 @@
 'use client';
 
 import type { Email } from '@/lib/emails';
-import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableRow, TableHeader, TableHead } from '@/components/ui/table';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Star } from 'lucide-react';
 import { format, isToday, isThisYear } from 'date-fns';
@@ -53,6 +53,15 @@ export default function EmailList({ emails, selectedEmails, onSelectEmail, onVie
   return (
     <div className="overflow-auto">
         <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead className="w-[80px]">Select</TableHead>
+                    <TableHead className="w-[80px]">Favorite</TableHead>
+                    <TableHead className="w-[180px]">Client</TableHead>
+                    <TableHead>Subject & Preview</TableHead>
+                    <TableHead className="w-[100px] text-right">Time</TableHead>
+                </TableRow>
+            </TableHeader>
             <TableBody>
                 {emails.map(email => (
                     <TableRow 
@@ -64,24 +73,24 @@ export default function EmailList({ emails, selectedEmails, onSelectEmail, onVie
                         onClick={() => onViewEmail(email)}
                     >
                         <TableCell className="w-12 px-4" onClick={(e) => e.stopPropagation()}>
-                           <div className="flex items-center gap-2">
-                             <Checkbox 
+                           <Checkbox 
                                 id={`select-${email.id}`} 
                                 checked={selectedEmails.includes(email.id)}
                                 onCheckedChange={(checked) => onSelectEmail(email.id, checked)}
                               />
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="h-8 w-8"
-                                onClick={() => onToggleFavorite(email.id, !!email.favorited)}
-                              >
-                                <Star className={cn(
-                                  "h-5 w-5 text-muted-foreground transition-colors",
-                                  email.favorited && "text-orange-500 fill-orange-400"
-                                )} />
-                              </Button>
-                           </div>
+                        </TableCell>
+                         <TableCell className="w-12 px-4" onClick={(e) => e.stopPropagation()}>
+                            <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                            onClick={() => onToggleFavorite(email.id, !!email.favorited)}
+                            >
+                            <Star className={cn(
+                                "h-5 w-5 text-muted-foreground transition-colors",
+                                email.favorited && "text-orange-500 fill-orange-400"
+                            )} />
+                            </Button>
                         </TableCell>
                         <TableCell className={cn("w-48 font-medium", !email.read && "font-bold")}>
                             {email.name}
