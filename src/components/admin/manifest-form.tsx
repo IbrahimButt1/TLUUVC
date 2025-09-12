@@ -51,9 +51,9 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                     <Input id="date" name="date" type="date" required defaultValue={new Date().toISOString().split('T')[0]} />
                 </div>
             </div>
-             <div className="space-y-2">
+             <div className="space-y-2 text-right">
                 <Label htmlFor="transactionId">Transaction ID</Label>
-                <Input id="transactionId" name="transactionId" value="[Auto-Generated]" readOnly disabled />
+                <Input id="transactionId" name="transactionId" value="" readOnly disabled className="text-muted-foreground text-right" />
             </div>
             <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
@@ -100,13 +100,13 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                             <SelectItem value="credit">
                                 <div className="flex items-center gap-2 text-green-600">
                                     <TrendingUp className="h-4 w-4" />
-                                    <span>Payment In (Credit)</span>
+                                    <span>Client Payment Received</span>
                                 </div>
                             </SelectItem>
                             <SelectItem value="debit">
                                  <div className="flex items-center gap-2 text-red-600">
                                     <TrendingDown className="h-4 w-4" />
-                                    <span>Payment Out (Debit)</span>
+                                    <span>Vendor Payment Payout</span>
                                 </div>
                             </SelectItem>
                         </SelectContent>
