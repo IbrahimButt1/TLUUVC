@@ -38,5 +38,13 @@
     "description": "France Visa ",
     "type": "credit",
     "amount": 5000
+  },
+  {
+    "id": "1757706501844-rv0n5t3",
+    "clientName": "Ali Butt",
+    "date": "2025-09-12",
+    "description": "Payment for Student Visas - WOW",
+    "type": "credit",
+    "amount": 10
   }
 ]

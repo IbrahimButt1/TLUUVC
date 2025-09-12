@@ -41,7 +41,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
         <form action={action} className="space-y-6">
             <div className="space-y-2">
                 <Label htmlFor="clientName">Client Name</Label>
-                <Input id="clientName" name="clientName" required placeholder="e.g. John Doe" />
+                <Input id="clientName" name="clientName" required placeholder="e.g. Ali" />
             </div>
              <div className="space-y-2">
                 <Label htmlFor="date">Date</Label>
