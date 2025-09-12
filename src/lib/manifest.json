@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "id": "1757677474464-3ro0pnc",
+    "clientName": "Ibrahim",
+    "date": "2025-09-12",
+    "description": "Payment of Work Visa in USA",
+    "type": "credit",
+    "amount": 2000
+  },
+  {
+    "id": "1757677535971-pnl1j27",
+    "clientName": "Shoaib Butt",
+    "date": "2025-09-12",
+    "description": "Payment of Work Visa in UAE",
+    "type": "credit",
+    "amount": 1200
+  }
+]
