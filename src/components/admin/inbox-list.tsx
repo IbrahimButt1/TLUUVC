@@ -47,7 +47,7 @@ interface DeleteButtonProps {
 
 function DeleteConfirmationButton({isPending}: DeleteButtonProps) {
     return (
-        <Button type="submit" disabled={isPending}>
+        <Button variant="destructive" type="submit" disabled={isPending}>
              {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Continue
         </Button>
@@ -57,10 +57,6 @@ function DeleteConfirmationButton({isPending}: DeleteButtonProps) {
 function EmailGroup({ title, emails, searchTerm, onDelete, isPending }: { title: string; emails: Email[]; searchTerm: string, onDelete: (id: string) => void, isPending: boolean }) {
     if (emails.length === 0) return null;
     const [openDialog, setOpenDialog] = useState(false);
-    const [isClient, setIsClient] = useState(false);
-    useEffect(() => {
-        setIsClient(true);
-    }, []);
 
     return (
         <>
@@ -71,18 +67,18 @@ function EmailGroup({ title, emails, searchTerm, onDelete, isPending }: { title:
             </div>
             {emails.map((email) => (
                 <AccordionItem value={email.id} key={email.id} className="border-b">
-                    <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-muted/50 rounded-md transition-colors data-[state=open]:bg-muted">
+                    <AccordionTrigger className="px-4 py-2 hover:no-underline hover:bg-muted/50 rounded-md transition-colors data-[state=open]:bg-muted">
                         <div className="flex justify-between w-full items-center">
-                            <div className={cn("flex flex-col text-left", !email.read && "font-bold")}>
-                                <span className="font-medium text-sm">
+                            <div className={cn("flex flex-col text-left gap-0.5", !email.read && "font-bold")}>
+                                <span className="font-medium text-sm leading-tight">
                                     <HighlightedText text={email.name} highlight={searchTerm} />
                                 </span>
-                                <span className="text-xs text-muted-foreground">
+                                <span className="text-xs text-muted-foreground leading-tight">
                                     <HighlightedText text={email.subject} highlight={searchTerm} />
                                 </span>
                             </div>
                             <span className="text-xs text-muted-foreground shrink-0 ml-4">
-                                {isClient ? format(new Date(email.receivedAt), "PPp") : ''}
+                                {format(new Date(email.receivedAt), "PPp")}
                             </span>
                         </div>
                     </AccordionTrigger>
@@ -135,6 +131,21 @@ function EmailGroup({ title, emails, searchTerm, onDelete, isPending }: { title:
 export default function InboxList({ groupedEmails, searchTerm, onDelete, isPending }: { groupedEmails: GroupedEmails, searchTerm: string, onDelete: (id: string) => void, isPending: boolean }) {
 
     const hasEmails = Object.values(groupedEmails).some(group => group.length > 0);
+    const [isClient, setIsClient] = useState(false);
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
+
+    if (!isClient) {
+        return (
+             <Card className="border shadow-sm">
+                <CardContent className="p-0">
+                    <p className="p-6 text-center text-muted-foreground">Loading emails...</p>
+                </CardContent>
+             </Card>
+        );
+    }
+
 
     return (
         <Card className="border shadow-sm">
