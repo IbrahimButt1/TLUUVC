@@ -55,7 +55,7 @@ export default function EmailView({ email, open, onOpenChange, onDelete }: Email
                     </Button>
                      <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <Button variant="outline" className="bg-red-100 hover:bg-red-200 text-red-800 border-red-200 hover:border-red-300 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800 dark:hover:bg-red-900/40">Delete</Button>
+                            <Button variant="outline" className="bg-red-500 hover:bg-red-600 text-white border-red-500 hover:border-red-600 dark:bg-red-600/50 dark:text-red-100 dark:border-red-600/80 dark:hover:bg-red-600/70">Delete</Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
