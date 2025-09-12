@@ -85,11 +85,11 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                     <RadioGroup name="type" required defaultValue="credit" className="flex gap-4 pt-2">
                         <div className="flex items-center space-x-2">
                             <RadioGroupItem value="credit" id="credit" />
-                            <Label htmlFor="credit" className="font-normal">Credit (Money In)</Label>
+                            <Label htmlFor="credit" className="font-normal">Client Payment Received</Label>
                         </div>
                         <div className="flex items-center space-x-2">
                             <RadioGroupItem value="debit" id="debit" />
-                            <Label htmlFor="debit" className="font-normal">Debit (Money Out)</Label>
+                            <Label htmlFor="debit" className="font-normal">Vendor Payment Payout</Label>
                         </div>
                     </RadioGroup>
                 </div>
