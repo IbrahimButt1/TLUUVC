@@ -67,7 +67,7 @@ export default function ClientBalanceTableRow({ clientName, currentBalance, acti
                             variant={currentBalance.type === 'credit' ? 'default' : 'destructive'}
                             className={cn(
                                 "border-transparent",
-                                currentBalance.type === 'credit' ? "bg-green-100 text-green-800 hover:bg-green-200" : "bg-red-100 text-red-800 hover:bg-red-200"
+                                currentBalance.type === 'credit' ? "bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/50 dark:text-green-300" : "bg-red-100 text-red-800 hover:bg-red-100 dark:bg-red-900/50 dark:text-red-300"
                               )}
                         >
                             ${defaultAmount.toFixed(2)} ({currentBalance.type})

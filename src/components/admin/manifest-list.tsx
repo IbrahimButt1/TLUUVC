@@ -31,7 +31,7 @@ export default function ManifestList({ entries }: { entries: ManifestEntry[]}) {
                                 <Badge variant={entry.type === 'credit' ? 'default' : 'destructive'} 
                                        className={cn(
                                          "border-transparent",
-                                         entry.type === 'credit' ? "bg-green-100 text-green-800 hover:bg-green-200" : "bg-red-100 text-red-800 hover:bg-red-200"
+                                         entry.type === 'credit' ? "bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/50 dark:text-green-300" : "bg-red-100 text-red-800 hover:bg-red-100 dark:bg-red-900/50 dark:text-red-300"
                                        )}>
                                     {entry.type}
                                 </Badge>
