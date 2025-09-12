@@ -100,8 +100,9 @@ export default function ProfileForm({ settings }: ProfileFormProps) {
                                 </Button>
                             </>
                         ) : (
-                            <div className="text-center text-muted-foreground text-sm p-2">
-                                <Upload className="mx-auto h-8 w-8" />
+                             <div className="text-center text-muted-foreground text-sm p-2">
+                                <Upload className="mx-auto h-6 w-6" />
+                                <span>Preview</span>
                             </div>
                         )}
                     </div>
