@@ -6,8 +6,8 @@
     "subject": "Student Visa Prive in UK",
     "message": "Reply my Question?",
     "receivedAt": "2025-09-08T10:36:57.813Z",
-    "read": true,
-    "status": "trash"
+    "read": false,
+    "status": "inbox"
   },
   {
     "id": "1757330286070-froan9s",
@@ -16,8 +16,8 @@
     "subject": "Dubai",
     "message": "Urgent",
     "receivedAt": "2025-09-08T11:18:06.070Z",
-    "read": true,
-    "status": "trash"
+    "read": false,
+    "status": "inbox"
   },
   {
     "id": "1757330367338-cc078lz",
@@ -36,8 +36,8 @@
     "subject": "i need UAE Visa",
     "message": "Give me details",
     "receivedAt": "2025-09-09T14:19:38.129Z",
-    "read": true,
-    "status": "trash"
+    "read": false,
+    "status": "inbox"
   },
   {
     "id": "1757427827527-lj5le7s",
@@ -46,8 +46,8 @@
     "subject": "Eid Offer 20% off",
     "message": "Nice Offer",
     "receivedAt": "2025-09-09T14:23:47.527Z",
-    "read": true,
-    "status": "trash"
+    "read": false,
+    "status": "inbox"
   },
   {
     "id": "1757549731300-9b81bdx",
@@ -56,8 +56,8 @@
     "subject": "Work Visas",
     "message": "I want to go Italy how much price of  Visa?",
     "receivedAt": "2025-09-11T00:15:31.300Z",
-    "read": true,
-    "status": "trash"
+    "read": false,
+    "status": "inbox"
   },
   {
     "id": "1757592898756-x0qqdho",
@@ -66,8 +66,8 @@
     "subject": "Work Visas",
     "message": "Details?",
     "receivedAt": "2025-09-11T12:14:58.756Z",
-    "read": true,
-    "status": "trash",
+    "read": false,
+    "status": "inbox",
     "favorited": true
   },
   {
@@ -77,8 +77,8 @@
     "subject": "Work Visas",
     "message": "Hi",
     "receivedAt": "2025-09-12T23:13:49.392Z",
-    "read": true,
-    "status": "trash",
+    "read": false,
+    "status": "inbox",
     "favorited": false
   },
   {
@@ -88,8 +88,8 @@
     "subject": "Application Review",
     "message": "Hi",
     "receivedAt": "2025-09-12T23:18:32.333Z",
-    "read": true,
-    "status": "trash",
+    "read": false,
+    "status": "inbox",
     "favorited": false
   },
   {
@@ -99,8 +99,8 @@
     "subject": "Family & Partner Visas",
     "message": "Ok",
     "receivedAt": "2025-09-12T23:22:41.840Z",
-    "read": true,
-    "status": "trash",
+    "read": false,
+    "status": "inbox",
     "favorited": false
   },
   {
@@ -110,8 +110,8 @@
     "subject": "Work Visas",
     "message": "OK",
     "receivedAt": "2025-09-12T23:25:16.978Z",
-    "read": true,
-    "status": "trash",
+    "read": false,
+    "status": "inbox",
     "favorited": false
   },
   {
@@ -121,8 +121,8 @@
     "subject": "Application Review",
     "message": "Nice",
     "receivedAt": "2025-09-12T23:25:38.463Z",
-    "read": true,
-    "status": "trash",
+    "read": false,
+    "status": "inbox",
     "favorited": false
   }
 ]

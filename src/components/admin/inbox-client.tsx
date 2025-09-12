@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition, useEffect } from 'react';
 import type { Email } from '@/lib/emails';
-import { deleteEmail, getEmails, markAllEmailsAsRead, markEmailAsRead, toggleEmailFavorite } from '@/lib/emails';
+import { deleteEmail, getEmails, markAllEmailsAsRead, markEmailAsRead, toggleEmailFavorite, restoreEmail } from '@/lib/emails';
 import { Button } from '@/components/ui/button';
 import EmailList from './email-list';
 import { Input } from '@/components/ui/input';
@@ -18,6 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { ToastAction } from '@/components/ui/toast';
 
 
 export default function InboxClient({ initialEmails }: { initialEmails: Email[] }) {
@@ -82,6 +83,23 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
     }
   };
 
+  const handleUndoDelete = (idsToRestore: string[]) => {
+    startTransition(async () => {
+        // Optimistic update to restore emails in UI
+        setEmails(current => {
+            const restoredEmails = current.map(e => idsToRestore.includes(e.id) ? { ...e, status: 'inbox' } : e);
+            return restoredEmails;
+        });
+
+        // Server action to restore each email
+        for (const id of idsToRestore) {
+            const formData = new FormData();
+            formData.append('id', id);
+            await restoreEmail(formData);
+        }
+    });
+  };
+
    const handleDeleteSingleEmail = (id: string) => {
     handleDeleteSelected([id]);
   }
@@ -89,11 +107,14 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
   const handleDeleteSelected = (idsToDelete?: string[]) => {
     const ids = idsToDelete || selectedEmails;
     if (ids.length === 0) return;
+    
+    const originalEmails = [...emails];
+    const emailsToTrash = originalEmails.filter(e => ids.includes(e.id));
 
     startTransition(async () => {
-      const originalEmails = [...emails];
       // Optimistic update: mark as trash
       setEmails(current => current.map(e => ids.includes(e.id) ? { ...e, status: 'trash' } : e));
+      setSelectedEmails([]);
       
       try {
         for (const id of ids) {
@@ -101,13 +122,18 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
           formData.append('id', id);
           await deleteEmail(formData);
         }
+
         toast({
           title: `${ids.length} email(s) moved to trash.`,
+          action: (
+            <ToastAction altText="Undo" onClick={() => handleUndoDelete(ids)}>
+              Undo
+            </ToastAction>
+          ),
         });
-        if (!idsToDelete) { // Only clear selection if it was a bulk delete
-          setSelectedEmails([]);
-        }
+
       } catch (error) {
+        // Revert UI on error
         setEmails(originalEmails);
         toast({
           title: "Error",
