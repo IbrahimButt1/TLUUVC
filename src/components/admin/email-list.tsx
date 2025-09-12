@@ -60,7 +60,7 @@ export default function EmailList({ emails, selectedEmails, onSelectEmail, onVie
                                 onClick={() => onToggleFavorite(email.id, !!email.favorited)}
                               >
                                 <Star className={cn(
-                                  "h-5 w-5 text-muted-foreground",
+                                  "h-5 w-5 text-muted-foreground transition-colors",
                                   email.favorited && "text-yellow-500 fill-yellow-500"
                                 )} />
                               </Button>
