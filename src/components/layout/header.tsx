@@ -29,17 +29,18 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full bg-background/95 backdrop-blur-sm shadow-sm">
+    <header className="w-full bg-background/95 backdrop-blur-sm shadow-sm sticky top-0 z-40">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-8">
           {/* Logo */}
-          <a href="/" className="flex items-center">
+          <a href="/" className="relative group p-1">
+            <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-primary/20 via-transparent to-primary/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <Image
               src={settings.logo}
               alt="Company Logo"
               width={270}
               height={68}
-              className="object-contain rounded-lg h-[68px] w-auto"
+              className="object-contain rounded-lg h-auto w-auto max-h-[60px] relative z-10"
               data-ai-hint="logo"
             />
           </a>
@@ -50,10 +51,10 @@ export default function Header() {
 
         {/* Right Side: CTA and Mobile Menu */}
         <div className="flex items-center gap-4">
-          <Button asChild className="hidden md:inline-flex" variant="ghost" size="icon">
+          <Button asChild className="hidden md:inline-flex" variant="ghost">
             <a href="/login">
               <User className="h-5 w-5" />
-              <span className="sr-only">Sign In</span>
+              <span>Admin Login</span>
             </a>
           </Button>
 
@@ -72,7 +73,7 @@ export default function Header() {
                     alt="Company Logo"
                     width={270}
                     height={68}
-                    className="object-contain rounded-lg h-[68px] w-auto"
+                    className="object-contain rounded-lg h-auto w-auto max-h-[60px]"
                   />
                 </SheetTitle>
                 <SheetClose>
