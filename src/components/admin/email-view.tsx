@@ -9,17 +9,24 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
 import { Button } from '../ui/button';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
 
 interface EmailViewProps {
   email: Email;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onDelete: (id: string) => void;
 }
 
-export default function EmailView({ email, open, onOpenChange }: EmailViewProps) {
+export default function EmailView({ email, open, onOpenChange, onDelete }: EmailViewProps) {
+  
+  const handleDelete = () => {
+    onDelete(email.id);
+    onOpenChange(false);
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-3xl w-full h-[80vh] flex flex-col p-0">
@@ -41,8 +48,30 @@ export default function EmailView({ email, open, onOpenChange }: EmailViewProps)
                     Received: {format(new Date(email.receivedAt), "PPP p")}
                 </p>
                 <div className="space-x-2">
-                    <Button variant="outline">Reply</Button>
-                    <Button variant="outline">Delete</Button>
+                    <Button variant="outline" asChild>
+                        <a href={`mailto:${email.email}?subject=Re: ${encodeURIComponent(email.subject)}`}>
+                            Reply
+                        </a>
+                    </Button>
+                     <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="outline">Delete</Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Move to Trash?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                This will move the email to the trash folder. You can permanently delete it from there.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleDelete}>
+                                    Move to Trash
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                 </div>
             </div>
         </DialogFooter>

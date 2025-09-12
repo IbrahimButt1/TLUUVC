@@ -50,21 +50,30 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
     }
   };
 
-  const handleDeleteSelected = () => {
+   const handleDeleteSingleEmail = (id: string) => {
+    handleDeleteSelected([id]);
+  }
+
+  const handleDeleteSelected = (idsToDelete?: string[]) => {
+    const ids = idsToDelete || selectedEmails;
+    if (ids.length === 0) return;
+
     startTransition(async () => {
       const originalEmails = [...emails];
-      setEmails(current => current.filter(e => !selectedEmails.includes(e.id)));
+      setEmails(current => current.filter(e => !ids.includes(e.id)));
       
       try {
-        for (const id of selectedEmails) {
+        for (const id of ids) {
           const formData = new FormData();
           formData.append('id', id);
           await deleteEmail(formData);
         }
         toast({
-          title: `${selectedEmails.length} email(s) moved to trash.`,
+          title: `${ids.length} email(s) moved to trash.`,
         });
-        setSelectedEmails([]);
+        if (!idsToDelete) { // Only clear selection if it was a bulk delete
+          setSelectedEmails([]);
+        }
       } catch (error) {
         setEmails(originalEmails);
         toast({
@@ -106,7 +115,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
               <RefreshCw className="h-5 w-5" />
             </Button>
             {selectedEmails.length > 0 && (
-              <Button variant="ghost" size="icon" onClick={handleDeleteSelected}>
+              <Button variant="ghost" size="icon" onClick={() => handleDeleteSelected()}>
                 <Trash2 className="h-5 w-5" />
               </Button>
             )}
@@ -129,6 +138,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
                 onOpenChange={(isOpen) => {
                     if(!isOpen) setCurrentEmail(null);
                 }}
+                onDelete={handleDeleteSingleEmail}
             />
         )}
       </CardContent>
