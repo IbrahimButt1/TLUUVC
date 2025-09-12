@@ -51,13 +51,14 @@ export default function Header() {
 
         {/* Right Side: CTA and Mobile Menu */}
         <div className="flex items-center gap-4">
-          <div className="hidden md:inline-flex">
-            <Button asChild className="rounded-md" variant="outline">
-              <a href="/login">
-                <User className="h-5 w-5" />
-                <span>Admin Login</span>
-              </a>
-            </Button>
+          <div className="hidden md:inline-flex group relative">
+             <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-pink-600 to-purple-600 opacity-0 blur transition-all duration-500 group-hover:opacity-75 group-hover:duration-200"></div>
+              <Button asChild className="relative rounded-md" variant="outline">
+                <a href="/login">
+                  <User className="h-5 w-5" />
+                  <span>Admin Login</span>
+                </a>
+              </Button>
           </div>
 
           <Sheet>
