@@ -48,14 +48,14 @@ export default function EmailView({ email, open, onOpenChange, onDelete }: Email
                     Received: {format(new Date(email.receivedAt), "PPP p")}
                 </p>
                 <div className="space-x-2">
-                    <Button variant="outline" asChild className="bg-green-50 hover:bg-green-100 text-green-700 border-green-200 hover:border-green-300 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800 dark:hover:bg-green-900/40">
+                    <Button variant="outline" asChild className="bg-green-100 hover:bg-green-200 text-green-800 border-green-200 hover:border-green-300 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800 dark:hover:bg-green-900/40">
                         <a href={`mailto:${email.email}?subject=Re: ${encodeURIComponent(email.subject)}`}>
                             Reply
                         </a>
                     </Button>
                      <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <Button variant="outline" className="bg-red-50 hover:bg-red-100 text-red-700 border-red-200 hover:border-red-300 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800 dark:hover:bg-red-900/40">Delete</Button>
+                            <Button variant="outline" className="bg-red-100 hover:bg-red-200 text-red-800 border-red-200 hover:border-red-300 dark:bg-red-900/20 dark:text-red-300 dark:border-red-800 dark:hover:bg-red-900/40">Delete</Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
