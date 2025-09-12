@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Palette, KeyRound, ChevronDown, User, BookUser } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Palette, KeyRound, ChevronDown, User, BookUser, History } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -18,8 +18,13 @@ const navLinks = [
   { href: '/admin/about', label: 'About', icon: Info },
   { href: '/admin/inbox', label: 'Inbox', icon: Inbox },
   { href: '/admin/manifest', label: 'Manifest', icon: BookUser },
-  { href: '/admin/inbox/trash', label: 'Trash', icon: Trash2 },
 ];
+
+const maintenanceLinks = [
+  { href: '/admin/inbox/trash', label: 'Trash', icon: Trash2 },
+  { href: '/admin/backup', label: 'Backup & Restore', icon: History },
+];
+
 
 const settingsLink = { href: '/admin/settings', label: 'Site Settings', icon: Settings };
 
@@ -37,7 +42,7 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
       </Link>
 
       <div className="flex-grow overflow-y-auto">
-        <nav className="flex flex-col p-4">
+        <nav className="flex flex-col p-4 space-y-1">
           <p className="text-xs font-semibold text-muted-foreground px-3 pt-2 pb-1">Admin</p>
           {navLinks.map((link) => {
               const isActive = (pathname === link.href) || (pathname.startsWith(link.href) && link.href !== '/admin');
@@ -62,6 +67,7 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
                   </Link>
               )
           })}
+          
           <p className="text-xs font-semibold text-muted-foreground px-3 pt-4 pb-1">Configuration</p>
            <Link
                 href={settingsLink.href}
@@ -75,6 +81,24 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
                 {settingsLink.label}
                 </div>
             </Link>
+             {maintenanceLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                  <Link
+                      key={link.href}
+                      href={link.href}
+                      className={cn(
+                      'flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted',
+                      isActive && 'bg-muted text-foreground'
+                      )}
+                  >
+                      <div className="flex items-center gap-3">
+                        <link.icon className="h-4 w-4" />
+                        {link.label}
+                      </div>
+                  </Link>
+              )
+          })}
         </nav>
       </div>
 
