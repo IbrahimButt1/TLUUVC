@@ -139,8 +139,16 @@ export async function restoreEmail(formData: FormData): Promise<{ success: boole
     const id = formData.get('id') as string;
     if (!id) return { success: false, error: 'ID not provided' };
     const emails = await readEmails();
-    const updatedEmails = emails.map(e => e.id === id ? { ...e, status: 'inbox' as const, read: false } : e);
+    const emailToRestore = emails.find(e => e.id === id);
+
+    if (!emailToRestore) {
+        return { success: false, error: 'Email not found to restore.'};
+    }
+    
+    // Only change status, keep original 'read' state
+    const updatedEmails = emails.map(e => e.id === id ? { ...e, status: 'inbox' as const } : e);
     await writeEmails(updatedEmails);
+    
     revalidatePath('/admin/emails');
     revalidatePath('/admin/emails/trash');
     revalidatePath('/admin', 'layout');

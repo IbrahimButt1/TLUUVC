@@ -87,9 +87,9 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
 
   const handleUndoDelete = (idsToRestore: string[]) => {
     startTransition(async () => {
-        // Optimistic update to restore emails in UI and mark them as unread
+        // Optimistic update to restore emails in UI
         setEmails(current => {
-            const restoredEmails = current.map(e => idsToRestore.includes(e.id) ? { ...e, status: 'inbox', read: false } : e);
+            const restoredEmails = current.map(e => idsToRestore.includes(e.id) ? { ...e, status: 'inbox' } : e);
             return restoredEmails;
         });
 
