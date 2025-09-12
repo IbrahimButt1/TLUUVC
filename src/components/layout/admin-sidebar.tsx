@@ -13,10 +13,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/about', label: 'About', icon: Info },
+  { href: '/admin/client-balances', label: 'Opening Balances', icon: BookUser },
   { href: '/admin/emails', label: 'Emails', icon: Inbox },
   { href: '/admin/hero', label: 'Hero Images', icon: ImageIcon },
   { href: '/admin/manifest', label: 'Manifest', icon: BookUser },
-  { href: '/admin/client-balances', label: 'Opening Balances', icon: BookUser },
   { href: '/admin/services', label: 'Services', icon: Briefcase },
   { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquareQuote },
 ];
@@ -45,7 +45,7 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
       <div className="flex-grow overflow-y-auto">
         <nav className="flex flex-col p-4 space-y-1">
           <p className="text-xs font-semibold text-muted-foreground px-3 pt-2 pb-1">Admin</p>
-          {navLinks.map((link) => {
+          {navLinks.sort((a, b) => a.label === 'Dashboard' ? -1 : b.label === 'Dashboard' ? 1 : a.label.localeCompare(b.label)).map((link) => {
               const isActive = (pathname === link.href) || (pathname.startsWith(link.href) && link.href !== '/admin');
               return (
                   <Link
@@ -71,7 +71,7 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
           
           <p className="text-xs font-semibold text-muted-foreground px-3 pt-4 pb-1">Configuration</p>
            <Link
-                href={settingsLink.href}
+                href={`${settingsLink.href}?tab=branding`}
                 className={cn(
                 'flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted',
                 isSettingsActive && 'bg-muted text-foreground'
