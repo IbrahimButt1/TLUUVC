@@ -51,12 +51,15 @@ export default function Header() {
 
         {/* Right Side: CTA and Mobile Menu */}
         <div className="flex items-center gap-4">
-          <Button asChild className="hidden md:inline-flex rounded-md" variant="outline">
-            <a href="/login">
-              <User className="h-5 w-5" />
-              <span>Admin Login</span>
-            </a>
-          </Button>
+          <div className="relative group hidden md:inline-flex">
+            <Button asChild className="rounded-md" variant="outline">
+              <a href="/login">
+                <User className="h-5 w-5" />
+                <span>Admin Login</span>
+              </a>
+            </Button>
+             <span className="absolute bottom-[-4px] left-0 w-full h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-center"></span>
+          </div>
 
           <Sheet>
             <SheetTrigger asChild>

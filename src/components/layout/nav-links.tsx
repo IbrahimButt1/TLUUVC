@@ -18,12 +18,10 @@ export default function NavLinks({ className }: { className?: string }) {
         <a
           key={link.href}
           href={link.href}
-          className={cn(
-            "relative font-medium text-foreground/80 transition-colors hover:text-primary",
-            "after:absolute after:left-0 after:-bottom-1 after:h-[2px] after:w-0 after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
-          )}
+          className="relative group font-medium text-foreground/80 transition-colors hover:text-primary"
         >
           {link.label}
+          <span className="absolute bottom-[-4px] left-0 w-full h-[2px] bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-300 ease-out origin-center"></span>
         </a>
       ))}
     </nav>
