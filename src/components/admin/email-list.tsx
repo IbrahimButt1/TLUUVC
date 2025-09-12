@@ -61,7 +61,7 @@ export default function EmailList({ emails, selectedEmails, onSelectEmail, onVie
                               >
                                 <Star className={cn(
                                   "h-5 w-5 text-muted-foreground transition-colors",
-                                  email.favorited && "text-yellow-500 fill-yellow-500"
+                                  email.favorited && "text-orange-500 fill-orange-400"
                                 )} />
                               </Button>
                            </div>
