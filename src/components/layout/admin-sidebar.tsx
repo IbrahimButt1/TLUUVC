@@ -12,13 +12,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/services', label: 'Services', icon: Briefcase },
-  { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquareQuote },
-  { href: '/admin/hero', label: 'Hero Images', icon: ImageIcon },
   { href: '/admin/about', label: 'About', icon: Info },
-  { href: '/admin/inbox', label: 'Emails', icon: Inbox },
+  { href: '/admin/emails', label: 'Emails', icon: Inbox },
+  { href: '/admin/hero', label: 'Hero Images', icon: ImageIcon },
   { href: '/admin/manifest', label: 'Manifest', icon: BookUser },
   { href: '/admin/client-balances', label: 'Opening Balances', icon: BookUser },
+  { href: '/admin/services', label: 'Services', icon: Briefcase },
+  { href: '/admin/testimonials', label: 'Testimonials', icon: MessageSquareQuote },
 ];
 
 const maintenanceLinks = [
@@ -60,7 +60,7 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
                       <link.icon className="h-4 w-4" />
                       {link.label}
                       </div>
-                      {link.href === '/admin/inbox' && emailCount > 0 && (
+                      {link.href === '/admin/emails' && emailCount > 0 && (
                       <Badge className="bg-primary text-primary-foreground">
                           {emailCount}
                       </Badge>
