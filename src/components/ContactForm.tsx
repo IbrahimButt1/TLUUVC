@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { authenticate } from '@/lib/auth';
+import { getSiteSettings } from '@/lib/site-settings';
 import { Alert, AlertDescription, AlertTitle } from './ui/alert';
-import { AlertCircle, Loader2, Eye, EyeOff } from 'lucide-react';
-import React, { useState } from 'react';
+import { AlertCircle, Loader2, Eye, EyeOff, ShieldQuestion } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 function SubmitButton() {
@@ -20,13 +21,71 @@ function SubmitButton() {
     </Button>
   );
 }
+function RecoverySubmitButton() {
+  const { pending } = useFormStatus();
+  return (
+    <Button type="submit" className="w-full" disabled={pending}>
+      {pending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      {pending ? 'Verifying...' : 'Verify Answer & Login'}
+    </Button>
+  );
+}
+
 
 export default function LoginForm() {
   const [errorMessage, formAction] = useActionState(authenticate, undefined);
   const [showPassword, setShowPassword] = useState(false);
+  const [isRecovery, setIsRecovery] = useState(false);
+  const [settings, setSettings] = useState<Awaited<ReturnType<typeof getSiteSettings>> | null>(null);
 
-  const handleForgotPassword = () => {
-    alert("Please contact your administrator at 'theluuvisaconsultant@gmail.com' to reset your password.");
+  useEffect(() => {
+    async function fetchSettings() {
+      const fetchedSettings = await getSiteSettings();
+      setSettings(fetchedSettings);
+    }
+    fetchSettings();
+  }, []);
+
+
+  const handleForgotPassword = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!settings?.secretQuestion) {
+      alert("Password recovery is not set up. Please contact your administrator.");
+      return;
+    }
+    setIsRecovery(true);
+  }
+
+  if (isRecovery) {
+    return (
+       <form action={formAction} className="grid gap-6">
+          <div className="grid gap-4">
+              <div className="grid gap-2">
+                  <Label htmlFor="secretAnswer">Secret Question</Label>
+                  <p className="text-sm text-muted-foreground italic px-1">{settings?.secretQuestion}</p>
+                  <Input
+                      id="secretAnswer"
+                      type="text"
+                      name="secretAnswer"
+                      placeholder="Your secret answer"
+                      required
+                      autoFocus
+                  />
+              </div>
+              <RecoverySubmitButton />
+               <Button variant="link" onClick={() => setIsRecovery(false)}>
+                  Back to standard login
+              </Button>
+               {errorMessage && (
+                <Alert variant="destructive">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Recovery Failed</AlertTitle>
+                  <AlertDescription>{errorMessage}</AlertDescription>
+                </Alert>
+              )}
+          </div>
+       </form>
+    );
   }
 
   return (

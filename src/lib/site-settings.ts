@@ -11,6 +11,8 @@ export interface SiteSettings {
     username?: string;
     password?: string;
     avatar?: string;
+    secretQuestion?: string;
+    secretAnswer?: string;
 }
 
 export type UpdateSettingsState = {
@@ -30,6 +32,8 @@ async function readSiteSettings(): Promise<SiteSettings> {
             username: settings.username || 'admin',
             password: settings.password || 'password',
             avatar: settings.avatar || 'https://picsum.photos/100',
+            secretQuestion: settings.secretQuestion || '',
+            secretAnswer: settings.secretAnswer || '',
         };
     } catch (error) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
@@ -38,6 +42,8 @@ async function readSiteSettings(): Promise<SiteSettings> {
                 username: 'admin',
                 password: 'password',
                 avatar: 'https://picsum.photos/100',
+                secretQuestion: '',
+                secretAnswer: '',
             };
         }
         console.error("Could not read site-settings.json:", error);
@@ -46,6 +52,8 @@ async function readSiteSettings(): Promise<SiteSettings> {
             username: 'admin',
             password: 'password',
             avatar: 'https://picsum.photos/100',
+            secretQuestion: '',
+            secretAnswer: '',
         };
     }
 }
@@ -66,21 +74,29 @@ export async function updateSiteSettings(prevState: UpdateSettingsState, formDat
     const currentPassword = formData.get('currentPassword') as string;
     const newPassword = formData.get('newPassword') as string;
     const confirmPassword = formData.get('confirmPassword') as string;
+    const secretQuestion = formData.get('secretQuestion') as string;
+    const secretAnswer = formData.get('secretAnswer') as string;
     
     const currentSettings = await readSiteSettings();
 
-    if (newPassword) {
-        if (currentSettings.password !== 'password' && currentPassword !== currentSettings.password) {
-            return { message: "", error: "The current password you entered is incorrect.", success: false };
+    const wantsToChangePassword = !!newPassword;
+    const wantsToChangeUsername = username && username !== currentSettings.username;
+    const wantsToChangeSecurity = !!secretQuestion || !!secretAnswer;
+    
+    // Require current password for any sensitive change if it's not the default
+    if ((wantsToChangePassword || wantsToChangeUsername || wantsToChangeSecurity) && currentSettings.password !== 'password') {
+         if (!currentPassword) {
+            return { message: "", error: "Please enter your current password to make changes.", success: false };
         }
-        if (newPassword !== confirmPassword) {
-            return { message: "", error: "The new passwords do not match.", success: false };
-        }
-    } else if (username && username !== currentSettings.username) {
-        if (currentSettings.password !== 'password' && currentPassword !== currentSettings.password) {
+        if (currentPassword !== currentSettings.password) {
             return { message: "", error: "The current password you entered is incorrect.", success: false };
         }
     }
+    
+    if (wantsToChangePassword && newPassword !== confirmPassword) {
+        return { message: "", error: "The new passwords do not match.", success: false };
+    }
+
 
     let logoUrl = currentSettings.logo;
     if (logoFile && logoFile.size > 0) {
@@ -112,6 +128,9 @@ export async function updateSiteSettings(prevState: UpdateSettingsState, formDat
         avatar: avatarUrl,
         username: username || currentSettings.username,
         password: newPassword ? newPassword : currentSettings.password,
+        secretQuestion: secretQuestion || currentSettings.secretQuestion,
+        // In a real app, you would hash the secret answer here before saving.
+        secretAnswer: secretAnswer ? secretAnswer : currentSettings.secretAnswer
     };
 
     await writeSiteSettings(newSettings);

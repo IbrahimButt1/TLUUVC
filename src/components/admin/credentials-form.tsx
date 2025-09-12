@@ -101,6 +101,15 @@ export default function CredentialsForm({ settings }: CredentialsFormProps) {
                     </button>
                 </div>
             </div>
+            <div className="space-y-2">
+                <Label htmlFor="secretQuestion">Secret Question</Label>
+                <Input id="secretQuestion" name="secretQuestion" defaultValue={settings.secretQuestion} placeholder="e.g., What is your mother's maiden name?" />
+            </div>
+             <div className="space-y-2">
+                <Label htmlFor="secretAnswer">Secret Answer</Label>
+                <Input id="secretAnswer" name="secretAnswer" placeholder="Enter answer (case-sensitive)" />
+                <p className="text-xs text-muted-foreground">Leave blank to keep current answer. This is used for password recovery.</p>
+            </div>
             {state?.error && (
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
