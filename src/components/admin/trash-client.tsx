@@ -46,19 +46,20 @@ export default function TrashClient({
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
-  const handleAction = <T extends {id: string}>(
+  const handleAction = <T extends {id: string; read?: boolean}>(
     action: (formData: FormData) => Promise<{ success: boolean; error?: string }>,
     itemId: string,
     itemType: 'email' | 'heroImage' | 'service' | 'testimonial',
-    successMessage: string
+    successMessage: string,
+    isRestore: boolean = false,
   ) => {
     startTransition(async () => {
       // Optimistically update the UI
-      const originalItems = {
-        email: [...emails],
-        heroImage: [...heroImages],
-        service: [...services],
-        testimonial: [...testimonials]
+      const stateMap = {
+        email: emails,
+        heroImage: heroImages,
+        service: services,
+        testimonial: testimonials
       };
       
       const setStateMap = {
@@ -68,9 +69,17 @@ export default function TrashClient({
         testimonial: setTestimonials
       };
 
+      const originalItems = [...stateMap[itemType]];
       const setState = setStateMap[itemType];
-      // @ts-ignore
-      setState((currentItems: T[]) => currentItems.filter(item => item.id !== itemId));
+      
+      // For restore, we modify the item. For delete, we filter it out.
+      if (isRestore) {
+        // @ts-ignore
+        setState((currentItems: T[]) => currentItems.map(item => item.id === itemId ? { ...item, status: 'inbox' } : item));
+      } else {
+        // @ts-ignore
+        setState((currentItems: T[]) => currentItems.filter(item => item.id !== itemId));
+      }
       
       const formData = new FormData();
       formData.append('id', itemId);
@@ -81,12 +90,12 @@ export default function TrashClient({
             toast({ title: successMessage });
         } else {
             // @ts-ignore
-            setState(originalItems[itemType]);
+            setState(originalItems);
             toast({ title: "Error", description: result.error || "An unknown error occurred", variant: "destructive" });
         }
       } catch (error) {
         // @ts-ignore
-        setState(originalItems[itemType]); 
+        setState(originalItems); 
         const errorMessage = error instanceof Error ? error.message : "Failed to perform action. Please try again.";
         toast({
           title: "Error",
@@ -169,7 +178,7 @@ export default function TrashClient({
                             <TrashEmails 
                                 emails={filteredEmails} 
                                 searchTerm={searchTerm} 
-                                onRestore={(id) => handleAction(restoreEmail, id, 'email', "Email restored.")}
+                                onRestore={(id) => handleAction(restoreEmail, id, 'email', "Email restored.", true)}
                                 onDelete={(id) => handleAction(permanentlyDeleteEmail, id, 'email', "Email permanently deleted.")}
                                 isPending={isPending}
                             />
@@ -186,7 +195,7 @@ export default function TrashClient({
                             <TrashHeroImages
                                 images={filteredHeroImages}
                                 searchTerm={searchTerm}
-                                onRestore={(id) => handleAction(restoreHeroImage, id, 'heroImage', "Hero Image restored.")}
+                                onRestore={(id) => handleAction(restoreHeroImage, id, 'heroImage', "Hero Image restored.", true)}
                                 onDelete={(id) => handleAction(permanentlyDeleteHeroImage, id, 'heroImage', "Hero Image permanently deleted.")}
                                 isPending={isPending}
                                 />
@@ -203,7 +212,7 @@ export default function TrashClient({
                             <TrashServices
                                 services={filteredServices}
                                 searchTerm={searchTerm}
-                                onRestore={(id) => handleAction(restoreService, id, 'service', "Service restored.")}
+                                onRestore={(id) => handleAction(restoreService, id, 'service', "Service restored.", true)}
                                 onDelete={(id) => handleAction(permanentlyDeleteService, id, 'service', "Service permanently deleted.")}
                                 isPending={isPending}
                                 />
@@ -220,7 +229,7 @@ export default function TrashClient({
                             <TrashTestimonials
                                 testimonials={filteredTestimonials}
                                 searchTerm={searchTerm}
-                                onRestore={(id) => handleAction(restoreTestimonial, id, 'testimonial', "Testimonial restored.")}
+                                onRestore={(id) => handleAction(restoreTestimonial, id, 'testimonial', "Testimonial restored.", true)}
                                 onDelete={(id) => handleAction(permanentlyDeleteTestimonial, id, 'testimonial', "Testimonial permanently deleted.")}
                                 isPending={isPending}
                                 />

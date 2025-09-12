@@ -87,9 +87,11 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
 
   const handleUndoDelete = (idsToRestore: string[]) => {
     startTransition(async () => {
-        // Optimistic update to restore emails in UI
+        // Optimistic update to restore emails in UI, preserving their original state.
         setEmails(current => {
-            const restoredEmails = current.map(e => idsToRestore.includes(e.id) ? { ...e, status: 'inbox' } : e);
+            const restoredEmails = current.map(e => 
+                idsToRestore.includes(e.id) ? { ...e, status: 'inbox' } : e
+            );
             return restoredEmails;
         });
 
@@ -111,8 +113,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
     if (ids.length === 0) return;
     
     const originalEmails = [...emails];
-    const emailsToTrash = originalEmails.filter(e => ids.includes(e.id));
-
+    
     startTransition(async () => {
       // Optimistic update: mark as trash
       setEmails(current => current.map(e => ids.includes(e.id) ? { ...e, status: 'trash' } : e));
