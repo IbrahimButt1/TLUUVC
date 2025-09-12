@@ -79,7 +79,7 @@ export async function addEmail(emailData: { name: string; email: string; subject
     await writeEmails(emails);
     
     revalidatePath('/admin/emails');
-    revalidatePath('/admin');
+    revalidatePath('/admin', 'layout');
 }
 
 export async function markEmailAsRead(formData: FormData): Promise<{ success: boolean; error?: string }> {
@@ -94,7 +94,7 @@ export async function markEmailAsRead(formData: FormData): Promise<{ success: bo
         await writeEmails(updatedEmails);
 
         revalidatePath('/admin/emails');
-        revalidatePath('/admin');
+        revalidatePath('/admin', 'layout');
 
         return { success: true };
     } catch (error) {
@@ -110,7 +110,7 @@ export async function markAllEmailsAsRead() {
     );
     await writeEmails(updatedEmails);
     revalidatePath('/admin/emails');
-    revalidatePath('/admin');
+    revalidatePath('/admin', 'layout');
 }
 
 export async function deleteEmail(formData: FormData) {
@@ -121,7 +121,7 @@ export async function deleteEmail(formData: FormData) {
     await writeEmails(updatedEmails);
     revalidatePath('/admin/emails');
     revalidatePath('/admin/emails/trash');
-    revalidatePath('/admin');
+    revalidatePath('/admin', 'layout');
 }
 
 export async function permanentlyDeleteEmail(formData: FormData): Promise<{ success: boolean; error?: string }> {
@@ -131,6 +131,7 @@ export async function permanentlyDeleteEmail(formData: FormData): Promise<{ succ
     emails = emails.filter(e => e.id !== id);
     await writeEmails(emails);
     revalidatePath('/admin/emails/trash');
+    revalidatePath('/admin', 'layout');
     return { success: true };
 }
 
@@ -142,7 +143,7 @@ export async function restoreEmail(formData: FormData): Promise<{ success: boole
     await writeEmails(updatedEmails);
     revalidatePath('/admin/emails');
     revalidatePath('/admin/emails/trash');
-    revalidatePath('/admin');
+    revalidatePath('/admin', 'layout');
     return { success: true };
 }
 
