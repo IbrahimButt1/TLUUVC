@@ -59,7 +59,7 @@ export default function KnowledgeBase() {
               <div className="grid w-full gap-4">
                 <Textarea
                   name="question"
-                  placeholder="e.g., What are the main requirements for a Canadian student visa for a citizen of India?"
+                  placeholder="e.g., What are the main requirements for a Canadian student visa for a citizen of Vietnam?"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
                   rows={4}
