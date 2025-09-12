@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Loader2 } from 'lucide-react';
+import { Loader2, TrendingUp, TrendingDown } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getServiceTitles, type ServiceTitle } from '@/lib/services';
+import { cn } from '@/lib/utils';
 
 interface ManifestFormProps {
     action: (formData: FormData) => Promise<void>;
@@ -28,6 +29,7 @@ function SubmitButton() {
 
 export default function ManifestForm({ action }: ManifestFormProps) {
     const [services, setServices] = useState<ServiceTitle[]>([]);
+    const [description, setDescription] = useState('');
 
     useEffect(() => {
         async function fetchServices() {
@@ -55,7 +57,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
             </div>
             <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
-                <Select name="description" required>
+                <Select name="description" required onValueChange={setDescription} >
                     <SelectTrigger id="description">
                         <SelectValue placeholder="Select a transaction description..." />
                     </SelectTrigger>
@@ -70,6 +72,14 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                         <SelectItem value="Other">Other</SelectItem>
                     </SelectContent>
                 </Select>
+                 {description === 'Other' && (
+                    <Textarea 
+                        name="otherDescription"
+                        placeholder="Please specify the description for 'Other'"
+                        className="mt-2"
+                        required
+                    />
+                )}
             </div>
             <div className="space-y-2">
                 <Label htmlFor="notes">Notes (Optional)</Label>
@@ -80,18 +90,27 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                 />
             </div>
             <div className="grid grid-cols-2 gap-6">
-                <div className="space-y-2">
+                 <div className="space-y-2">
                     <Label htmlFor="type">Transaction Type</Label>
-                    <RadioGroup name="type" required defaultValue="credit" className="flex gap-4 pt-2">
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="credit" id="credit" />
-                            <Label htmlFor="credit" className="font-normal">Client Payment Received</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="debit" id="debit" />
-                            <Label htmlFor="debit" className="font-normal">Vendor Payment Payout</Label>
-                        </div>
-                    </RadioGroup>
+                     <Select name="type" required defaultValue="credit">
+                        <SelectTrigger id="type">
+                            <SelectValue placeholder="Select a transaction type..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="credit">
+                                <div className="flex items-center gap-2 text-green-600">
+                                    <TrendingUp className="h-4 w-4" />
+                                    <span>Payment In (Credit)</span>
+                                </div>
+                            </SelectItem>
+                            <SelectItem value="debit">
+                                 <div className="flex items-center gap-2 text-red-600">
+                                    <TrendingDown className="h-4 w-4" />
+                                    <span>Payment Out (Debit)</span>
+                                </div>
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
                  <div className="space-y-2">
                     <Label htmlFor="amount">Amount ($)</Label>

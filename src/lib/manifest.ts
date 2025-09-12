@@ -42,13 +42,14 @@ export async function addManifestEntry(formData: FormData) {
     const clientName = formData.get('clientName') as string;
     const date = formData.get('date') as string;
     let description = formData.get('description') as string;
+    const otherDescription = formData.get('otherDescription') as string;
     const notes = formData.get('notes') as string;
     const type = formData.get('type') as 'credit' | 'debit';
     const amount = parseFloat(formData.get('amount') as string);
     
-    let finalDescription = description;
+    let finalDescription = description === 'Other' ? otherDescription : description;
     if (notes) {
-        finalDescription = `${description} - ${notes}`;
+        finalDescription = `${finalDescription} - ${notes}`;
     }
 
 
