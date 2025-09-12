@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Palette, KeyRound, ChevronDown, User, BookUser, History } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Palette, KeyRound, ChevronDown, User, BookUser, History, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -14,7 +14,9 @@ const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/about', label: 'About', icon: Info },
   { href: '/admin/client-balances', label: 'Opening Balances', icon: BookUser },
-  { href: '/admin/emails', label: 'Emails', icon: Inbox },
+  { href: '/admin/emails', label: 'Emails', icon: Inbox, subItems: [
+      { href: '/admin/emails/favorites', label: 'Favorites', icon: Star }
+  ]},
   { href: '/admin/hero', label: 'Hero Images', icon: ImageIcon },
   { href: '/admin/manifest', label: 'Manifest', icon: BookUser },
   { href: '/admin/services', label: 'Services', icon: Briefcase },
@@ -34,6 +36,8 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
   const pathname = usePathname();
 
   const isSettingsActive = pathname.startsWith('/admin/settings');
+  const isEmailsActive = (pathname === '/admin/emails') || pathname.startsWith('/admin/emails/');
+  const isEmailSubItemActive = (href: string) => pathname === href;
 
   return (
     <aside className="w-64 bg-background border-r flex flex-col">
@@ -46,6 +50,44 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
         <nav className="flex flex-col p-4 space-y-1">
           <p className="text-xs font-semibold text-muted-foreground px-3 pt-2 pb-1">Admin</p>
           {navLinks.sort((a, b) => a.label === 'Dashboard' ? -1 : b.label === 'Dashboard' ? 1 : a.label.localeCompare(b.label)).map((link) => {
+              if(link.subItems) {
+                return (
+                    <Accordion key={link.href} type="single" collapsible defaultValue={isEmailsActive ? "emails" : ""}>
+                        <AccordionItem value="emails" className="border-b-0">
+                            <AccordionTrigger className={cn(
+                                'flex items-center justify-between gap-3 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:text-foreground hover:bg-muted hover:no-underline',
+                                isEmailsActive && 'bg-muted text-foreground'
+                            )}>
+                               <div className="flex items-center gap-3">
+                                    <link.icon className="h-4 w-4" />
+                                    {link.label}
+                                </div>
+                                {link.href === '/admin/emails' && emailCount > 0 && (
+                                <Badge className="bg-primary text-primary-foreground">
+                                    {emailCount}
+                                </Badge>
+                                )}
+                            </AccordionTrigger>
+                            <AccordionContent className="pl-6 pt-1 pb-0 space-y-1">
+                                {link.subItems.map(subLink => (
+                                    <Link
+                                        key={subLink.href}
+                                        href={subLink.href}
+                                        className={cn(
+                                        'flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground hover:bg-muted',
+                                        isEmailSubItemActive(subLink.href) && 'bg-muted/80 text-foreground'
+                                        )}
+                                    >
+                                        <subLink.icon className="h-4 w-4" />
+                                        {subLink.label}
+                                    </Link>
+                                ))}
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
+                )
+              }
+              
               const isActive = (pathname === link.href) || (pathname.startsWith(link.href) && link.href !== '/admin');
               return (
                   <Link
@@ -60,11 +102,6 @@ export default function AdminSidebar({ emailCount, settings }: { emailCount: num
                       <link.icon className="h-4 w-4" />
                       {link.label}
                       </div>
-                      {link.href === '/admin/emails' && emailCount > 0 && (
-                      <Badge className="bg-primary text-primary-foreground">
-                          {emailCount}
-                      </Badge>
-                      )}
                   </Link>
               )
           })}

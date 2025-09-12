@@ -6,15 +6,17 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Star } from 'lucide-react';
 import { format, isToday, isThisYear } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { Button } from '../ui/button';
 
 interface EmailListProps {
   emails: Email[];
   selectedEmails: string[];
   onSelectEmail: (id: string, checked: boolean | 'indeterminate') => void;
   onViewEmail: (email: Email) => void;
+  onToggleFavorite: (id: string, isFavorited: boolean) => void;
 }
 
-export default function EmailList({ emails, selectedEmails, onSelectEmail, onViewEmail }: EmailListProps) {
+export default function EmailList({ emails, selectedEmails, onSelectEmail, onViewEmail, onToggleFavorite }: EmailListProps) {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -42,26 +44,39 @@ export default function EmailList({ emails, selectedEmails, onSelectEmail, onVie
                             "cursor-pointer",
                             selectedEmails.includes(email.id) && "bg-muted/50"
                         )}
-                        onClick={() => onViewEmail(email)}
                     >
-                        <TableCell className="w-12 px-4" onClick={(e) => e.stopPropagation()}>
-                           <div className="flex items-center gap-4">
+                        <TableCell className="w-12 px-4">
+                           <div className="flex items-center gap-2">
                              <Checkbox 
                                 id={`select-${email.id}`} 
                                 checked={selectedEmails.includes(email.id)}
                                 onCheckedChange={(checked) => onSelectEmail(email.id, checked)}
+                                onClick={(e) => e.stopPropagation()}
                               />
-                             <Star className="h-5 w-5 text-muted-foreground" />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  onToggleFavorite(email.id, !!email.favorited);
+                                }}
+                              >
+                                <Star className={cn(
+                                  "h-5 w-5 text-muted-foreground",
+                                  email.favorited && "text-yellow-500 fill-yellow-500"
+                                )} />
+                              </Button>
                            </div>
                         </TableCell>
-                        <TableCell className={cn("w-48 font-medium", !email.read && "font-bold")}>
+                        <TableCell className={cn("w-48 font-medium", !email.read && "font-bold")} onClick={() => onViewEmail(email)}>
                             {email.name}
                         </TableCell>
-                        <TableCell>
+                        <TableCell onClick={() => onViewEmail(email)}>
                             <span className={cn("font-medium", !email.read && "font-bold")}>{email.subject}</span>
                             <span className="text-muted-foreground"> - {email.message.substring(0, 100)}...</span>
                         </TableCell>
-                        <TableCell className={cn("w-24 text-right text-sm text-muted-foreground", !email.read && "font-bold text-foreground")}>
+                        <TableCell className={cn("w-24 text-right text-sm text-muted-foreground", !email.read && "font-bold text-foreground")} onClick={() => onViewEmail(email)}>
                             {formatDate(email.receivedAt)}
                         </TableCell>
                     </TableRow>

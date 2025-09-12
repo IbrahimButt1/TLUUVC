@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition, useEffect } from 'react';
 import type { Email } from '@/lib/emails';
-import { deleteEmail, markAllEmailsAsRead } from '@/lib/emails';
+import { deleteEmail, markAllEmailsAsRead, toggleEmailFavorite } from '@/lib/emails';
 import { Button } from '@/components/ui/button';
 import EmailList from './email-list';
 import { Input } from '@/components/ui/input';
@@ -85,6 +85,29 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
     });
   };
 
+  const handleToggleFavorite = (id: string, isFavorited: boolean) => {
+    startTransition(async () => {
+      // Optimistic update
+      setEmails(current => current.map(e => e.id === id ? { ...e, favorited: !e.favorited } : e));
+      const formData = new FormData();
+      formData.append('id', id);
+      try {
+        await toggleEmailFavorite(formData);
+        toast({
+          title: isFavorited ? "Removed from favorites" : "Added to favorites",
+        });
+      } catch (error) {
+        // Revert on error
+        setEmails(current => current.map(e => e.id === id ? { ...e, favorited: isFavorited } : e));
+        toast({
+          title: "Error",
+          description: "Could not update favorite status.",
+          variant: "destructive",
+        });
+      }
+    });
+  };
+
   const isAllSelected = filteredEmails.length > 0 && selectedEmails.length === filteredEmails.length;
   const isIndeterminate = selectedEmails.length > 0 && selectedEmails.length < filteredEmails.length;
 
@@ -130,6 +153,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
           selectedEmails={selectedEmails}
           onSelectEmail={handleSelectEmail}
           onViewEmail={setCurrentEmail}
+          onToggleFavorite={handleToggleFavorite}
         />
         {currentEmail && (
             <EmailView 

@@ -13,6 +13,7 @@ export interface Email {
     receivedAt: string;
     read: boolean;
     status: 'inbox' | 'trash';
+    favorited?: boolean;
 }
 
 const dataPath = path.join(process.cwd(), 'src', 'lib', 'emails.json');
@@ -43,6 +44,13 @@ export async function getEmails(): Promise<Email[]> {
         .sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime());
 }
 
+export async function getFavoritedEmails(): Promise<Email[]> {
+    const emails = await readEmails();
+    return emails
+        .filter(e => e.status === 'inbox' && e.favorited)
+        .sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime());
+}
+
 export async function getTrashedEmails(): Promise<Email[]> {
     const emails = await readEmails();
     return emails
@@ -63,6 +71,7 @@ export async function addEmail(emailData: { name: string; email: string; subject
         receivedAt: new Date().toISOString(),
         read: false,
         status: 'inbox',
+        favorited: false,
     };
 
     const emails = await readEmails();
@@ -91,6 +100,7 @@ export async function deleteEmail(formData: FormData) {
     await writeEmails(updatedEmails);
     revalidatePath('/admin/emails');
     revalidatePath('/admin/emails/trash');
+    revalidatePath('/admin/emails/favorites');
     revalidatePath('/admin');
 }
 
@@ -101,6 +111,7 @@ export async function permanentlyDeleteEmail(formData: FormData): Promise<{ succ
     emails = emails.filter(e => e.id !== id);
     await writeEmails(emails);
     revalidatePath('/admin/emails/trash');
+    revalidatePath('/admin/emails/favorites');
     return { success: true };
 }
 
@@ -112,6 +123,27 @@ export async function restoreEmail(formData: FormData): Promise<{ success: boole
     await writeEmails(updatedEmails);
     revalidatePath('/admin/emails');
     revalidatePath('/admin/emails/trash');
+    revalidatePath('/admin/emails/favorites');
     revalidatePath('/admin');
+    return { success: true };
+}
+
+export async function toggleEmailFavorite(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
+
+    const emails = await readEmails();
+    const emailIndex = emails.findIndex(e => e.id === id);
+
+    if (emailIndex === -1) {
+        return { success: false, error: 'Email not found.' };
+    }
+
+    emails[emailIndex].favorited = !emails[emailIndex].favorited;
+    await writeEmails(emails);
+
+    revalidatePath('/admin/emails');
+    revalidatePath('/admin/emails/favorites');
+
     return { success: true };
 }
