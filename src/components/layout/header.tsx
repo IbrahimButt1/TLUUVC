@@ -51,7 +51,7 @@ export default function Header() {
 
         {/* Right Side: CTA and Mobile Menu */}
         <div className="flex items-center gap-4">
-          <Button asChild className="hidden md:inline-flex rounded-full" variant="outline">
+          <Button asChild className="hidden md:inline-flex rounded-md" variant="outline">
             <a href="/login">
               <User className="h-5 w-5" />
               <span>Admin Login</span>
