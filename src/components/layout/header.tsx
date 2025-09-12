@@ -29,7 +29,7 @@ export default function Header() {
   }
 
   return (
-    <header className="w-full bg-background/95 backdrop-blur-sm shadow-sm sticky top-0 z-40">
+    <header className="w-full bg-white/95 backdrop-blur-sm shadow-sm sticky top-0 z-40">
       <div className="container flex h-20 items-center justify-between">
         <div className="flex items-center gap-8">
           {/* Logo */}
