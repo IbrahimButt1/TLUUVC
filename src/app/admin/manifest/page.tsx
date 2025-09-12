@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getManifestEntries } from "@/lib/manifest";
 import ManifestList from "@/components/admin/manifest-list";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-
+import ManifestChart from "@/components/admin/manifest-chart";
 
 export default async function ManifestPage() {
   const entries = await getManifestEntries();
@@ -32,6 +32,16 @@ export default async function ManifestPage() {
                 </Link>
             </Button>
         </div>
+
+        <Card>
+            <CardHeader>
+                <CardTitle>Financial Overview</CardTitle>
+                <CardDescription>A visual summary of your credits, debits, and running balance.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <ManifestChart entries={entries} />
+            </CardContent>
+        </Card>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card>
