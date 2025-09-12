@@ -57,10 +57,7 @@ export default function EmailList({ emails, selectedEmails, onSelectEmail, onVie
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  onToggleFavorite(email.id, !!email.favorited);
-                                }}
+                                onClick={() => onToggleFavorite(email.id, !!email.favorited)}
                               >
                                 <Star className={cn(
                                   "h-5 w-5 text-muted-foreground",

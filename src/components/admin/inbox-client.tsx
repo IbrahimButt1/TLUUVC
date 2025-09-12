@@ -23,7 +23,10 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
   const { toast } = useToast();
 
   useEffect(() => {
-    markAllEmailsAsRead();
+    // This now correctly runs after the component mounts
+    startTransition(() => {
+        markAllEmailsAsRead();
+    });
   }, []);
 
   const filteredEmails = useMemo(() => {
@@ -96,8 +99,11 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
 
   const handleToggleFavorite = (id: string, isFavorited: boolean) => {
     startTransition(async () => {
+      const originalEmails = [...emails];
       // Optimistic update
-      const updatedEmails = emails.map(e => e.id === id ? { ...e, favorited: !e.favorited } : e);
+      const updatedEmails = emails.map(e => 
+        e.id === id ? { ...e, favorited: !e.favorited } : e
+      );
       setEmails(updatedEmails);
       
       const formData = new FormData();
@@ -109,7 +115,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
         });
       } catch (error) {
         // Revert on error
-        setEmails(current => current.map(e => e.id === id ? { ...e, favorited: isFavorited } : e));
+        setEmails(originalEmails);
         toast({
           title: "Error",
           description: "Could not update favorite status.",
@@ -118,7 +124,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
       }
     });
   };
-
+  
   const isAllSelected = filteredEmails.length > 0 && selectedEmails.length === filteredEmails.length;
   const isIndeterminate = selectedEmails.length > 0 && selectedEmails.length < filteredEmails.length;
 
@@ -193,7 +199,9 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
             onSelectEmail={handleSelectEmail}
             onViewEmail={(email) => {
               // Mark email as read on view
-              setEmails(current => current.map(e => e.id === email.id ? { ...e, read: true } : e));
+              if (!email.read) {
+                 setEmails(current => current.map(e => e.id === email.id ? { ...e, read: true } : e));
+              }
               setCurrentEmail(email);
             }}
             onToggleFavorite={handleToggleFavorite}
