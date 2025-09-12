@@ -6,13 +6,14 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Loader2, AlertCircle, Check, ChevronsUpDown, Wallet } from 'lucide-react';
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from '@/hooks/use-toast';
 import { Client, ClientBalance, updateClientBalance } from '@/lib/client-balances';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 import { Alert, AlertTitle, AlertDescription } from '../ui/alert';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
 
 interface ClientBalanceFormProps {
     clients: Client[];
@@ -129,21 +130,25 @@ export default function ClientBalanceForm({ clients, balances }: ClientBalanceFo
                 </div>
                  <div className="space-y-2">
                     <Label htmlFor="type">Balance Type</Label>
-                    <RadioGroup 
-                        name="type" 
-                        value={type}
-                        onValueChange={(value) => setType(value as 'credit' | 'debit')}
-                        className="flex gap-4 pt-2"
-                    >
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="credit" id="credit" />
-                            <Label htmlFor="credit">Credit</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="debit" id="debit" />
-                            <Label htmlFor="debit">Debit</Label>
-                        </div>
-                    </RadioGroup>
+                     <Select name="type" value={type} onValueChange={(value) => setType(value as 'credit' | 'debit')}>
+                        <SelectTrigger id="type">
+                            <SelectValue placeholder="Select balance type..." />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="credit">
+                                <div className="flex items-center gap-2">
+                                    <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                                    <span>Payment In (Credit)</span>
+                                </div>
+                            </SelectItem>
+                            <SelectItem value="debit">
+                                 <div className="flex items-center gap-2">
+                                    <span className="h-2 w-2 rounded-full bg-red-500"></span>
+                                    <span>Payment Out (Debit)</span>
+                                </div>
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
             </div>
 
