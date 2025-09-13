@@ -114,7 +114,6 @@ export default function ClientsListClient({ initialClients }: { initialClients: 
               <ClientForm 
                   action={addClient}
                   onClientAdded={handleAddClient}
-                  existingClients={clients.map(c => c.name)}
               />
           </CardContent>
       </Card>

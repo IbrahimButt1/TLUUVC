@@ -15,7 +15,6 @@ import type { AddClientState, Client } from '@/lib/clients';
 interface ClientFormProps {
     action: (prevState: any, formData: FormData) => Promise<AddClientState>;
     onClientAdded: (newClient: Client) => void;
-    existingClients: string[];
 }
 
 function SubmitButton() {
@@ -28,7 +27,7 @@ function SubmitButton() {
     )
 }
 
-export default function ClientForm({ action, onClientAdded, existingClients }: ClientFormProps) {
+export default function ClientForm({ action, onClientAdded }: ClientFormProps) {
     const { toast } = useToast();
     const [state, formAction] = useActionState(action, { success: false });
     const formRef = useRef<HTMLFormElement>(null);
@@ -46,10 +45,6 @@ export default function ClientForm({ action, onClientAdded, existingClients }: C
         }
     }, [state, toast, onClientAdded]);
 
-    const clientExists = (name: string) => {
-        return existingClients.some(client => client.toLowerCase() === name.toLowerCase());
-    }
-
     return (
          <form 
             action={formAction} 
@@ -63,13 +58,6 @@ export default function ClientForm({ action, onClientAdded, existingClients }: C
                     name="clientName" 
                     placeholder="e.g. John Doe" 
                     required 
-                    onChange={(e) => {
-                        if(clientExists(e.target.value)) {
-                            e.target.setCustomValidity("A client with this name already exists.");
-                        } else {
-                            e.target.setCustomValidity("");
-                        }
-                    }}
                 />
             </div>
             

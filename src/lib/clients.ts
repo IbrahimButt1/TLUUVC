@@ -80,12 +80,9 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
     }
 
     const clients = await readClients();
-    if (clients.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-        return { success: false, error: 'A client with this name already exists.' };
-    }
-
+    
     const newClient: Client = {
-        id: Math.random().toString(36).substring(2, 10),
+        id: `${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 9)}`,
         name,
         createdAt: new Date().toISOString(),
         status: 'active',
@@ -101,7 +98,7 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
         if (amount !== null && !isNaN(amount) && amount > 0) {
             const manifestEntries = await readManifestEntries();
             const newEntry: ManifestEntry = {
-                id: Math.random().toString(36).substring(2, 10),
+                id: `${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 9)}`,
                 clientId: newClient.id,
                 clientName: name,
                 date: new Date().toISOString().split('T')[0],
