@@ -35,7 +35,7 @@ function RestoreButton({ isPending, onRestore }: ActionButtonProps & { onRestore
     return (
         <Button variant="outline" size="sm" type="button" onClick={onRestore} disabled={isPending} className="w-28 justify-center">
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            {!isPending && <Undo className="mr-2 h-4 w-4" />}
+            {!isPending && <Undo className="mr-1.5 h-4 w-4" />}
             Restore
         </Button>
     )
@@ -87,7 +87,7 @@ export default function TrashEmails({ emails, searchTerm, onRestore, onDelete, i
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                         <Button variant="destructive" size="sm" disabled={isPending} className="w-40 justify-center">
-                                            <Trash2 className="mr-2 h-4 w-4" />
+                                            <Trash2 className="mr-1.5 h-4 w-4" />
                                             Delete Permanently
                                         </Button>
                                     </AlertDialogTrigger>
