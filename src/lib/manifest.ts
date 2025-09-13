@@ -1,9 +1,11 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
+import { addLogEntry } from './logs';
 
 export interface ManifestEntry {
     id: string;
@@ -70,6 +72,8 @@ export async function addManifestEntry(formData: FormData) {
     const entries = await readManifestEntries();
     entries.push(newEntry);
     await writeManifestEntries(entries);
+    
+    await addLogEntry('Created Manifest Entry', `New ${type} entry of $${amount.toFixed(2)} for '${clientName}'.`);
     
     revalidatePath('/admin/manifest');
     redirect('/admin/manifest');

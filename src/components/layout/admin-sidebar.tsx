@@ -1,8 +1,9 @@
+
 'use client';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Palette, KeyRound, ChevronDown, User, BookUser, History, Star } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Palette, KeyRound, ChevronDown, User, BookUser, History, Star, ListCollapse } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -22,6 +23,7 @@ const navLinks = [
 ];
 
 const maintenanceLinks = [
+  { href: '/admin/logs', label: 'Activity Logs', icon: ListCollapse },
   { href: '/admin/emails/trash', label: 'Recycle Bin', icon: Trash2 },
   { href: '/admin/backup', label: 'Backup & Restore', icon: History },
 ];

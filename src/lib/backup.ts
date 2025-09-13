@@ -1,8 +1,10 @@
+
 'use server';
 
 import fs from 'fs/promises';
 import path from 'path';
 import { revalidatePath } from 'next/cache';
+import { addLogEntry } from './logs';
 
 const dataFiles = [
     'about-content.json',
@@ -11,7 +13,9 @@ const dataFiles = [
     'manifest.json',
     'services.json',
     'site-settings.json',
-    'testimonials.json'
+    'testimonials.json',
+    'client-balances.json',
+    'logs.json'
 ];
 
 // In a real-world scenario, you would not store backups in the src directory,
@@ -30,7 +34,8 @@ export async function getBackupData(): Promise<string> {
             backupObject[file] = [];
         }
     }
-
+    
+    await addLogEntry('Created Backup', 'A full site backup was downloaded.');
     return JSON.stringify(backupObject, null, 2);
 }
 
@@ -63,6 +68,7 @@ export async function restoreBackupData(backupContent: string): Promise<{ succes
         }
     }
     
+    await addLogEntry('Restored from Backup', 'The site was restored from a backup file.');
     // Revalidate all paths to reflect restored data
     revalidatePath('/', 'layout');
 

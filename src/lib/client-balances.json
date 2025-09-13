@@ -3,5 +3,10 @@
     "clientName": "Ibrahim",
     "amount": 1,
     "type": "credit"
+  },
+  {
+    "clientName": "Shoaib Butt",
+    "amount": 67.28,
+    "type": "credit"
   }
 ]

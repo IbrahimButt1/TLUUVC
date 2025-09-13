@@ -1,3 +1,4 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -5,6 +6,7 @@ import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
 import { uploadImage } from '@/lib/storage';
+import { addLogEntry } from './logs';
 
 export interface Service {
     id: string;
@@ -102,6 +104,8 @@ export async function addService(imageDataUri: string, formData: FormData) {
     services.push(newService);
     await writeServices(services);
     
+    await addLogEntry('Created Service', `New service added: '${title}'.`);
+    
     revalidatePath('/');
     revalidatePath('/admin/services');
 
@@ -140,6 +144,8 @@ export async function updateService(imageDataUri: string, formData: FormData) {
         await writeServices(services);
     }
 
+    await addLogEntry('Updated Service', `Service updated: '${title}'.`);
+
     revalidatePath('/');
     revalidatePath('/admin/services');
     revalidatePath(`/admin/services/edit/${id}`);
@@ -153,6 +159,11 @@ export async function deleteService(formData: FormData) {
     if (!id) return;
     
     let services = await readServices();
+    const service = services.find(s => s.id === id);
+    if (service) {
+        await addLogEntry('Deleted Service', `Service moved to recycle bin: '${service.title}'.`);
+    }
+
     services = services.map(s => s.id === id ? { ...s, status: 'trash' } : s);
     await writeServices(services);
 
@@ -167,8 +178,13 @@ export async function permanentlyDeleteService(formData: FormData): Promise<{ su
     if (!id) return { success: false, error: 'ID not provided' };
 
     let services = await readServices();
+    const service = services.find(s => s.id === id);
     services = services.filter(s => s.id !== id);
     await writeServices(services);
+
+    if (service) {
+        await addLogEntry('Permanently Deleted Service', `Service permanently deleted: '${service.title}'.`);
+    }
 
     revalidatePath('/admin/emails/trash');
     return { success: true };
@@ -179,8 +195,13 @@ export async function restoreService(formData: FormData): Promise<{ success: boo
     if (!id) return { success: false, error: 'ID not provided' };
     
     let services = await readServices();
+    const service = services.find(s => s.id === id);
     services = services.map(s => s.id === id ? { ...s, status: 'active' } : s);
     await writeServices(services);
+
+    if (service) {
+        await addLogEntry('Restored Service', `Service restored from recycle bin: '${service.title}'.`);
+    }
 
     revalidatePath('/');
     revalidatePath('/admin/services');
@@ -191,8 +212,14 @@ export async function restoreService(formData: FormData): Promise<{ success: boo
 export async function restoreAllServices(): Promise<{ success: boolean, error?: string }> {
     try {
         let services = await readServices();
+        const restoredCount = services.filter(s => s.status === 'trash').length;
         services = services.map(s => s.status === 'trash' ? { ...s, status: 'active' } : s);
         await writeServices(services);
+
+        if (restoredCount > 0) {
+            await addLogEntry('Bulk Restored Services', `Restored ${restoredCount} services from the recycle bin.`);
+        }
+
         revalidatePath('/');
         revalidatePath('/admin/services');
         revalidatePath('/admin/emails/trash');

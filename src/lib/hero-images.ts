@@ -1,3 +1,4 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -5,6 +6,7 @@ import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
 import { uploadImage } from '@/lib/storage';
+import { addLogEntry } from './logs';
 
 export interface HeroImage {
     id: string;
@@ -82,6 +84,8 @@ export async function addHeroImage(imageDataUri: string, formData: FormData) {
     images.unshift(newImage);
     await writeHeroImages(images);
     
+    await addLogEntry('Created Hero Image', `New hero image added: '${title}'.`);
+
     revalidatePath('/');
     revalidatePath('/admin/hero');
 
@@ -108,6 +112,8 @@ export async function updateHeroImage(imageDataUri: string, formData: FormData) 
         images[imageIndex] = { ...images[imageIndex], title, description, image: imageUrl };
         await writeHeroImages(images);
     }
+    
+    await addLogEntry('Updated Hero Image', `Hero image updated: '${title}'.`);
 
     revalidatePath('/');
     revalidatePath('/admin/hero');
@@ -122,6 +128,11 @@ export async function deleteHeroImage(formData: FormData) {
     if (!id) return;
     
     let images = await readHeroImages();
+    const image = images.find(img => img.id === id);
+    if(image) {
+        await addLogEntry('Deleted Hero Image', `Hero image moved to recycle bin: '${image.title}'.`);
+    }
+
     images = images.map(img => img.id === id ? { ...img, status: 'trash' } : img);
     await writeHeroImages(images);
 
@@ -135,8 +146,13 @@ export async function permanentlyDeleteHeroImage(formData: FormData): Promise<{ 
     if (!id) return { success: false, error: 'ID not provided' };
     
     let images = await readHeroImages();
+    const image = images.find(img => img.id === id);
     images = images.filter(img => img.id !== id);
     await writeHeroImages(images);
+    
+    if(image) {
+        await addLogEntry('Permanently Deleted Hero Image', `Hero image permanently deleted: '${image.title}'.`);
+    }
 
     revalidatePath('/admin/emails/trash');
     return { success: true };
@@ -147,8 +163,13 @@ export async function restoreHeroImage(formData: FormData): Promise<{ success: b
     if (!id) return { success: false, error: 'ID not provided' };
 
     let images = await readHeroImages();
+    const image = images.find(img => img.id === id);
     images = images.map(img => img.id === id ? { ...img, status: 'active' } : img);
     await writeHeroImages(images);
+    
+    if(image) {
+        await addLogEntry('Restored Hero Image', `Hero image restored from recycle bin: '${image.title}'.`);
+    }
 
     revalidatePath('/');
     revalidatePath('/admin/hero');
@@ -159,8 +180,14 @@ export async function restoreHeroImage(formData: FormData): Promise<{ success: b
 export async function restoreAllHeroImages(): Promise<{ success: boolean, error?: string }> {
     try {
         let images = await readHeroImages();
+        const restoredCount = images.filter(img => img.status === 'trash').length;
         images = images.map(img => img.status === 'trash' ? { ...img, status: 'active' } : img);
         await writeHeroImages(images);
+
+        if (restoredCount > 0) {
+            await addLogEntry('Bulk Restored Hero Images', `Restored ${restoredCount} hero images from the recycle bin.`);
+        }
+
         revalidatePath('/');
         revalidatePath('/admin/hero');
         revalidatePath('/admin/emails/trash');

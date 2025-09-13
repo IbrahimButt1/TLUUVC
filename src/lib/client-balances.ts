@@ -1,9 +1,11 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
 import type { ManifestEntry } from './manifest';
+import { addLogEntry } from './logs';
 
 export interface ClientBalance {
     clientName: string;
@@ -84,6 +86,7 @@ export async function updateClientBalance(
 
     try {
         await writeClientBalances(balances);
+        await addLogEntry('Updated Client Balance', `Opening balance for '${clientName}' set to $${amount.toFixed(2)} (${type}).`);
         revalidatePath('/admin/client-balances');
         return { success: true, message: `Opening balance for ${clientName} has been saved successfully.` };
     } catch (error) {

@@ -1,3 +1,4 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -5,6 +6,7 @@ import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
 import { uploadImage } from './storage';
+import { addLogEntry } from './logs';
 
 export interface SiteSettings {
     logo: string;
@@ -80,6 +82,7 @@ export async function updateSiteSettings(prevState: UpdateSettingsState, formDat
     const avatarRemoved = formData.get('avatarRemoved') === 'true';
     
     const currentSettings = await readSiteSettings();
+    let changes: string[] = [];
 
     const wantsToChangePassword = !!newPassword;
     const wantsToChangeUsername = username && username !== currentSettings.username;
@@ -101,32 +104,41 @@ export async function updateSiteSettings(prevState: UpdateSettingsState, formDat
 
 
     let logoUrl = currentSettings.logo;
-    if (logoRemoved) {
+    if (logoRemoved && currentSettings.logo) {
         logoUrl = "";
+        changes.push("Removed company logo");
     } else if (logoFile && logoFile.size > 0) {
         try {
             const arrayBuffer = await logoFile.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
             const dataUri = `data:${logoFile.type};base64,${buffer.toString('base64')}`;
             logoUrl = await uploadImage(dataUri, `logo-${Date.now()}`);
+            changes.push("Updated company logo");
         } catch (e) {
              return { message: "", error: "Failed to upload the logo. Please try again.", success: false };
         }
     }
 
     let avatarUrl = currentSettings.avatar;
-    if (avatarRemoved) {
+    if (avatarRemoved && currentSettings.avatar) {
         avatarUrl = "";
+        changes.push("Removed profile avatar");
     } else if (avatarFile && avatarFile.size > 0) {
         try {
             const arrayBuffer = await avatarFile.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
             const dataUri = `data:${avatarFile.type};base64,${buffer.toString('base64')}`;
             avatarUrl = await uploadImage(dataUri, `avatar-${Date.now()}`);
+            changes.push("Updated profile avatar");
         } catch (e) {
              return { message: "", error: "Failed to upload the avatar. Please try again.", success: false };
         }
     }
+
+    if (username && username !== currentSettings.username) changes.push(`Changed username to '${username}'`);
+    if (newPassword) changes.push("Changed password");
+    if (secretQuestion && secretQuestion !== currentSettings.secretQuestion) changes.push("Updated secret question");
+    if (secretAnswer) changes.push("Updated secret answer");
 
     const newSettings: SiteSettings = {
         ...currentSettings,
@@ -140,6 +152,10 @@ export async function updateSiteSettings(prevState: UpdateSettingsState, formDat
     };
 
     await writeSiteSettings(newSettings);
+    
+    if (changes.length > 0) {
+        await addLogEntry('Updated Site Settings', changes.join('. '));
+    }
     
     revalidatePath('/');
     revalidatePath('/admin', 'layout');

@@ -1,3 +1,4 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -5,6 +6,7 @@ import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
 import { uploadImage } from './storage';
+import { addLogEntry } from './logs';
 
 export interface Testimonial {
     id: string;
@@ -87,6 +89,8 @@ export async function addTestimonial(imageDataUri: string, formData: FormData) {
     testimonials.push(newTestimonial);
     await writeTestimonials(testimonials);
     
+    await addLogEntry('Created Testimonial', `New testimonial added for '${name}'.`);
+
     revalidatePath('/');
     revalidatePath('/admin/testimonials');
 
@@ -116,6 +120,8 @@ export async function updateTestimonial(imageDataUri: string, formData: FormData
         testimonials[testimonialIndex] = { ...testimonials[testimonialIndex], id, name, destination, testimonial, image: imageUrl, role, country };
         await writeTestimonials(testimonials);
     }
+    
+    await addLogEntry('Updated Testimonial', `Testimonial updated for '${name}'.`);
 
     revalidatePath('/');
     revalidatePath('/admin/testimonials');
@@ -129,6 +135,11 @@ export async function deleteTestimonial(formData: FormData) {
     if (!id) return;
     
     let testimonials = await readTestimonials();
+    const testimonial = testimonials.find(t => t.id === id);
+    if (testimonial) {
+        await addLogEntry('Deleted Testimonial', `Testimonial moved to recycle bin: '${testimonial.name}'.`);
+    }
+
     testimonials = testimonials.map(t => t.id === id ? { ...t, status: 'trash' } : t);
     await writeTestimonials(testimonials);
 
@@ -143,8 +154,13 @@ export async function permanentlyDeleteTestimonial(formData: FormData): Promise<
     if (!id) return { success: false, error: 'ID not provided' };
 
     let testimonials = await readTestimonials();
+    const testimonial = testimonials.find(t => t.id === id);
     testimonials = testimonials.filter(t => t.id !== id);
     await writeTestimonials(testimonials);
+
+    if (testimonial) {
+        await addLogEntry('Permanently Deleted Testimonial', `Testimonial permanently deleted: '${testimonial.name}'.`);
+    }
 
     revalidatePath('/admin/emails/trash');
     return { success: true };
@@ -155,8 +171,13 @@ export async function restoreTestimonial(formData: FormData): Promise<{ success:
     if (!id) return { success: false, error: 'ID not provided' };
 
     let testimonials = await readTestimonials();
+    const testimonial = testimonials.find(t => t.id === id);
     testimonials = testimonials.map(t => t.id === id ? { ...t, status: 'active' } : t);
     await writeTestimonials(testimonials);
+
+    if (testimonial) {
+        await addLogEntry('Restored Testimonial', `Testimonial restored from recycle bin: '${testimonial.name}'.`);
+    }
 
     revalidatePath('/');
     revalidatePath('/admin/testimonials');
@@ -167,8 +188,14 @@ export async function restoreTestimonial(formData: FormData): Promise<{ success:
 export async function restoreAllTestimonials(): Promise<{ success: boolean, error?: string }> {
     try {
         let testimonials = await readTestimonials();
+        const restoredCount = testimonials.filter(t => t.status === 'trash').length;
         testimonials = testimonials.map(t => t.status === 'trash' ? { ...t, status: 'active' } : t);
         await writeTestimonials(testimonials);
+
+        if (restoredCount > 0) {
+            await addLogEntry('Bulk Restored Testimonials', `Restored ${restoredCount} testimonials from the recycle bin.`);
+        }
+
         revalidatePath('/');
         revalidatePath('/admin/testimonials');
         revalidatePath('/admin/emails/trash');

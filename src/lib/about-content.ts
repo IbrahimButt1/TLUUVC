@@ -1,9 +1,11 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
 import fs from 'fs/promises';
 import path from 'path';
 import { uploadImage } from '@/lib/storage';
+import { addLogEntry } from './logs';
 
 export interface AboutContent {
     title: string;
@@ -73,6 +75,8 @@ export async function updateAboutContent(prevState: any, formData: FormData) {
     };
 
     await writeAboutContent(newContent);
+
+    await addLogEntry('Updated About Section', 'The content for the "About Us" section was modified.');
     
     revalidatePath('/');
     revalidatePath('/admin/about');
