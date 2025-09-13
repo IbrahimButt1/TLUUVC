@@ -1,5 +1,11 @@
 [
   {
+    "id": "1757725695940-3stypxp",
+    "timestamp": "2025-09-13T01:08:15.940Z",
+    "action": "Toggled Manifest Status",
+    "details": "Entry ID '1757679615194-bgqx74m' status changed to 'inactive'."
+  },
+  {
     "id": "1757725520519-7xrvnhz",
     "timestamp": "2025-09-13T01:05:20.519Z",
     "action": "Created Manifest Entry",

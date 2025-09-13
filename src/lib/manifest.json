@@ -33,7 +33,7 @@
     "description": "Payment for Visa",
     "type": "debit",
     "amount": 3500,
-    "status": "active"
+    "status": "inactive"
   },
   {
     "id": "1757706318410-0u1k5q2",

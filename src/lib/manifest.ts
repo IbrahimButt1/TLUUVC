@@ -49,7 +49,8 @@ export async function getManifestEntries(): Promise<ManifestEntry[]> {
 
 export async function getUniqueClients(): Promise<ManifestClient[]> {
     const entries = await readManifestEntries();
-    const uniqueNames = [...new Set(entries.map(entry => entry.clientName))];
+    const activeEntries = entries.filter(entry => entry.status === 'active');
+    const uniqueNames = [...new Set(activeEntries.map(entry => entry.clientName.trim()))];
     return uniqueNames.map(name => ({ name }));
 }
 
