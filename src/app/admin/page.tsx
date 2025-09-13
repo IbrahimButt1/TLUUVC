@@ -14,7 +14,9 @@ export default async function AdminDashboard() {
   const unreadCount = await getUnreadEmailCount();
   const manifestEntries = await getManifestEntries();
 
-  const totals = manifestEntries.reduce((acc, entry) => {
+  const activeEntries = manifestEntries.filter(e => e.status === 'active');
+
+  const totals = activeEntries.reduce((acc, entry) => {
     if (entry.type === 'debit') {
       acc.debit += entry.amount;
     } else {

@@ -63,7 +63,7 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
         )
       : tabFiltered;
     
-    return searched.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    return searched;
   }, [entries, searchTerm, activeTab]);
 
   const activeEntries = useMemo(() => entries.filter(e => e.status === 'active'), [entries]);
@@ -136,7 +136,7 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                   <Input
                       type="search"
                       placeholder="Search transactions..."
-                      className="w-full md:w-80 bg-background"
+                      className="w-full md:w-80 bg-background pr-10"
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
                   />
