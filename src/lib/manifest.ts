@@ -48,15 +48,10 @@ export async function addManifestEntry(formData: FormData) {
     const date = formData.get('date') as string;
     let description = formData.get('description') as string;
     const otherDescription = formData.get('otherDescription') as string;
-    const notes = formData.get('notes') as string;
     const type = formData.get('type') as 'credit' | 'debit';
     const amount = parseFloat(formData.get('amount') as string);
     
     let finalDescription = description === 'Other' ? otherDescription : description;
-    if (notes) {
-        finalDescription = `${finalDescription} - ${notes}`;
-    }
-
 
     if (!clientName || !date || !finalDescription || !type || isNaN(amount)) {
         // Simple validation
@@ -74,7 +69,7 @@ export async function addManifestEntry(formData: FormData) {
     };
 
     const entries = await readManifestEntries();
-    entries.push(newEntry);
+    entries.unshift(newEntry);
     await writeManifestEntries(entries);
     
     await addLogEntry('Created Manifest Entry', `New ${type} entry of $${amount.toFixed(2)} for '${clientName}'.`);
@@ -82,4 +77,3 @@ export async function addManifestEntry(formData: FormData) {
     revalidatePath('/admin/manifest');
     redirect('/admin/manifest');
 }
-

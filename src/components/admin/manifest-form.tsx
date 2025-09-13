@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useFormStatus } from 'react-dom';
@@ -69,7 +70,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                                 <CommandList>
                                     <CommandEmpty>No clients found. Add one on the 'Manage Clients' page.</CommandEmpty>
                                     <CommandGroup>
-                                        {clients.map((c) => (
+                                        {clients.filter(c => c.status === 'active').map((c) => (
                                         <CommandItem
                                             key={c.id}
                                             value={c.name}

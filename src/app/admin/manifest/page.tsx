@@ -1,9 +1,8 @@
+
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
-import { getManifestEntries, type ManifestEntry } from "@/lib/manifest";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
-import ManifestChart from "@/components/admin/manifest-chart";
+import { getManifestEntries } from "@/lib/manifest";
 import ManifestClient from "@/components/admin/manifest-client";
 
 export default async function ManifestPage() {

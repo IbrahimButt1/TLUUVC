@@ -61,7 +61,7 @@ async function writeManifestEntries(entries: ManifestEntry[]): Promise<void> {
 
 export async function getClients(): Promise<Client[]> {
     const clients = await readClients();
-    return clients.filter(c => c.status !== 'trash');
+    return clients.filter(c => c.status !== 'trash').sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
 
 export async function getTrashedClients(): Promise<Client[]> {

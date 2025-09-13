@@ -1,5 +1,29 @@
 [
   {
+    "id": "1757727015879-ppdxl31",
+    "timestamp": "2025-09-13T01:30:15.879Z",
+    "action": "Opening Balance Set",
+    "details": "Opening balance for 'Hello Buyy' set to $100.00 (credit)."
+  },
+  {
+    "id": "1757727015868-h5mgkee",
+    "timestamp": "2025-09-13T01:30:15.868Z",
+    "action": "Client Added",
+    "details": "New client created: 'Hello Buyy'."
+  },
+  {
+    "id": "1757726974967-iway7yw",
+    "timestamp": "2025-09-13T01:29:34.967Z",
+    "action": "Opening Balance Set",
+    "details": "Opening balance for 'Hello' set to $100.00 (credit)."
+  },
+  {
+    "id": "1757726974950-76m7xlu",
+    "timestamp": "2025-09-13T01:29:34.950Z",
+    "action": "Client Added",
+    "details": "New client created: 'Hello'."
+  },
+  {
     "id": "1757726778057-jlasmkp",
     "timestamp": "2025-09-13T01:26:18.057Z",
     "action": "Opening Balance Set",

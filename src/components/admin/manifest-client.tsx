@@ -50,7 +50,7 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
 
 
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab}>
+    <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <Card>
                 <CardHeader>
@@ -94,44 +94,46 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
       </Card>
       
       <Card className="mt-6">
-        <CardHeader className="flex flex-row items-center justify-between">
-            <div className="space-y-1.5">
-                <CardTitle>Transaction History</CardTitle>
-                <CardDescription>A complete log of all debit and credit entries.</CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                  <Input
-                      type="search"
-                      placeholder="Search transactions..."
-                      className="w-full md:w-80 bg-background pr-10"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                  />
-              </div>
-              <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="active">Active</TabsTrigger>
-                <TabsTrigger value="inactive">Inactive</TabsTrigger>
-              </TabsList>
-            </div>
-        </CardHeader>
-        <CardContent>
-            <TabsContent value="all" className="m-0">
-                {/* Content is rendered outside TabsContent */}
-            </TabsContent>
-             <TabsContent value="active" className="m-0">
-                {/* Content is rendered outside TabsContent */}
-            </TabsContent>
-             <TabsContent value="inactive" className="m-0">
-                {/* Content is rendered outside TabsContent */}
-            </TabsContent>
-            <ManifestList 
-                entries={filteredAndSortedEntries} 
-            />
-        </CardContent>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <CardHeader className="flex flex-row items-center justify-between">
+                <div className="space-y-1.5">
+                    <CardTitle>Transaction History</CardTitle>
+                    <CardDescription>A complete log of all debit and credit entries.</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                <div className="relative">
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                    <Input
+                        type="search"
+                        placeholder="Search transactions..."
+                        className="w-full md:w-80 bg-background pr-10"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                </div>
+                <TabsList>
+                    <TabsTrigger value="all">All</TabsTrigger>
+                    <TabsTrigger value="active">Active</TabsTrigger>
+                    <TabsTrigger value="inactive">Inactive</TabsTrigger>
+                </TabsList>
+                </div>
+            </CardHeader>
+            <CardContent>
+                <TabsContent value="all" className="m-0">
+                    {/* Content is rendered outside TabsContent */}
+                </TabsContent>
+                <TabsContent value="active" className="m-0">
+                    {/* Content is rendered outside TabsContent */}
+                </TabsContent>
+                <TabsContent value="inactive" className="m-0">
+                    {/* Content is rendered outside TabsContent */}
+                </TabsContent>
+                <ManifestList 
+                    entries={filteredAndSortedEntries} 
+                />
+            </CardContent>
+        </Tabs>
     </Card>
-  </Tabs>
+  </>
   );
 }

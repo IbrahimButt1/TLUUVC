@@ -21,7 +21,6 @@ export default function ClientsListClient({ initialClients }: { initialClients: 
   const { toast } = useToast();
 
   const handleAddClient = (newClient: Client) => {
-    // Add the new client to the top of the list for immediate UI feedback
     setClients(currentClients => [newClient, ...currentClients]);
   };
 
