@@ -17,6 +17,8 @@ import {
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Table, TableBody, TableCell, TableRow, TableHeader, TableHead } from '@/components/ui/table';
+import { cn } from '@/lib/utils';
+
 
 interface ActionButtonProps {
     isPending: boolean;
@@ -49,10 +51,10 @@ function EmailDate({ dateString }: { dateString: string }) {
     }, []);
 
     if (!isMounted) {
-        return <span>...</span>;
+        return <span className="text-xs">...</span>;
     }
 
-    return <span>{format(new Date(dateString), "PPP p")}</span>;
+    return <span className="text-xs">{format(new Date(dateString), "PPP p")}</span>;
 }
 
 
@@ -75,14 +77,14 @@ export default function TrashEmails({ emails, searchTerm, onRestore, onDelete, i
                 <TableBody>
                     {emails.map((email) => (
                         <TableRow key={email.id}>
-                            <TableCell>
+                            <TableCell className="py-2 px-4">
                                 <div className="font-semibold">{email.name}</div>
                                 <div className="text-sm text-muted-foreground">{email.subject} - <span className="italic">{email.message.substring(0,50)}...</span></div>
                             </TableCell>
-                             <TableCell className="text-sm text-muted-foreground">
+                             <TableCell className="py-2 px-4 text-sm text-muted-foreground">
                                 <EmailDate dateString={email.receivedAt} />
                             </TableCell>
-                            <TableCell className="text-right space-x-2">
+                            <TableCell className="py-2 px-4 text-right space-x-2">
                                 <RestoreButton isPending={isPending} onRestore={() => onRestore(email.id)} />
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
