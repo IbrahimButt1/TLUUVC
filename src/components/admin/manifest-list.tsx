@@ -5,8 +5,18 @@ import { Badge } from "@/components/ui/badge";
 import type { ManifestEntry } from "@/lib/manifest";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { MoreHorizontal, Power, PowerOff, Loader2 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Button } from "../ui/button";
 
-export default function ManifestList({ entries }: { entries: ManifestEntry[]}) {
+interface ManifestListProps {
+    entries: ManifestEntry[];
+    onToggleStatus: (id: string, currentStatus: 'active' | 'inactive') => void;
+    isPending: boolean;
+}
+
+
+export default function ManifestList({ entries, onToggleStatus, isPending }: ManifestListProps) {
     return (
         <div className="border rounded-md">
             <Table>
@@ -18,28 +28,59 @@ export default function ManifestList({ entries }: { entries: ManifestEntry[]}) {
                         <TableHead className="w-[120px]">Transaction ID</TableHead>
                         <TableHead className="w-[120px] text-center">Type</TableHead>
                         <TableHead className="w-[120px] text-right">Amount</TableHead>
+                        <TableHead className="w-[120px] text-center">Status</TableHead>
+                        <TableHead className="w-[80px] text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                      {entries.map((entry) => (
-                        <TableRow key={entry.id}>
-                            <TableCell className="text-muted-foreground">{format(new Date(entry.date), "MMM d, yyyy")}</TableCell>
+                        <TableRow key={entry.id} className={cn(entry.status === 'inactive' && 'bg-muted/30 text-muted-foreground')}>
+                            <TableCell>{format(new Date(entry.date), "MMM d, yyyy")}</TableCell>
                             <TableCell className="font-medium">{entry.clientName}</TableCell>
-                            <TableCell className="text-muted-foreground">{entry.description}</TableCell>
-                            <TableCell><code className="text-xs text-muted-foreground">{entry.id}</code></TableCell>
+                            <TableCell>{entry.description}</TableCell>
+                            <TableCell><code className="text-xs">{entry.id}</code></TableCell>
                             <TableCell className="text-center">
                                 <Badge variant={entry.type === 'credit' ? 'default' : 'destructive'} 
                                        className={cn(
                                          "border-transparent",
-                                         entry.type === 'credit' ? "bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/50 dark:text-green-300" : "bg-red-100 text-red-800 hover:bg-red-100 dark:bg-red-900/50 dark:text-red-300"
+                                         entry.type === 'credit' ? "bg-green-100 text-green-800 hover:bg-green-100 dark:bg-green-900/50 dark:text-green-300" : "bg-red-100 text-red-800 hover:bg-red-100 dark:bg-red-900/50 dark:text-red-300",
+                                         entry.status === 'inactive' && 'opacity-60'
                                        )}>
                                     {entry.type}
                                 </Badge>
                             </TableCell>
                             <TableCell className={cn("text-right font-mono",
-                                entry.type === 'credit' ? 'text-green-600' : 'text-red-600'
+                                entry.type === 'credit' ? 'text-green-600' : 'text-red-600',
+                                entry.status === 'inactive' && 'opacity-60'
                             )}>
                                 {entry.type === 'credit' ? '+' : '-'}${entry.amount.toFixed(2)}
+                            </TableCell>
+                            <TableCell className="text-center">
+                                 <Badge variant={entry.status === 'active' ? 'secondary' : 'outline'}
+                                        className={cn(
+                                            entry.status === 'active' ? "border-green-600/50 text-green-700 dark:text-green-400" : "text-muted-foreground"
+                                        )}
+                                 >
+                                    {entry.status === 'active' ? 'Active' : 'Inactive'}
+                                </Badge>
+                            </TableCell>
+                            <TableCell className="text-right">
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" className="h-8 w-8 p-0" disabled={isPending}>
+                                            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <MoreHorizontal className="h-4 w-4" />}
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                        <DropdownMenuItem onClick={() => onToggleStatus(entry.id, entry.status || 'active')}>
+                                            {entry.status === 'active' ? (
+                                                <><PowerOff className="mr-2 h-4 w-4 text-destructive" /><span>Deactivate</span></>
+                                            ) : (
+                                                <><Power className="mr-2 h-4 w-4 text-green-600" /><span>Activate</span></>
+                                            )}
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
                             </TableCell>
                         </TableRow>
                      ))}

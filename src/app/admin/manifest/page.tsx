@@ -1,16 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import Link from "next/link";
-import { getManifestEntries } from "@/lib/manifest";
+import { getManifestEntries, type ManifestEntry } from "@/lib/manifest";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import ManifestChart from "@/components/admin/manifest-chart";
 import ManifestClient from "@/components/admin/manifest-client";
 
 export default async function ManifestPage() {
   const entries = await getManifestEntries();
+  const activeEntries = entries.filter((entry) => entry.status === 'active');
   
-  // Calculate totals
-  const totals = entries.reduce((acc, entry) => {
+  // Calculate totals based on active entries
+  const totals = activeEntries.reduce((acc, entry) => {
     if (entry.type === 'debit') {
       acc.debit += entry.amount;
     } else {
@@ -35,11 +36,11 @@ export default async function ManifestPage() {
 
         <Card>
             <CardHeader>
-                <CardTitle>Financial Overview</CardTitle>
-                <CardDescription>A visual summary of your credits, debits, and running balance.</CardDescription>
+                <CardTitle>Financial Overview (Active Entries)</CardTitle>
+                <CardDescription>A visual summary of your credits, debits, and running balance based on active transactions.</CardDescription>
             </CardHeader>
             <CardContent>
-                <ManifestChart entries={entries} />
+                <ManifestChart entries={activeEntries} />
             </CardContent>
         </Card>
 
@@ -47,7 +48,7 @@ export default async function ManifestPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Total Credit</CardTitle>
-                    <CardDescription>Sum of all incoming amounts.</CardDescription>
+                    <CardDescription>Sum of all active incoming amounts.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <p className="text-3xl font-bold text-green-600">${totals.credit.toFixed(2)}</p>
@@ -56,7 +57,7 @@ export default async function ManifestPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Total Debit</CardTitle>
-                    <CardDescription>Sum of all outgoing amounts.</CardDescription>
+                    <CardDescription>Sum of all active outgoing amounts.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <p className="text-3xl font-bold text-red-600">${totals.debit.toFixed(2)}</p>
@@ -65,7 +66,7 @@ export default async function ManifestPage() {
             <Card>
                 <CardHeader>
                     <CardTitle>Net Balance</CardTitle>
-                    <CardDescription>Credit minus Debit.</CardDescription>
+                    <CardDescription>Credit minus Debit from active entries.</CardDescription>
                 </CardHeader>
                 <CardContent>
                     <p className={`text-3xl font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>

@@ -14,6 +14,7 @@ export interface ManifestEntry {
     description: string;
     type: 'credit' | 'debit';
     amount: number;
+    status?: 'active' | 'inactive';
 }
 
 const dataPath = path.join(process.cwd(), 'src', 'lib', 'manifest.json');
@@ -21,7 +22,9 @@ const dataPath = path.join(process.cwd(), 'src', 'lib', 'manifest.json');
 async function readManifestEntries(): Promise<ManifestEntry[]> {
     try {
         const fileContent = await fs.readFile(dataPath, 'utf-8');
-        return JSON.parse(fileContent);
+        const entries = JSON.parse(fileContent);
+        // Add status to old entries if it doesn't exist
+        return entries.map((e: any) => ({ ...e, status: e.status || 'active' }));
     } catch (error) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
             return [];
@@ -67,6 +70,7 @@ export async function addManifestEntry(formData: FormData) {
         description: finalDescription,
         type,
         amount,
+        status: 'active',
     };
 
     const entries = await readManifestEntries();
@@ -77,4 +81,34 @@ export async function addManifestEntry(formData: FormData) {
     
     revalidatePath('/admin/manifest');
     redirect('/admin/manifest');
+}
+
+
+export async function toggleManifestEntryStatus(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
+
+    try {
+        const entries = await readManifestEntries();
+        const entryIndex = entries.findIndex(e => e.id === id);
+
+        if (entryIndex === -1) {
+            return { success: false, error: 'Manifest entry not found.' };
+        }
+        
+        const currentStatus = entries[entryIndex].status || 'active';
+        const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+        entries[entryIndex].status = newStatus;
+
+        await writeManifestEntries(entries);
+        await addLogEntry('Toggled Manifest Status', `Entry ID '${id}' status changed to '${newStatus}'.`);
+        
+        revalidatePath('/admin/manifest');
+        
+        return { success: true };
+
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        return { success: false, error: errorMessage };
+    }
 }

@@ -1,26 +1,62 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useTransition } from 'react';
 import type { ManifestEntry } from '@/lib/manifest';
+import { toggleManifestEntryStatus } from '@/lib/manifest';
 import ManifestList from './manifest-list';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import { useToast } from '@/hooks/use-toast';
 
 export default function ManifestClient({ initialEntries }: { initialEntries: ManifestEntry[] }) {
+  const [entries, setEntries] = useState(initialEntries);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
+
+  const handleToggleStatus = (id: string, currentStatus: 'active' | 'inactive') => {
+    startTransition(async () => {
+      const originalEntries = [...entries];
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+      
+      // Optimistic update
+      setEntries(current => current.map(e => e.id === id ? { ...e, status: newStatus } : e));
+      
+      const formData = new FormData();
+      formData.append('id', id);
+
+      try {
+        const result = await toggleManifestEntryStatus(formData);
+        if (result.success) {
+          toast({
+            title: "Status Updated",
+            description: `Entry has been marked as ${newStatus}.`,
+          });
+          // To ensure we have the very latest data, we can re-fetch or just confirm the optimistic update
+          // For simplicity, we are relying on the optimistic update.
+        } else {
+          setEntries(originalEntries); // Revert on error
+          toast({ title: "Error", description: result.error, variant: "destructive" });
+        }
+      } catch (error) {
+        setEntries(originalEntries);
+        toast({ title: "Error", description: "Failed to update status. Please try again.", variant: "destructive" });
+      }
+    });
+  };
 
   const filteredEntries = useMemo(() => {
     if (!searchTerm) {
-      return initialEntries;
+      return entries;
     }
     const lowercasedTerm = searchTerm.toLowerCase();
-    return initialEntries.filter(entry =>
+    return entries.filter(entry =>
         entry.clientName.toLowerCase().includes(lowercasedTerm) ||
         entry.description.toLowerCase().includes(lowercasedTerm) ||
         entry.id.toLowerCase().includes(lowercasedTerm)
     );
-  }, [initialEntries, searchTerm]);
+  }, [entries, searchTerm]);
 
   return (
     <Card>
@@ -41,7 +77,11 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
             </div>
         </CardHeader>
         <CardContent>
-            <ManifestList entries={filteredEntries} />
+            <ManifestList 
+                entries={filteredEntries} 
+                onToggleStatus={handleToggleStatus}
+                isPending={isPending}
+            />
         </CardContent>
     </Card>
   );
