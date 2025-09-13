@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "id": "wrfzcn2q",
+    "clientId": "1757726630960-bhjzqpd",
+    "clientName": "Ali",
+    "date": "2025-09-13",
+    "description": "Payment for Family & Partner Visas",
+    "type": "credit",
+    "amount": 17777,
+    "status": "active"
+  }
+]

@@ -1,4 +1,3 @@
-
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -75,7 +74,7 @@ export async function addManifestEntry(formData: FormData) {
     }
 
     const newEntry: ManifestEntry = {
-        id: Math.random().toString(36).substring(2, 10),
+        id: `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
         clientId,
         clientName: client.name,
         date,
@@ -96,9 +95,26 @@ export async function addManifestEntry(formData: FormData) {
     redirect('/admin/manifest');
 }
 
-export async function flushManifestEntries() {
-    await writeManifestEntries([]);
-    await addLogEntry('Flushed Transactions', 'All transaction history records were permanently deleted.');
+export async function closeOutManifestEntries(): Promise<ManifestEntry[]> {
+    const allEntries = await readManifestEntries();
+    const closedEntries: ManifestEntry[] = [];
+    
+    const updatedEntries = allEntries.map(entry => {
+        if (entry.status === 'active') {
+            closedEntries.push({ ...entry, status: 'inactive' });
+            return { ...entry, status: 'inactive' as const };
+        }
+        return entry;
+    });
+
+    await writeManifestEntries(updatedEntries);
+
+    if (closedEntries.length > 0) {
+        await addLogEntry('Closed Out Records', `Marked ${closedEntries.length} active transaction(s) as inactive.`);
+    }
+
     revalidatePath('/admin/manifest');
     revalidatePath('/admin/ledger', 'layout');
+
+    return closedEntries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }

@@ -1,5 +1,11 @@
 [
   {
+    "id": "1757729970818-x7b5z06",
+    "timestamp": "2025-09-13T02:19:30.818Z",
+    "action": "Created Manifest Entry",
+    "details": "New credit entry of $17777.00 for 'Ali'."
+  },
+  {
     "id": "1757728140734-vor7fmd",
     "timestamp": "2025-09-13T01:49:00.735Z",
     "action": "Updated Client Status",

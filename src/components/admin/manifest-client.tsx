@@ -1,12 +1,11 @@
-
 'use client';
 
 import { useState, useMemo, useTransition } from 'react';
 import type { ManifestEntry } from '@/lib/manifest';
-import { flushManifestEntries } from '@/lib/manifest';
+import { closeOutManifestEntries } from '@/lib/manifest';
 import ManifestList from './manifest-list';
 import { Input } from '@/components/ui/input';
-import { Search, Trash2, Loader2 } from 'lucide-react';
+import { Search, Trash2, Loader2, Info } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -24,6 +23,7 @@ import {
 
 export default function ManifestClient({ initialEntries }: { initialEntries: ManifestEntry[] }) {
   const [entries, setEntries] = useState(initialEntries);
+  const [recentlyClosed, setRecentlyClosed] = useState<ManifestEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
@@ -51,19 +51,24 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
 
   const balance = totals.credit - totals.debit;
   
-  const handleFlush = () => {
+  const handleCloseOut = () => {
     startTransition(async () => {
         try {
-            await flushManifestEntries();
-            setEntries([]);
+            const closedEntries = await closeOutManifestEntries();
+            
+            // Re-fetch all entries to update the main list
+            const allEntries = [...entries.map(e => ({...e, status: 'inactive' as const}))]
+            setEntries(allEntries);
+
+            setRecentlyClosed(closedEntries);
             toast({
-                title: "Transactions Cleared",
-                description: "All transaction history has been permanently deleted.",
+                title: "Records Closed Out",
+                description: "All active transaction records have been archived.",
             });
         } catch (error) {
             toast({
                 title: "Error",
-                description: "Failed to clear transactions. Please try again.",
+                description: "Failed to close out records. Please try again.",
                 variant: "destructive",
             });
         }
@@ -105,6 +110,23 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
             </Card>
         </div>
       
+      {recentlyClosed.length > 0 && (
+            <Card className="mt-6 border-amber-500/50 bg-amber-50/50 dark:bg-amber-900/10">
+                <CardHeader>
+                    <div className="flex items-center gap-3">
+                        <Info className="h-6 w-6 text-amber-600"/>
+                        <div>
+                            <CardTitle>Recently Closed Records</CardTitle>
+                            <CardDescription>The following records were just moved to 'inactive' status.</CardDescription>
+                        </div>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <ManifestList entries={recentlyClosed} />
+                </CardContent>
+            </Card>
+        )}
+
       <Card className="mt-6">
             <CardHeader className="flex flex-row items-center justify-between">
                 <div className="space-y-1.5">
@@ -114,22 +136,22 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                  <div className="flex items-center gap-2">
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm" disabled={isPending || entries.length === 0}>
+                            <Button variant="destructive" size="sm" disabled={isPending || activeEntries.length === 0}>
                                 {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                                Flush All Records
+                                Close Out Records
                             </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete all transaction history records.
+                                    This action cannot be undone. This will permanently mark all <strong className="font-bold">{activeEntries.length} active</strong> transaction(s) as 'inactive', effectively archiving them.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={handleFlush} className="bg-destructive hover:bg-destructive/90">
-                                    Yes, delete all
+                                <AlertDialogAction onClick={handleCloseOut} className="bg-destructive hover:bg-destructive/90">
+                                    Yes, close them out
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
@@ -139,7 +161,7 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                         <Input
                             type="search"
                             placeholder="Search transactions..."
-                            className="w-full md:w-80 bg-background pr-10"
+                            className="w-full md:w-80 bg-background"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
