@@ -6,11 +6,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Loader2 } from 'lucide-react';
+import { Loader2, Check, ChevronsUpDown } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getServiceTitles, type ServiceTitle } from '@/lib/services';
 import { transactionCategories } from '@/lib/service-data';
+import { getUniqueClients, type ManifestClient } from '@/lib/manifest';
+import { cn } from '@/lib/utils';
+import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command"
+
 
 interface ManifestFormProps {
     action: (formData: FormData) => Promise<void>;
@@ -28,14 +33,14 @@ function SubmitButton() {
 
 export default function ManifestForm({ action }: ManifestFormProps) {
     const [services, setServices] = useState<ServiceTitle[]>([]);
+    const [clients, setClients] = useState<ManifestClient[]>([]);
     const [description, setDescription] = useState('');
+    const [clientName, setClientName] = useState('');
+    const [clientPopoverOpen, setClientPopoverOpen] = useState(false);
 
     useEffect(() => {
-        async function fetchServices() {
-            const serviceTitles = await getServiceTitles();
-            setServices(serviceTitles);
-        }
-        fetchServices();
+        getServiceTitles().then(setServices);
+        getUniqueClients().then(setClients);
     }, []);
     
     return (
@@ -43,7 +48,52 @@ export default function ManifestForm({ action }: ManifestFormProps) {
             <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                     <Label htmlFor="clientName">Client Name</Label>
-                    <Input id="clientName" name="clientName" required placeholder="e.g. John Doe" />
+                    <input type="hidden" name="clientName" value={clientName} />
+                    <Popover open={clientPopoverOpen} onOpenChange={setClientPopoverOpen}>
+                        <PopoverTrigger asChild>
+                            <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={clientPopoverOpen}
+                            className="w-full justify-between font-normal"
+                            >
+                            {clientName || "Select or type a client name..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                            <Command>
+                                <CommandInput 
+                                    placeholder="Search or add new client..."
+                                    value={clientName}
+                                    onValueChange={setClientName}
+                                />
+                                <CommandList>
+                                    <CommandEmpty>No client found. You can add a new one.</CommandEmpty>
+                                    <CommandGroup>
+                                        {clients.map((c) => (
+                                        <CommandItem
+                                            key={c.name}
+                                            value={c.name}
+                                            onSelect={(currentValue) => {
+                                                setClientName(currentValue === clientName ? "" : currentValue)
+                                                setClientPopoverOpen(false)
+                                            }}
+                                        >
+                                            <Check
+                                            className={cn(
+                                                "mr-2 h-4 w-4",
+                                                clientName === c.name ? "opacity-100" : "opacity-0"
+                                            )}
+                                            />
+                                            {c.name}
+                                        </CommandItem>
+                                        ))}
+                                    </CommandGroup>
+                                </CommandList>
+                            </Command>
+                        </PopoverContent>
+                    </Popover>
                 </div>
                 <div className="space-y-2">
                     <Label htmlFor="date">Date</Label>

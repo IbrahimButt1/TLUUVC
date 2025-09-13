@@ -5,7 +5,8 @@
     "date": "2025-09-12",
     "description": "Payment of Work Visa in USA",
     "type": "credit",
-    "amount": 2000
+    "amount": 2000,
+    "status": "active"
   },
   {
     "id": "1757677535971-pnl1j27",
@@ -13,7 +14,8 @@
     "date": "2025-09-12",
     "description": "Payment of Work Visa in UAE",
     "type": "credit",
-    "amount": 1200
+    "amount": 1200,
+    "status": "active"
   },
   {
     "id": "1757679560920-p7rmoev",
@@ -21,7 +23,8 @@
     "date": "2025-09-13",
     "description": "Payment for Processing Visa",
     "type": "credit",
-    "amount": 3000
+    "amount": 3000,
+    "status": "active"
   },
   {
     "id": "1757679615194-bgqx74m",
@@ -29,7 +32,8 @@
     "date": "2025-09-13",
     "description": "Payment for Visa",
     "type": "debit",
-    "amount": 3500
+    "amount": 3500,
+    "status": "active"
   },
   {
     "id": "1757706318410-0u1k5q2",
@@ -37,7 +41,8 @@
     "date": "2025-09-12",
     "description": "France Visa ",
     "type": "credit",
-    "amount": 5000
+    "amount": 5000,
+    "status": "active"
   },
   {
     "id": "1757706501844-rv0n5t3",
@@ -45,6 +50,16 @@
     "date": "2025-09-12",
     "description": "Payment for Student Visas - WOW",
     "type": "credit",
-    "amount": 10
+    "amount": 10,
+    "status": "active"
+  },
+  {
+    "id": "1757725213589-obe0s64",
+    "clientName": "Ali Butt",
+    "date": "2025-09-13",
+    "description": "Document Processing Fee",
+    "type": "credit",
+    "amount": 58,
+    "status": "active"
   }
 ]

@@ -1,4 +1,3 @@
-
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -16,6 +15,11 @@ export interface ManifestEntry {
     amount: number;
     status?: 'active' | 'inactive';
 }
+
+export interface ManifestClient {
+    name: string;
+}
+
 
 const dataPath = path.join(process.cwd(), 'src', 'lib', 'manifest.json');
 
@@ -41,6 +45,12 @@ async function writeManifestEntries(entries: ManifestEntry[]): Promise<void> {
 export async function getManifestEntries(): Promise<ManifestEntry[]> {
     const entries = await readManifestEntries();
     return entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+export async function getUniqueClients(): Promise<ManifestClient[]> {
+    const entries = await readManifestEntries();
+    const uniqueNames = [...new Set(entries.map(entry => entry.clientName))];
+    return uniqueNames.map(name => ({ name }));
 }
 
 export async function addManifestEntry(formData: FormData) {

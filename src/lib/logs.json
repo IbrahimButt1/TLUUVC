@@ -1,1 +1,20 @@
-[]
+[
+  {
+    "id": "1757725256115-xqzy1v8",
+    "timestamp": "2025-09-13T01:00:56.115Z",
+    "action": "Toggled Manifest Status",
+    "details": "Entry ID '1757679615194-bgqx74m' status changed to 'active'."
+  },
+  {
+    "id": "1757725240295-9x8364n",
+    "timestamp": "2025-09-13T01:00:40.295Z",
+    "action": "Toggled Manifest Status",
+    "details": "Entry ID '1757679615194-bgqx74m' status changed to 'inactive'."
+  },
+  {
+    "id": "1757725213593-x8gkae2",
+    "timestamp": "2025-09-13T01:00:13.593Z",
+    "action": "Created Manifest Entry",
+    "details": "New credit entry of $58.00 for 'Ali Butt'."
+  }
+]
