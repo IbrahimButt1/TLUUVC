@@ -1,5 +1,45 @@
 [
   {
+    "id": "1757730223297-15898p1",
+    "clientId": "1757726630960-bhjzqpd",
+    "clientName": "Ali",
+    "date": "2025-09-13",
+    "description": "Payment for Work Visas",
+    "type": "debit",
+    "amount": 65,
+    "status": "inactive"
+  },
+  {
+    "id": "1757730100194-q8johaa",
+    "clientId": "1757726630960-bhjzqpd",
+    "clientName": "Ali",
+    "date": "2025-09-13",
+    "description": "Payment for Application Review",
+    "type": "credit",
+    "amount": 78,
+    "status": "inactive"
+  },
+  {
+    "id": "1757730030401-iazdsbh",
+    "clientId": "1757726630960-bhjzqpd",
+    "clientName": "Ali",
+    "date": "2025-09-13",
+    "description": "Consultation Fee",
+    "type": "credit",
+    "amount": 68,
+    "status": "inactive"
+  },
+  {
+    "id": "1757730018614-jykccjz",
+    "clientId": "1757726630960-bhjzqpd",
+    "clientName": "Ali",
+    "date": "2025-09-13",
+    "description": "Payment for Eid Offer 20% off",
+    "type": "credit",
+    "amount": 55,
+    "status": "inactive"
+  },
+  {
     "id": "wrfzcn2q",
     "clientId": "1757726630960-bhjzqpd",
     "clientName": "Ali",
@@ -7,6 +47,6 @@
     "description": "Payment for Family & Partner Visas",
     "type": "credit",
     "amount": 17777,
-    "status": "active"
+    "status": "inactive"
   }
 ]

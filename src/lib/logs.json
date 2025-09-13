@@ -1,5 +1,53 @@
 [
   {
+    "id": "1757730235885-rrh2frb",
+    "timestamp": "2025-09-13T02:23:55.885Z",
+    "action": "Closed Out Records",
+    "details": "Marked 2 active transaction(s) as inactive."
+  },
+  {
+    "id": "1757730223302-ok6ogys",
+    "timestamp": "2025-09-13T02:23:43.302Z",
+    "action": "Created Manifest Entry",
+    "details": "New debit entry of $65.00 for 'Ali'."
+  },
+  {
+    "id": "1757730197849-k7d8wv9",
+    "timestamp": "2025-09-13T02:23:17.849Z",
+    "action": "Permanently Deleted Service",
+    "details": "Service permanently deleted: 'Eid Offer 20% off'."
+  },
+  {
+    "id": "1757730142825-glnudro",
+    "timestamp": "2025-09-13T02:22:22.825Z",
+    "action": "Deleted Service",
+    "details": "Service moved to recycle bin: 'Eid Offer 20% off'."
+  },
+  {
+    "id": "1757730100195-z2sfr7z",
+    "timestamp": "2025-09-13T02:21:40.195Z",
+    "action": "Created Manifest Entry",
+    "details": "New credit entry of $78.00 for 'Ali'."
+  },
+  {
+    "id": "1757730072972-riotyks",
+    "timestamp": "2025-09-13T02:21:12.972Z",
+    "action": "Closed Out Records",
+    "details": "Marked 3 active transaction(s) as inactive."
+  },
+  {
+    "id": "1757730030405-ggcyxlh",
+    "timestamp": "2025-09-13T02:20:30.405Z",
+    "action": "Created Manifest Entry",
+    "details": "New credit entry of $68.00 for 'Ali'."
+  },
+  {
+    "id": "1757730018623-ncoherj",
+    "timestamp": "2025-09-13T02:20:18.623Z",
+    "action": "Created Manifest Entry",
+    "details": "New credit entry of $55.00 for 'Ali'."
+  },
+  {
     "id": "1757729970818-x7b5z06",
     "timestamp": "2025-09-13T02:19:30.818Z",
     "action": "Created Manifest Entry",

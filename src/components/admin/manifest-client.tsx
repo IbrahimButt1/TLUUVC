@@ -2,10 +2,10 @@
 
 import { useState, useMemo, useTransition } from 'react';
 import type { ManifestEntry } from '@/lib/manifest';
-import { closeOutManifestEntries } from '@/lib/manifest';
+import { closeOutManifestEntries, getManifestAsJson } from '@/lib/manifest';
 import ManifestList from './manifest-list';
 import { Input } from '@/components/ui/input';
-import { Search, Trash2, Loader2, Info } from 'lucide-react';
+import { Search, Trash2, Loader2, Info, Download } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -26,6 +26,7 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
   const [recentlyClosed, setRecentlyClosed] = useState<ManifestEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isPending, startTransition] = useTransition();
+  const [isDownloading, setIsDownloading] = useState(false);
   const { toast } = useToast();
   
   const filteredAndSortedEntries = useMemo(() => {
@@ -56,8 +57,7 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
         try {
             const closedEntries = await closeOutManifestEntries();
             
-            // Re-fetch all entries to update the main list
-            const allEntries = [...entries.map(e => ({...e, status: 'inactive' as const}))]
+            const allEntries = [...entries.map(e => activeEntries.find(ae => ae.id === e.id) ? {...e, status: 'inactive' as const} : e )];
             setEntries(allEntries);
 
             setRecentlyClosed(closedEntries);
@@ -74,6 +74,28 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
         }
     });
   }
+
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    try {
+        const jsonData = await getManifestAsJson();
+        const blob = new Blob([jsonData], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const timestamp = new Date().toISOString().split('T')[0];
+        a.href = url;
+        a.download = `manifest-backup-${timestamp}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        toast({ title: "Manifest Downloaded", description: "All transaction records have been saved." });
+    } catch (err) {
+        toast({ title: "Error", description: "Failed to download manifest.", variant: "destructive" });
+        console.error(err);
+    }
+    setIsDownloading(false);
+};
 
 
   return (
@@ -134,6 +156,10 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                     <CardDescription>A complete log of all debit and credit entries.</CardDescription>
                 </div>
                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" onClick={handleDownload} disabled={isDownloading}>
+                        {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+                        Download Records
+                    </Button>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
                             <Button variant="destructive" size="sm" disabled={isPending || activeEntries.length === 0}>

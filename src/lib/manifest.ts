@@ -44,6 +44,11 @@ export async function getManifestEntries(): Promise<ManifestEntry[]> {
     return entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
+export async function getManifestAsJson(): Promise<string> {
+    const entries = await getManifestEntries();
+    return JSON.stringify(entries, null, 2);
+}
+
 export async function getManifestEntriesByClientId(clientId: string): Promise<ManifestEntry[]> {
     const entries = await getManifestEntries();
     return entries.filter(entry => entry.clientId === clientId);
@@ -117,4 +122,15 @@ export async function closeOutManifestEntries(): Promise<ManifestEntry[]> {
     revalidatePath('/admin/ledger', 'layout');
 
     return closedEntries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+}
+
+export async function flushManifestEntries(): Promise<void> {
+    const entries = await readManifestEntries();
+    const activeCount = entries.filter(e => e.status === 'active').length;
+    await writeManifestEntries([]);
+    if (activeCount > 0) {
+       await addLogEntry('Flushed Records', `Permanently deleted ${activeCount} active transaction(s).`);
+    }
+    revalidatePath('/admin/manifest');
+    revalidatePath('/admin/ledger', 'layout');
 }
