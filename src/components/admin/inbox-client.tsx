@@ -89,9 +89,14 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
     startTransition(async () => {
         // Optimistic update to restore emails in UI, preserving their original state.
         setEmails(current => {
-            const restoredEmails = current.map(e => 
-                idsToRestore.includes(e.id) ? { ...e, status: 'inbox' } : e
-            );
+            const restoredEmails = current.map(e => {
+                if (idsToRestore.includes(e.id)) {
+                  // Find the original state from before the optimistic delete
+                  const originalEmail = emails.find(orig => orig.id === e.id);
+                  return originalEmail ? { ...originalEmail, status: 'inbox' } : e;
+                }
+                return e;
+            });
             return restoredEmails;
         });
 
@@ -127,7 +132,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
         }
 
         toast({
-          title: `${ids.length} email(s) moved to trash.`,
+          title: `${ids.length} email(s) moved to recycle bin.`,
           action: (
             <ToastAction altText="Undo" onClick={() => handleUndoDelete(ids)}>
               Undo
@@ -140,7 +145,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
         setEmails(originalEmails);
         toast({
           title: "Error",
-          description: "Failed to move emails to trash.",
+          description: "Failed to move emails to recycle bin.",
           variant: "destructive",
         });
       }
@@ -200,11 +205,9 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
 
   const handleViewEmail = (email: Email) => {
     setCurrentEmail(email);
-    // Mark email as read on view if it's unread
     if (!email.read) {
         startTransition(async () => {
             const originalEmails = [...emails];
-            // Optimistic UI update
             setEmails(current => current.map(e => e.id === email.id ? { ...e, read: true } : e));
             
             const formData = new FormData();
@@ -212,10 +215,10 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
             try {
                 const result = await markEmailAsRead(formData);
                 if (!result.success) {
-                   setEmails(originalEmails); // Revert on error
+                   setEmails(originalEmails);
                 }
             } catch (error) {
-                setEmails(originalEmails); // Revert on error
+                setEmails(originalEmails);
             }
         });
     }

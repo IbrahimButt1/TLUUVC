@@ -59,15 +59,15 @@ export default function EmailView({ email, open, onOpenChange, onDelete }: Email
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
-                                <AlertDialogTitle>Move to Trash?</AlertDialogTitle>
+                                <AlertDialogTitle>Move to Recycle Bin?</AlertDialogTitle>
                                 <AlertDialogDescription>
-                                This will move the email to the trash folder. You can permanently delete it from there.
+                                This will move the email to the recycle bin. You can permanently delete it from there.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction onClick={handleDelete} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                                    Move to Trash
+                                    Move to Recycle Bin
                                 </AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>

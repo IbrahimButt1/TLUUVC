@@ -108,7 +108,7 @@ export default function TrashHeroImages({ images, searchTerm, onRestore, onDelet
                 </Table>
                 {images.length === 0 && (
                     <div className="text-center text-muted-foreground py-12">
-                        <p>No hero images in the trash.</p>
+                        <p>No hero images in the recycle bin.</p>
                     </div>
                 )}
             </CardContent>

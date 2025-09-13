@@ -146,7 +146,7 @@ export default function TrashClient({
             <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
             type="search"
-            placeholder="Search all trashed items..."
+            placeholder="Search all recycled items..."
             className="w-full pr-12 pl-4"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -165,8 +165,8 @@ export default function TrashClient({
                 {activeCategory === 'emails' && (
                     <Card>
                         <CardHeader>
-                            <CardTitle>Trashed Emails</CardTitle>
-                            <CardDescription>Emails that have been moved to the trash. Restore them or delete them permanently.</CardDescription>
+                            <CardTitle>Recycled Emails</CardTitle>
+                            <CardDescription>Emails that have been moved to the recycle bin. Restore them or delete them permanently.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <TrashEmails 
@@ -182,8 +182,8 @@ export default function TrashClient({
                  {activeCategory === 'hero-images' && (
                      <Card>
                         <CardHeader>
-                            <CardTitle>Trashed Hero Images</CardTitle>
-                            <CardDescription>Hero images that have been moved to the trash. Restore them or delete them permanently.</CardDescription>
+                            <CardTitle>Recycled Hero Images</CardTitle>
+                            <CardDescription>Hero images that have been moved to the recycle bin. Restore them or delete them permanently.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <TrashHeroImages
@@ -199,8 +199,8 @@ export default function TrashClient({
                  {activeCategory === 'services' && (
                     <Card>
                         <CardHeader>
-                            <CardTitle>Trashed Services</CardTitle>
-                            <CardDescription>Services that have been moved to the trash. Restore them or delete them permanently.</CardDescription>
+                            <CardTitle>Recycled Services</CardTitle>
+                            <CardDescription>Services that have been moved to the recycle bin. Restore them or delete them permanently.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <TrashServices
@@ -216,8 +216,8 @@ export default function TrashClient({
                 {activeCategory === 'testimonials' && (
                     <Card>
                         <CardHeader>
-                            <CardTitle>Trashed Testimonials</CardTitle>
-                            <CardDescription>Testimonials that have been moved to the trash. Restore them or delete them permanently.</CardDescription>
+                            <CardTitle>Recycled Testimonials</CardTitle>
+                            <CardDescription>Testimonials that have been moved to the recycle bin. Restore them or delete them permanently.</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <TrashTestimonials

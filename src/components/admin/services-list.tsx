@@ -131,7 +131,7 @@ export default function ServicesList({ services, searchTerm, onDelete, isPending
                                                         <AlertDialogHeader>
                                                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                                             <AlertDialogDescription>
-                                                                This action cannot be undone. This will move this service to the trash.
+                                                                This action cannot be undone. This will move this service to the recycle bin.
                                                             </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>

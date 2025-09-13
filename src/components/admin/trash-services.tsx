@@ -114,7 +114,7 @@ export default function TrashServices({ services, searchTerm, onRestore, onDelet
                 </Table>
                 {services.length === 0 && (
                     <div className="text-center text-muted-foreground py-12">
-                        <p>No services in the trash.</p>
+                        <p>No services in the recycle bin.</p>
                     </div>
                 )}
             </CardContent>

@@ -76,7 +76,7 @@ export default function TrashEmails({ emails, searchTerm, onRestore, onDelete, i
         <Card className="border shadow-sm">
             <CardContent className="p-0">
                 {!hasEmails && !isPending ? (
-                    <p className="p-6 text-center text-muted-foreground">The trash is empty.</p>
+                    <p className="p-6 text-center text-muted-foreground">The recycle bin is empty.</p>
                 ) : (
                     <Accordion type="single" collapsible className="w-full">
                        {emails.map((email) => (

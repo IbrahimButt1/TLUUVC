@@ -26,13 +26,13 @@ export default function ServicesListClient({ initialServices }: { initialService
         try {
             await deleteService(formData);
             toast({
-                title: "Service moved to trash",
+                title: "Service moved to recycle bin",
             });
         } catch (error) {
             setServices(originalServices);
             toast({
                 title: "Error",
-                description: "Failed to move service to trash. Please try again.",
+                description: "Failed to move service to recycle bin. Please try again.",
                 variant: "destructive",
             });
         }

@@ -114,7 +114,7 @@ export default function TrashTestimonials({ testimonials, searchTerm, onRestore,
                 </Table>
                 {testimonials.length === 0 && (
                     <div className="text-center text-muted-foreground py-12">
-                        <p>No testimonials in the trash.</p>
+                        <p>No testimonials in the recycle bin.</p>
                     </div>
                 )}
             </CardContent>

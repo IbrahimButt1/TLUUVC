@@ -97,14 +97,14 @@ function EmailGroup({ title, emails, searchTerm, onDelete, isPending }: { title:
                                     <AlertDialogTrigger asChild>
                                         <Button variant="outline" size="sm">
                                             <Trash2 className="mr-2 h-4 w-4" />
-                                            Move to Trash
+                                            Move to Recycle Bin
                                         </Button>
                                     </AlertDialogTrigger>
                                     <AlertDialogContent>
                                         <AlertDialogHeader>
                                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                             <AlertDialogDescription>
-                                                This will move the email to the trash. You can permanently delete it from there.
+                                                This will move the email to the recycle bin. You can permanently delete it from there.
                                             </AlertDialogDescription>
                                         </AlertDialogHeader>
                                         <AlertDialogFooter>
