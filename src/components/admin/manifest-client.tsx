@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useMemo, useTransition } from 'react';
@@ -10,30 +9,21 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ManifestChart from './manifest-chart';
+import { getExchangeRate } from '@/lib/currency';
 
-export default function ManifestClient({ initialEntries }: { initialEntries: ManifestEntry[] }) {
+export default function ManifestClient({ initialEntries, rate }: { initialEntries: ManifestEntry[], rate: number | null }) {
   const [entries, setEntries] = useState(initialEntries);
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('all');
   
   const filteredAndSortedEntries = useMemo(() => {
-    let tabFiltered = entries;
-    if (activeTab === 'active') {
-      tabFiltered = entries.filter(e => e.status === 'active');
-    } else if (activeTab === 'inactive') {
-      tabFiltered = entries.filter(e => e.status === 'inactive');
-    }
-
-    const searched = searchTerm
-      ? tabFiltered.filter(entry =>
+    return searchTerm
+      ? entries.filter(entry =>
           entry.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
           entry.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
           entry.id.toLowerCase().includes(searchTerm.toLowerCase())
         )
-      : tabFiltered;
-    
-    return searched;
-  }, [entries, searchTerm, activeTab]);
+      : entries;
+  }, [entries, searchTerm]);
 
   const activeEntries = useMemo(() => entries.filter(e => e.status === 'active'), [entries]);
 
@@ -59,6 +49,7 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                 </CardHeader>
                 <CardContent>
                     <p className="text-3xl font-bold text-green-600">${totals.credit.toFixed(2)}</p>
+                    {rate && <p className="text-sm text-muted-foreground">PKR {(totals.credit * rate).toFixed(2)}</p>}
                 </CardContent>
             </Card>
             <Card>
@@ -68,6 +59,7 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                 </CardHeader>
                 <CardContent>
                     <p className="text-3xl font-bold text-red-600">${totals.debit.toFixed(2)}</p>
+                    {rate && <p className="text-sm text-muted-foreground">PKR {(totals.debit * rate).toFixed(2)}</p>}
                 </CardContent>
             </Card>
             <Card>
@@ -79,6 +71,7 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                     <p className={`text-3xl font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                         ${balance.toFixed(2)}
                     </p>
+                    {rate && <p className={`text-sm ${balance >= 0 ? 'text-muted-foreground' : 'text-red-500'}`}>PKR {(balance * rate).toFixed(2)}</p>}
                 </CardContent>
             </Card>
         </div>
@@ -94,13 +87,11 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
       </Card>
       
       <Card className="mt-6">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
             <CardHeader className="flex flex-row items-center justify-between">
                 <div className="space-y-1.5">
                     <CardTitle>Transaction History</CardTitle>
                     <CardDescription>A complete log of all debit and credit entries.</CardDescription>
                 </div>
-                <div className="flex items-center gap-2">
                 <div className="relative">
                     <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                     <Input
@@ -111,28 +102,12 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <TabsList>
-                    <TabsTrigger value="all">All</TabsTrigger>
-                    <TabsTrigger value="active">Active</TabsTrigger>
-                    <TabsTrigger value="inactive">Inactive</TabsTrigger>
-                </TabsList>
-                </div>
             </CardHeader>
             <CardContent>
-                <TabsContent value="all" className="m-0">
-                    {/* Content is rendered outside TabsContent */}
-                </TabsContent>
-                <TabsContent value="active" className="m-0">
-                    {/* Content is rendered outside TabsContent */}
-                </TabsContent>
-                <TabsContent value="inactive" className="m-0">
-                    {/* Content is rendered outside TabsContent */}
-                </TabsContent>
                 <ManifestList 
                     entries={filteredAndSortedEntries} 
                 />
             </CardContent>
-        </Tabs>
     </Card>
   </>
   );
