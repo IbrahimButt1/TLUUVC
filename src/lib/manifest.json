@@ -1,5 +1,14 @@
 [
   {
+    "id": "1757727317945-c8owkd5",
+    "clientName": "Hello Baby",
+    "date": "2025-09-13",
+    "description": "Client Opening Balance",
+    "type": "credit",
+    "amount": 1,
+    "status": "active"
+  },
+  {
     "id": "1757727015874-bto3f0b",
     "clientName": "Hello Buyy",
     "date": "2025-09-13",

@@ -85,7 +85,7 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
     }
 
     const newClient: Client = {
-        id: `${new Date().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
+        id: Math.random().toString(36).substring(2, 10),
         name,
         createdAt: new Date().toISOString(),
         status: 'active',
@@ -101,7 +101,8 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
         if (amount !== null && !isNaN(amount) && amount > 0) {
             const manifestEntries = await readManifestEntries();
             const newEntry: ManifestEntry = {
-                id: `${new Date().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
+                id: Math.random().toString(36).substring(2, 10),
+                clientId: newClient.id,
                 clientName: name,
                 date: new Date().toISOString().split('T')[0],
                 description: 'Client Opening Balance',
@@ -222,7 +223,7 @@ export async function toggleClientStatus(formData: FormData): Promise<{ success:
         // Also update the status of all manifest entries for this client
         let manifestEntries = await readManifestEntries();
         manifestEntries = manifestEntries.map(entry => {
-            if (entry.clientName === client.name) {
+            if (entry.clientId === client.id) {
                 return { ...entry, status: newStatus };
             }
             return entry;

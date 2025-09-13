@@ -26,7 +26,7 @@ interface ClientsListProps {
     clients: Client[];
     searchTerm: string;
     onDelete: (id: string) => void;
-    onToggleStatus: (id: string, currentStatus: 'active' | 'inactive') => void;
+    onToggleStatus: (id: string) => void;
     isPending: boolean;
 }
 
@@ -111,7 +111,7 @@ export default function ClientsList({ clients, searchTerm, onDelete, onToggleSta
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={() => onToggleStatus(client.id, client.status || 'active')}>
+                                        <DropdownMenuItem onClick={() => onToggleStatus(client.id)}>
                                             {client.status === 'active' ? (
                                                 <><PowerOff className="mr-2 h-4 w-4 text-destructive" /><span>Deactivate</span></>
                                             ) : (

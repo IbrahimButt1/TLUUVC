@@ -50,9 +50,13 @@ export default function ClientsListClient({ initialClients }: { initialClients: 
     });
   };
 
-  const handleToggleStatus = (id: string, currentStatus: 'active' | 'inactive') => {
+  const handleToggleStatus = (id: string) => {
     startTransition(async () => {
       const originalClients = [...clients];
+      const clientIndex = originalClients.findIndex(c => c.id === id);
+      if (clientIndex === -1) return;
+      
+      const currentStatus = originalClients[clientIndex].status || 'active';
       const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
       
       // Optimistic update
@@ -64,7 +68,9 @@ export default function ClientsListClient({ initialClients }: { initialClients: 
       try {
         const result = await toggleClientStatus(formData);
         if (result.success) {
-          toast({
+           // On success, we need to refresh the whole list in case manifest entries were affected
+           setClients(current => current.map(e => e.id === id ? { ...e, status: newStatus } : e));
+           toast({
             title: "Status Updated",
             description: `Client has been marked as ${newStatus}. Their manifest entries have also been updated.`,
           });

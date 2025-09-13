@@ -1,5 +1,35 @@
 [
   {
+    "id": "1757727317958-n01ukji",
+    "timestamp": "2025-09-13T01:35:17.958Z",
+    "action": "Opening Balance Set",
+    "details": "Opening balance for 'Hello Baby' set to $1.00 (credit)."
+  },
+  {
+    "id": "1757727317937-3gcmk6c",
+    "timestamp": "2025-09-13T01:35:17.937Z",
+    "action": "Client Added",
+    "details": "New client created: 'Hello Baby'."
+  },
+  {
+    "id": "1757727303340-che5921",
+    "timestamp": "2025-09-13T01:35:03.340Z",
+    "action": "Permanently Deleted Client",
+    "details": "Client 'Hello Buyy' was permanently deleted."
+  },
+  {
+    "id": "1757727232348-xb5yxix",
+    "timestamp": "2025-09-13T01:33:52.348Z",
+    "action": "Client Moved to Recycle Bin",
+    "details": "Client 'Hello' was moved to the recycle bin."
+  },
+  {
+    "id": "1757727223855-9du74lx",
+    "timestamp": "2025-09-13T01:33:43.855Z",
+    "action": "Client Moved to Recycle Bin",
+    "details": "Client 'Hello Buyy' was moved to the recycle bin."
+  },
+  {
     "id": "1757727015879-ppdxl31",
     "timestamp": "2025-09-13T01:30:15.879Z",
     "action": "Opening Balance Set",

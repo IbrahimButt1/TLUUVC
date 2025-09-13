@@ -36,7 +36,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
     const [services, setServices] = useState<ServiceTitle[]>([]);
     const [clients, setClients] = useState<Client[]>([]);
     const [description, setDescription] = useState('');
-    const [clientName, setClientName] = useState('');
+    const [clientId, setClientId] = useState('');
     const [clientPopoverOpen, setClientPopoverOpen] = useState(false);
 
     useEffect(() => {
@@ -49,7 +49,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
             <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
                     <Label htmlFor="clientName">Client Name</Label>
-                    <input type="hidden" name="clientName" value={clientName} />
+                    <input type="hidden" name="clientId" value={clientId} />
                     <Popover open={clientPopoverOpen} onOpenChange={setClientPopoverOpen}>
                         <PopoverTrigger asChild>
                             <Button
@@ -58,7 +58,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                             aria-expanded={clientPopoverOpen}
                             className="w-full justify-between font-normal"
                             >
-                            {clientName || "Select an existing client..."}
+                            {clientId ? clients.find(c => c.id === clientId)?.name : "Select an existing client..."}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
@@ -73,16 +73,16 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                                         {clients.filter(c => c.status === 'active').map((c) => (
                                         <CommandItem
                                             key={c.id}
-                                            value={c.name}
+                                            value={c.id}
                                             onSelect={(currentValue) => {
-                                                setClientName(currentValue === clientName ? "" : currentValue)
+                                                setClientId(currentValue === clientId ? "" : currentValue)
                                                 setClientPopoverOpen(false)
                                             }}
                                         >
                                             <Check
                                             className={cn(
                                                 "mr-2 h-4 w-4",
-                                                clientName === c.name ? "opacity-100" : "opacity-0"
+                                                clientId === c.id ? "opacity-100" : "opacity-0"
                                             )}
                                             />
                                             {c.name}

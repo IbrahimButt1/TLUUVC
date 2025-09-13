@@ -6,9 +6,11 @@ import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
 import { addLogEntry } from './logs';
+import { getClients } from './clients';
 
 export interface ManifestEntry {
     id: string;
+    clientId: string;
     clientName: string;
     date: string;
     description: string;
@@ -44,7 +46,7 @@ export async function getManifestEntries(): Promise<ManifestEntry[]> {
 }
 
 export async function addManifestEntry(formData: FormData) {
-    const clientName = formData.get('clientName') as string;
+    const clientId = formData.get('clientId') as string;
     const date = formData.get('date') as string;
     let description = formData.get('description') as string;
     const otherDescription = formData.get('otherDescription') as string;
@@ -53,14 +55,23 @@ export async function addManifestEntry(formData: FormData) {
     
     let finalDescription = description === 'Other' ? otherDescription : description;
 
-    if (!clientName || !date || !finalDescription || !type || isNaN(amount)) {
+    if (!clientId || !date || !finalDescription || !type || isNaN(amount)) {
         // Simple validation
         return;
     }
 
+    const clients = await getClients();
+    const client = clients.find(c => c.id === clientId);
+
+    if (!client) {
+        // This should not happen if the form is working correctly
+        return;
+    }
+
     const newEntry: ManifestEntry = {
-        id: `${new Date().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
-        clientName,
+        id: Math.random().toString(36).substring(2, 10),
+        clientId,
+        clientName: client.name,
         date,
         description: finalDescription,
         type,
@@ -72,7 +83,7 @@ export async function addManifestEntry(formData: FormData) {
     entries.unshift(newEntry);
     await writeManifestEntries(entries);
     
-    await addLogEntry('Created Manifest Entry', `New ${type} entry of $${amount.toFixed(2)} for '${clientName}'.`);
+    await addLogEntry('Created Manifest Entry', `New ${type} entry of $${amount.toFixed(2)} for '${client.name}'.`);
     
     revalidatePath('/admin/manifest');
     redirect('/admin/manifest');
