@@ -79,5 +79,14 @@
     "type": "credit",
     "amount": 1000,
     "status": "active"
+  },
+  {
+    "id": "1757726247412-itb2q5e",
+    "clientName": "Awias Butt",
+    "date": "2025-09-13",
+    "description": "Payment for Application Review",
+    "type": "credit",
+    "amount": 500,
+    "status": "active"
   }
 ]

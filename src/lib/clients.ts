@@ -11,6 +11,7 @@ export interface Client {
     id: string;
     name: string;
     createdAt: string;
+    status?: 'active' | 'trash';
 }
 
 export type AddClientState = {
@@ -25,7 +26,8 @@ const manifestDataPath = path.join(process.cwd(), 'src', 'lib', 'manifest.json')
 async function readClients(): Promise<Client[]> {
     try {
         const fileContent = await fs.readFile(clientsDataPath, 'utf-8');
-        return JSON.parse(fileContent);
+        const clients: Client[] = JSON.parse(fileContent);
+        return clients.map(c => ({...c, status: c.status || 'active'}));
     } catch (error) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
             return [];
@@ -53,7 +55,13 @@ async function writeManifestEntries(entries: ManifestEntry[]): Promise<void> {
 }
 
 export async function getClients(): Promise<Client[]> {
-    return await readClients();
+    const clients = await readClients();
+    return clients.filter(c => c.status !== 'trash');
+}
+
+export async function getTrashedClients(): Promise<Client[]> {
+    const clients = await readClients();
+    return clients.filter(c => c.status === 'trash');
 }
 
 export async function addClient(prevState: any, formData: FormData): Promise<AddClientState> {
@@ -75,6 +83,7 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
         id: `${new Date().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
         name,
         createdAt: new Date().toISOString(),
+        status: 'active',
     };
     
     clients.push(newClient);
@@ -105,5 +114,82 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
         return { success: true, message: `Client '${name}' has been added successfully.` };
     } catch (error) {
         return { success: false, error: 'Failed to save the new client. Please try again.' };
+    }
+}
+
+
+export async function deleteClient(formData: FormData) {
+    const id = formData.get('id') as string;
+    if (!id) return;
+    
+    let clients = await readClients();
+    const client = clients.find(c => c.id === id);
+    if(client) {
+        await addLogEntry('Client Moved to Recycle Bin', `Client '${client.name}' was moved to the recycle bin.`);
+    }
+
+    clients = clients.map(c => c.id === id ? { ...c, status: 'trash' } : c);
+    await writeClients(clients);
+
+    revalidatePath('/admin/client-balances');
+    revalidatePath('/admin/manifest/new');
+    revalidatePath('/admin/emails/trash');
+}
+
+export async function permanentlyDeleteClient(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
+    
+    let clients = await readClients();
+    const client = clients.find(c => c.id === id);
+    clients = clients.filter(c => c.id !== id);
+    await writeClients(clients);
+    
+    if(client) {
+        await addLogEntry('Permanently Deleted Client', `Client '${client.name}' was permanently deleted.`);
+    }
+
+    revalidatePath('/admin/emails/trash');
+    return { success: true };
+}
+
+
+export async function restoreClient(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
+    
+    let clients = await readClients();
+    const client = clients.find(c => c.id === id);
+    if (!client) return { success: false, error: 'Client not found.' };
+
+    clients = clients.map(c => c.id === id ? { ...c, status: 'active' } : c);
+    await writeClients(clients);
+    
+    await addLogEntry('Restored Client', `Client '${client.name}' restored from recycle bin.`);
+
+    revalidatePath('/admin/client-balances');
+    revalidatePath('/admin/manifest/new');
+    revalidatePath('/admin/emails/trash');
+    return { success: true };
+}
+
+
+export async function restoreAllClients(): Promise<{ success: boolean, error?: string }> {
+    try {
+        let clients = await readClients();
+        const restoredCount = clients.filter(c => c.status === 'trash').length;
+        clients = clients.map(c => c.status === 'trash' ? { ...c, status: 'active' } : c);
+        await writeClients(clients);
+
+        if (restoredCount > 0) {
+            await addLogEntry('Bulk Restored Clients', `Restored ${restoredCount} clients from the recycle bin.`);
+        }
+
+        revalidatePath('/admin/client-balances');
+        revalidatePath('/admin/manifest/new');
+        revalidatePath('/admin/emails/trash');
+        return { success: true };
+    } catch (e) {
+        return { success: false, error: "Failed to restore all clients." };
     }
 }

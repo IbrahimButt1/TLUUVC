@@ -1,5 +1,7 @@
+
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import ClientForm from "@/components/admin/client-form";
+import ClientsListClient from "@/components/admin/clients-list-client";
 import { addClient, getClients } from "@/lib/clients";
 
 export default async function ManageClientsPage() {
@@ -20,6 +22,8 @@ export default async function ManageClientsPage() {
                     />
                 </CardContent>
             </Card>
+
+            <ClientsListClient initialClients={clients} />
         </div>
     );
 }

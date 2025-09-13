@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useTransition } from 'react';
@@ -5,21 +6,26 @@ import type { Email } from '@/lib/emails';
 import type { HeroImage } from '@/lib/hero-images';
 import type { Service } from '@/lib/services';
 import type { Testimonial } from '@/lib/testimonials';
+import type { Client } from '@/lib/clients';
+
 import { permanentlyDeleteEmail, restoreEmail, restoreAllEmails } from '@/lib/emails';
 import { permanentlyDeleteHeroImage, restoreHeroImage, restoreAllHeroImages } from '@/lib/hero-images';
 import { permanentlyDeleteService, restoreService, restoreAllServices } from '@/lib/services';
 import { permanentlyDeleteTestimonial, restoreTestimonial, restoreAllTestimonials } from '@/lib/testimonials';
+import { permanentlyDeleteClient, restoreClient, restoreAllClients } from '@/lib/clients';
+
 import { Input } from '@/components/ui/input';
-import { Search, Loader2, Mail, Image as ImageIcon, Briefcase, MessageSquareQuote, MoreVertical, RotateCw } from 'lucide-react';
+import { Search, Loader2, Mail, Image as ImageIcon, Briefcase, MessageSquareQuote, RotateCw, User } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
+
 import TrashEmails from './trash-emails';
 import TrashHeroImages from './trash-hero-images';
 import TrashServices from './trash-services';
 import TrashTestimonials from './trash-testimonials';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
+import TrashClients from './trash-clients';
 
 
 interface TrashClientProps {
@@ -27,22 +33,25 @@ interface TrashClientProps {
   initialHeroImages: HeroImage[];
   initialServices: Service[];
   initialTestimonials: Testimonial[];
+  initialClients: Client[];
 }
 
-type Category = 'emails' | 'hero-images' | 'services' | 'testimonials';
+type Category = 'emails' | 'hero-images' | 'services' | 'testimonials' | 'clients';
 
-type AnyItem = Email | HeroImage | Service | Testimonial;
+type AnyItem = Email | HeroImage | Service | Testimonial | Client;
 
 export default function TrashClient({
   initialEmails,
   initialHeroImages,
   initialServices,
-  initialTestimonials
+  initialTestimonials,
+  initialClients,
 }: TrashClientProps) {
   const [emails, setEmails] = useState(initialEmails || []);
   const [heroImages, setHeroImages] = useState(initialHeroImages || []);
   const [services, setServices] = useState(initialServices || []);
   const [testimonials, setTestimonials] = useState(initialTestimonials || []);
+  const [clients, setClients] = useState(initialClients || []);
 
   const [activeCategory, setActiveCategory] = useState<Category>('emails');
   const [searchTerm, setSearchTerm] = useState('');
@@ -55,6 +64,7 @@ export default function TrashClient({
     'hero-images': { items: heroImages, setItems: setHeroImages as StateUpdater<AnyItem>, restoreAll: restoreAllHeroImages },
     services: { items: services, setItems: setServices as StateUpdater<AnyItem>, restoreAll: restoreAllServices },
     testimonials: { items: testimonials, setItems: setTestimonials as StateUpdater<AnyItem>, restoreAll: restoreAllTestimonials },
+    clients: { items: clients, setItems: setClients as StateUpdater<AnyItem>, restoreAll: restoreAllClients },
   };
 
   const handleAction = (
@@ -147,11 +157,18 @@ export default function TrashClient({
     ) : testimonials
   ), [testimonials, searchTerm]);
   
+  const filteredClients = useMemo(() => (
+    searchTerm ? clients.filter(c => 
+        c.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ) : clients
+  ), [clients, searchTerm]);
+  
   const categories = [
       { id: 'emails', label: 'Emails', count: filteredEmails.length, icon: Mail },
       { id: 'hero-images', label: 'Hero Images', count: filteredHeroImages.length, icon: ImageIcon },
       { id: 'services', label: 'Services', count: filteredServices.length, icon: Briefcase },
       { id: 'testimonials', label: 'Testimonials', count: filteredTestimonials.length, icon: MessageSquareQuote },
+      { id: 'clients', label: 'Clients', count: filteredClients.length, icon: User },
   ];
 
   const activeCategoryData = categories.find(c => c.id === activeCategory);
@@ -177,7 +194,7 @@ export default function TrashClient({
                             </AlertDialogHeader>
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => handleRestoreAll(activeCategory)}>
+                                <AlertDialogAction onClick={() => handleRestoreAll(activeCategory as Category)}>
                                     Yes, restore all
                                 </AlertDialogAction>
                             </AlertDialogFooter>
@@ -267,6 +284,23 @@ export default function TrashClient({
                                 searchTerm={searchTerm}
                                 onRestore={(id) => handleAction(restoreTestimonial, id, 'testimonials', 'Testimonial restored.')}
                                 onDelete={(id) => handleAction(permanentlyDeleteTestimonial, id, 'testimonials', 'Testimonial permanently deleted.')}
+                                isPending={isPending}
+                                />
+                        </CardContent>
+                    </Card>
+                )}
+                 {activeCategory === 'clients' && (
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Recycled Clients</CardTitle>
+                            <CardDescription>Clients that have been moved to the recycle bin. Restore them or delete them permanently.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <TrashClients
+                                clients={filteredClients}
+                                searchTerm={searchTerm}
+                                onRestore={(id) => handleAction(restoreClient, id, 'clients', 'Client restored.')}
+                                onDelete={(id) => handleAction(permanentlyDeleteClient, id, 'clients', 'Client permanently deleted.')}
                                 isPending={isPending}
                                 />
                         </CardContent>
