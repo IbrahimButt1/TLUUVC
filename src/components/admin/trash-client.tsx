@@ -157,7 +157,6 @@ export default function TrashClient({
     <div className="space-y-6">
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-                <h1 className="text-3xl font-bold">Recycle Bin</h1>
                  {activeCategoryData && activeCategoryData.count > 0 && (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
