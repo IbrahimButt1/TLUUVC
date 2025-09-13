@@ -11,7 +11,7 @@ import React, { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getServiceTitles, type ServiceTitle } from '@/lib/services';
 import { transactionCategories } from '@/lib/service-data';
-import { getUniqueClients, type Client } from '@/lib/clients';
+import { getClients, type Client } from '@/lib/clients';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command"
@@ -40,7 +40,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
 
     useEffect(() => {
         getServiceTitles().then(setServices);
-        getUniqueClients().then(setClients);
+        getClients().then(setClients);
     }, []);
     
     return (

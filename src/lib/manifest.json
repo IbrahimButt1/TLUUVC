@@ -70,5 +70,14 @@
     "type": "credit",
     "amount": 100,
     "status": "active"
+  },
+  {
+    "id": "1757726103556-ywffcnu",
+    "clientName": "Awias Butt",
+    "date": "2025-09-13",
+    "description": "Client Opening Balance",
+    "type": "credit",
+    "amount": 1000,
+    "status": "active"
   }
 ]

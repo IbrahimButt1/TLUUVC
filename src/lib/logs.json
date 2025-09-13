@@ -1,5 +1,17 @@
 [
   {
+    "id": "1757726103561-1v3ztzi",
+    "timestamp": "2025-09-13T01:15:03.561Z",
+    "action": "Opening Balance Set",
+    "details": "Opening balance for 'Awias Butt' set to $1000.00 (credit)."
+  },
+  {
+    "id": "1757726103547-cmuf7qd",
+    "timestamp": "2025-09-13T01:15:03.547Z",
+    "action": "Client Added",
+    "details": "New client created: 'Awias Butt'."
+  },
+  {
     "id": "1757725695940-3stypxp",
     "timestamp": "2025-09-13T01:08:15.940Z",
     "action": "Toggled Manifest Status",
