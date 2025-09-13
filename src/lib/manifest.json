@@ -97,5 +97,14 @@
     "type": "credit",
     "amount": 5000,
     "status": "active"
+  },
+  {
+    "id": "1757726777977-vyax9fm",
+    "clientName": "Ali Butt",
+    "date": "2025-09-13",
+    "description": "Client Opening Balance",
+    "type": "credit",
+    "amount": 1,
+    "status": "active"
   }
 ]

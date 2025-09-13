@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useActionState, useEffect, useRef } from 'react';
@@ -9,10 +10,11 @@ import { Loader2, AlertCircle, ArrowDownLeft, ArrowUpRight } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast';
 import { Alert, AlertTitle, AlertDescription } from '../ui/alert';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import type { AddClientState } from '@/lib/clients';
+import type { AddClientState, Client } from '@/lib/clients';
 
 interface ClientFormProps {
     action: (prevState: any, formData: FormData) => Promise<AddClientState>;
+    onClientAdded: (newClient: Client) => void;
     existingClients: string[];
 }
 
@@ -26,7 +28,7 @@ function SubmitButton() {
     )
 }
 
-export default function ClientForm({ action, existingClients }: ClientFormProps) {
+export default function ClientForm({ action, onClientAdded, existingClients }: ClientFormProps) {
     const { toast } = useToast();
     const [state, formAction] = useActionState(action, { success: false });
     const formRef = useRef<HTMLFormElement>(null);
@@ -37,9 +39,12 @@ export default function ClientForm({ action, existingClients }: ClientFormProps)
                 title: 'Success!',
                 description: state.message,
             });
+            if (state.newClient) {
+                onClientAdded(state.newClient);
+            }
             formRef.current?.reset();
         }
-    }, [state, toast]);
+    }, [state, toast, onClientAdded]);
 
     const clientExists = (name: string) => {
         return existingClients.some(client => client.toLowerCase() === name.toLowerCase());

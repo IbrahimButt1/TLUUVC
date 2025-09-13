@@ -1,14 +1,15 @@
 
 'use client';
 
-import { useState, useMemo, useTransition } from 'react';
+import { useState, useMemo, useTransition, useEffect } from 'react';
 import type { Client } from '@/lib/clients';
-import { deleteClient, toggleClientStatus } from '@/lib/clients';
+import { addClient, deleteClient, toggleClientStatus } from '@/lib/clients';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import ClientsList from './clients-list';
+import ClientForm from './client-form';
 import { CardHeader, CardTitle, CardContent, CardDescription } from '../ui/card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../ui/tabs';
 
@@ -19,9 +20,15 @@ export default function ClientsListClient({ initialClients }: { initialClients: 
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
 
+  const handleAddClient = (newClient: Client) => {
+    // Add the new client to the top of the list for immediate UI feedback
+    setClients(currentClients => [newClient, ...currentClients]);
+  };
+
   const handleDelete = (clientId: string) => {
     startTransition(async () => {
         const originalClients = clients;
+        // Optimistic update: remove from the list
         setClients(currentClients => currentClients.filter(c => c.id !== clientId));
         
         const formData = new FormData();
@@ -33,6 +40,7 @@ export default function ClientsListClient({ initialClients }: { initialClients: 
                 title: "Client moved to recycle bin",
             });
         } catch (error) {
+            // Revert on error
             setClients(originalClients);
             toast({
                 title: "Error",
@@ -48,6 +56,7 @@ export default function ClientsListClient({ initialClients }: { initialClients: 
       const originalClients = [...clients];
       const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
       
+      // Optimistic update
       setClients(current => current.map(e => e.id === id ? { ...e, status: newStatus } : e));
       
       const formData = new FormData();
@@ -61,6 +70,7 @@ export default function ClientsListClient({ initialClients }: { initialClients: 
             description: `Client has been marked as ${newStatus}. Their manifest entries have also been updated.`,
           });
         } else {
+          // Revert on error
           setClients(originalClients);
           toast({ title: "Error", description: result.error, variant: "destructive" });
         }
@@ -89,44 +99,59 @@ export default function ClientsListClient({ initialClients }: { initialClients: 
   }, [clients, searchTerm, activeTab]);
 
   return (
-    <Card>
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <CardHeader className='flex flex-row items-center justify-between'>
-            <div>
-              <CardTitle>Existing Clients</CardTitle>
-              <CardDescription>View, search, and manage your clients.</CardDescription>
-            </div>
-             <div className="flex items-center gap-2">
-              <div className="relative">
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                    type="search"
-                    placeholder="Search clients..."
-                    className="w-full md:w-80 bg-background"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+    <>
+      <Card>
+          <CardHeader>
+              <CardTitle>Add New Client</CardTitle>
+              <CardDescription>Add a new client and set their opening balance. They will then be available for manifest entries.</CardDescription>
+          </CardHeader>
+          <CardContent>
+              <ClientForm 
+                  action={addClient}
+                  onClientAdded={handleAddClient}
+                  existingClients={clients.map(c => c.name)}
+              />
+          </CardContent>
+      </Card>
+      <Card>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <CardHeader className='flex flex-row items-center justify-between'>
+              <div>
+                <CardTitle>Existing Clients</CardTitle>
+                <CardDescription>View, search, and manage your clients.</CardDescription>
               </div>
-               <TabsList>
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="active">Active</TabsTrigger>
-                <TabsTrigger value="inactive">Inactive</TabsTrigger>
-              </TabsList>
-            </div>
-        </CardHeader>
-        <CardContent>
-           <TabsContent value="all" className="m-0"></TabsContent>
-           <TabsContent value="active" className="m-0"></TabsContent>
-           <TabsContent value="inactive" className="m-0"></TabsContent>
-            <ClientsList 
-                clients={filteredClients} 
-                searchTerm={searchTerm} 
-                onDelete={handleDelete}
-                onToggleStatus={handleToggleStatus}
-                isPending={isPending}
-            />
-        </CardContent>
-      </Tabs>
-    </Card>
+              <div className="flex items-center gap-2">
+                <div className="relative">
+                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                  <Input
+                      type="search"
+                      placeholder="Search clients..."
+                      className="w-full md:w-80 bg-background"
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                  />
+                </div>
+                <TabsList>
+                  <TabsTrigger value="all">All</TabsTrigger>
+                  <TabsTrigger value="active">Active</TabsTrigger>
+                  <TabsTrigger value="inactive">Inactive</TabsTrigger>
+                </TabsList>
+              </div>
+          </CardHeader>
+          <CardContent>
+            <TabsContent value="all" className="m-0"></TabsContent>
+            <TabsContent value="active" className="m-0"></TabsContent>
+            <TabsContent value="inactive" className="m-0"></TabsContent>
+              <ClientsList 
+                  clients={filteredClients} 
+                  searchTerm={searchTerm} 
+                  onDelete={handleDelete}
+                  onToggleStatus={handleToggleStatus}
+                  isPending={isPending}
+              />
+          </CardContent>
+        </Tabs>
+      </Card>
+    </>
   );
 }

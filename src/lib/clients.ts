@@ -18,6 +18,7 @@ export type AddClientState = {
     success: boolean;
     error?: string;
     message?: string;
+    newClient?: Client;
 }
 
 const clientsDataPath = path.join(process.cwd(), 'src', 'lib', 'clients.json');
@@ -90,14 +91,14 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
         status: 'active',
     };
     
-    clients.push(newClient);
+    const updatedClients = [newClient, ...clients];
 
     try {
-        await writeClients(clients);
+        await writeClients(updatedClients);
         await addLogEntry('Client Added', `New client created: '${name}'.`);
 
         // If an opening balance was provided, create a manifest entry for it
-        if (amount !== null && !isNaN(amount)) {
+        if (amount !== null && !isNaN(amount) && amount > 0) {
             const manifestEntries = await readManifestEntries();
             const newEntry: ManifestEntry = {
                 id: `${new Date().getTime()}-${Math.random().toString(36).substring(2, 9)}`,
@@ -108,7 +109,7 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
                 amount,
                 status: 'active',
             };
-            manifestEntries.push(newEntry);
+            manifestEntries.unshift(newEntry);
             await writeManifestEntries(manifestEntries);
             await addLogEntry('Opening Balance Set', `Opening balance for '${name}' set to $${amount.toFixed(2)} (${type}).`);
         }
@@ -116,7 +117,7 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
         revalidatePath('/admin/client-balances');
         revalidatePath('/admin/manifest');
         revalidatePath('/admin/manifest/new');
-        return { success: true, message: `Client '${name}' has been added successfully.` };
+        return { success: true, message: `Client '${name}' has been added successfully.`, newClient };
     } catch (error) {
         return { success: false, error: 'Failed to save the new client. Please try again.' };
     }

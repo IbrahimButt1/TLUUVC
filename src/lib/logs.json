@@ -1,5 +1,17 @@
 [
   {
+    "id": "1757726778057-jlasmkp",
+    "timestamp": "2025-09-13T01:26:18.057Z",
+    "action": "Opening Balance Set",
+    "details": "Opening balance for 'Ali Butt' set to $1.00 (credit)."
+  },
+  {
+    "id": "1757726777726-6yoeyme",
+    "timestamp": "2025-09-13T01:26:17.726Z",
+    "action": "Client Added",
+    "details": "New client created: 'Ali Butt'."
+  },
+  {
     "id": "1757726630989-w1s2wq4",
     "timestamp": "2025-09-13T01:23:50.989Z",
     "action": "Opening Balance Set",
