@@ -9,13 +9,13 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Loader2, Check, ChevronsUpDown, XCircle, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getServiceTitles, type ServiceTitle } from '@/lib/services';
 import { transactionCategories } from '@/lib/service-data';
 import { getClients, type Client } from '@/lib/clients';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 
 interface ManifestFormProps {
@@ -143,22 +143,25 @@ export default function ManifestForm({ action }: ManifestFormProps) {
             <div className="grid grid-cols-2 gap-6">
                  <div className="space-y-2">
                     <Label htmlFor="type">Transaction Type</Label>
-                    <RadioGroup defaultValue="credit" name="type" className="flex gap-4 pt-2">
-                        <div className="flex items-center space-x-2 group">
-                            <RadioGroupItem value="credit" id="credit" />
-                            <Label htmlFor="credit" className="flex items-center gap-2 cursor-pointer text-muted-foreground group-hover:text-foreground transition-colors">
-                                <ArrowDownLeft className="h-5 w-5 text-green-500 transition-transform group-hover:scale-110"/>
-                                <span className="font-semibold">Credit</span>
-                            </Label>
-                        </div>
-                        <div className="flex items-center space-x-2 group">
-                            <RadioGroupItem value="debit" id="debit" />
-                            <Label htmlFor="debit" className="flex items-center gap-2 cursor-pointer text-muted-foreground group-hover:text-foreground transition-colors">
-                                <ArrowUpRight className="h-5 w-5 text-red-500 transition-transform group-hover:scale-110"/>
-                                <span className="font-semibold">Debit</span>
-                            </Label>
-                        </div>
-                    </RadioGroup>
+                    <Select name="type" defaultValue="credit">
+                        <SelectTrigger id="type">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="credit">
+                                <div className="flex items-center gap-2 text-green-600">
+                                    <ArrowDownLeft className="h-4 w-4" />
+                                    <span>Payment In (Credit)</span>
+                                </div>
+                            </SelectItem>
+                            <SelectItem value="debit">
+                                 <div className="flex items-center gap-2 text-red-600">
+                                    <ArrowUpRight className="h-4 w-4" />
+                                    <span>Payment Out (Debit)</span>
+                                </div>
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
                  <div className="space-y-2">
                     <Label htmlFor="amount">Amount ($)</Label>
