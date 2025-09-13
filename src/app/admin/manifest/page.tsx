@@ -4,11 +4,9 @@ import { PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { getManifestEntries } from "@/lib/manifest";
 import ManifestClient from "@/components/admin/manifest-client";
-import { getExchangeRate } from "@/lib/currency";
 
 export default async function ManifestPage() {
   const entries = await getManifestEntries();
-  const exchangeRate = await getExchangeRate('USD', 'PKR');
   
   return (
     <div className="space-y-6">
@@ -22,7 +20,8 @@ export default async function ManifestPage() {
             </Button>
         </div>
         
-        <ManifestClient initialEntries={entries} rate={exchangeRate} />
+        <ManifestClient initialEntries={entries} />
     </div>
   );
 }
+

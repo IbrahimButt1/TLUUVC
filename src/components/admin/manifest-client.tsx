@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useTransition } from 'react';
@@ -9,9 +10,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/com
 import { useToast } from '@/hooks/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ManifestChart from './manifest-chart';
-import { getExchangeRate } from '@/lib/currency';
 
-export default function ManifestClient({ initialEntries, rate }: { initialEntries: ManifestEntry[], rate: number | null }) {
+export default function ManifestClient({ initialEntries }: { initialEntries: ManifestEntry[] }) {
   const [entries, setEntries] = useState(initialEntries);
   const [searchTerm, setSearchTerm] = useState('');
   
@@ -49,7 +49,6 @@ export default function ManifestClient({ initialEntries, rate }: { initialEntrie
                 </CardHeader>
                 <CardContent>
                     <p className="text-3xl font-bold text-green-600">${totals.credit.toFixed(2)}</p>
-                    {rate && <p className="text-sm text-muted-foreground">PKR {(totals.credit * rate).toFixed(2)}</p>}
                 </CardContent>
             </Card>
             <Card>
@@ -59,7 +58,6 @@ export default function ManifestClient({ initialEntries, rate }: { initialEntrie
                 </CardHeader>
                 <CardContent>
                     <p className="text-3xl font-bold text-red-600">${totals.debit.toFixed(2)}</p>
-                    {rate && <p className="text-sm text-muted-foreground">PKR {(totals.debit * rate).toFixed(2)}</p>}
                 </CardContent>
             </Card>
             <Card>
@@ -71,7 +69,6 @@ export default function ManifestClient({ initialEntries, rate }: { initialEntrie
                     <p className={`text-3xl font-bold ${balance >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                         ${balance.toFixed(2)}
                     </p>
-                    {rate && <p className={`text-sm ${balance >= 0 ? 'text-muted-foreground' : 'text-red-500'}`}>PKR {(balance * rate).toFixed(2)}</p>}
                 </CardContent>
             </Card>
         </div>
