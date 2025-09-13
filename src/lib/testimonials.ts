@@ -137,7 +137,7 @@ export async function deleteTestimonial(formData: FormData) {
     let testimonials = await readTestimonials();
     const testimonial = testimonials.find(t => t.id === id);
     if (testimonial) {
-        await addLogEntry('Deleted Testimonial', `Testimonial moved to recycle bin: '${testimonial.name}'.`);
+        await addLogEntry('Deleted Testimonial', `Testimonial for '${testimonial.name}' moved to recycle bin.`);
     }
 
     testimonials = testimonials.map(t => t.id === id ? { ...t, status: 'trash' } : t);
@@ -159,7 +159,7 @@ export async function permanentlyDeleteTestimonial(formData: FormData): Promise<
     await writeTestimonials(testimonials);
 
     if (testimonial) {
-        await addLogEntry('Permanently Deleted Testimonial', `Testimonial permanently deleted: '${testimonial.name}'.`);
+        await addLogEntry('Permanently Deleted Testimonial', `Testimonial for '${testimonial.name}' was permanently deleted.`);
     }
 
     revalidatePath('/admin/emails/trash');
@@ -176,7 +176,7 @@ export async function restoreTestimonial(formData: FormData): Promise<{ success:
     await writeTestimonials(testimonials);
 
     if (testimonial) {
-        await addLogEntry('Restored Testimonial', `Testimonial restored from recycle bin: '${testimonial.name}'.`);
+        await addLogEntry('Restored Testimonial', `Testimonial for '${testimonial.name}' restored from recycle bin.`);
     }
 
     revalidatePath('/');

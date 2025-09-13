@@ -3,6 +3,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { revalidatePath } from 'next/cache';
+import { addLogEntry } from './logs';
 
 export interface Email {
     id: string;
@@ -77,6 +78,8 @@ export async function addEmail(emailData: { name: string; email: string; subject
     const emails = await readEmails();
     emails.push(newEmail);
     await writeEmails(emails);
+
+    await addLogEntry('New Inquiry Received', `Email from '${emailData.name}' with subject '${emailData.subject}'.`);
     
     revalidatePath('/admin/emails');
     revalidatePath('/admin', 'layout');
@@ -97,6 +100,7 @@ export async function markEmailAsRead(formData: FormData): Promise<{ success: bo
         if (!emails[emailIndex].read) {
             emails[emailIndex].read = true;
             await writeEmails(emails);
+            await addLogEntry('Marked Email as Read', `Email ID '${id}' marked as read.`);
             revalidatePath('/admin/emails');
             revalidatePath('/admin', 'layout');
         }
@@ -114,6 +118,7 @@ export async function markAllEmailsAsRead() {
         email.status === 'inbox' ? { ...email, read: true } : email
     );
     await writeEmails(updatedEmails);
+    await addLogEntry('Marked All as Read', 'All emails in the inbox were marked as read.');
     revalidatePath('/admin/emails');
     revalidatePath('/admin', 'layout');
 }
@@ -121,9 +126,15 @@ export async function markAllEmailsAsRead() {
 export async function deleteEmail(formData: FormData) {
     const id = formData.get('id') as string;
     if (!id) return;
-    const emails = await readEmails();
+    let emails = await readEmails();
+    const email = emails.find(e => e.id === id);
+    if(email) {
+        await addLogEntry('Deleted Email', `Email from '${email.name}' moved to recycle bin.`);
+    }
+
     const updatedEmails = emails.map(e => e.id === id ? { ...e, status: 'trash' as const } : e);
     await writeEmails(updatedEmails);
+
     revalidatePath('/admin/emails');
     revalidatePath('/admin/emails/trash');
     revalidatePath('/admin', 'layout');
@@ -133,8 +144,14 @@ export async function permanentlyDeleteEmail(formData: FormData): Promise<{ succ
     const id = formData.get('id') as string;
     if (!id) return { success: false, error: 'ID not provided' };
     let emails = await readEmails();
+    const email = emails.find(e => e.id === id);
     emails = emails.filter(e => e.id !== id);
     await writeEmails(emails);
+
+    if (email) {
+        await addLogEntry('Permanently Deleted Email', `Email from '${email.name}' was permanently deleted.`);
+    }
+
     revalidatePath('/admin/emails/trash');
     revalidatePath('/admin', 'layout');
     return { success: true };
@@ -154,6 +171,8 @@ export async function restoreEmail(formData: FormData): Promise<{ success: boole
     const updatedEmails = emails.map(e => e.id === id ? { ...e, status: 'inbox' as const } : e);
     await writeEmails(updatedEmails);
     
+    await addLogEntry('Restored Email', `Email from '${emailToRestore.name}' restored from recycle bin.`);
+
     revalidatePath('/admin/emails');
     revalidatePath('/admin/emails/trash');
     revalidatePath('/admin', 'layout');
@@ -163,8 +182,14 @@ export async function restoreEmail(formData: FormData): Promise<{ success: boole
 export async function restoreAllEmails(): Promise<{ success: boolean; error?: string }> {
     try {
         let emails = await readEmails();
+        const restoredCount = emails.filter(e => e.status === 'trash').length;
         emails = emails.map(e => e.status === 'trash' ? { ...e, status: 'inbox' } : e);
         await writeEmails(emails);
+
+        if (restoredCount > 0) {
+            await addLogEntry('Bulk Restored Emails', `Restored ${restoredCount} emails from the recycle bin.`);
+        }
+
         revalidatePath('/admin/emails');
         revalidatePath('/admin/emails/trash');
         revalidatePath('/admin', 'layout');
@@ -187,6 +212,9 @@ export async function toggleEmailFavorite(formData: FormData): Promise<{ success
 
     emails[emailIndex].favorited = !emails[emailIndex].favorited;
     await writeEmails(emails);
+    
+    const action = emails[emailIndex].favorited ? 'Favorited' : 'Unfavorited';
+    await addLogEntry('Toggled Email Favorite', `${action} email ID '${id}'.`);
 
     revalidatePath('/admin/emails');
 
