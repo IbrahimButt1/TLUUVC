@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
 import { addLogEntry } from './logs';
+import { getClients, type Client } from './clients';
 
 export interface ManifestEntry {
     id: string;
@@ -15,11 +16,6 @@ export interface ManifestEntry {
     amount: number;
     status?: 'active' | 'inactive';
 }
-
-export interface ManifestClient {
-    name: string;
-}
-
 
 const dataPath = path.join(process.cwd(), 'src', 'lib', 'manifest.json');
 
@@ -47,11 +43,9 @@ export async function getManifestEntries(): Promise<ManifestEntry[]> {
     return entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
-export async function getUniqueClients(): Promise<ManifestClient[]> {
-    const entries = await readManifestEntries();
-    const activeEntries = entries.filter(entry => entry.status === 'active');
-    const uniqueNames = [...new Set(activeEntries.map(entry => entry.clientName.trim()))];
-    return uniqueNames.map(name => ({ name }));
+export async function getUniqueClients(): Promise<Client[]> {
+    // This now reads from the dedicated clients.json file via getClients()
+    return await getClients();
 }
 
 export async function addManifestEntry(formData: FormData) {

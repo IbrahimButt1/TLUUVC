@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/about', label: 'About', icon: Info },
-  { href: '/admin/client-balances', label: 'Opening Balances', icon: BookUser },
+  { href: '/admin/client-balances', label: 'Manage Clients', icon: BookUser },
   { href: '/admin/emails', label: 'Emails', icon: Inbox },
   { href: '/admin/hero', label: 'Hero Images', icon: ImageIcon },
   { href: '/admin/manifest', label: 'Manifest', icon: BookUser },

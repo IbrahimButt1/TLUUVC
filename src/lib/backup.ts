@@ -8,6 +8,7 @@ import { addLogEntry } from './logs';
 
 const dataFiles = [
     'about-content.json',
+    'clients.json',
     'emails.json',
     'hero-images.json',
     'manifest.json',

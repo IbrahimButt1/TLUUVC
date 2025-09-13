@@ -11,7 +11,7 @@ import React, { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getServiceTitles, type ServiceTitle } from '@/lib/services';
 import { transactionCategories } from '@/lib/service-data';
-import { getUniqueClients, type ManifestClient } from '@/lib/manifest';
+import { getUniqueClients, type Client } from '@/lib/clients';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverTrigger, PopoverContent } from "@/components/ui/popover"
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from "@/components/ui/command"
@@ -33,7 +33,7 @@ function SubmitButton() {
 
 export default function ManifestForm({ action }: ManifestFormProps) {
     const [services, setServices] = useState<ServiceTitle[]>([]);
-    const [clients, setClients] = useState<ManifestClient[]>([]);
+    const [clients, setClients] = useState<Client[]>([]);
     const [description, setDescription] = useState('');
     const [clientName, setClientName] = useState('');
     const [clientPopoverOpen, setClientPopoverOpen] = useState(false);
@@ -57,23 +57,21 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                             aria-expanded={clientPopoverOpen}
                             className="w-full justify-between font-normal"
                             >
-                            {clientName || "Select or type a client name..."}
+                            {clientName || "Select an existing client..."}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
                             <Command>
                                 <CommandInput 
-                                    placeholder="Search or add new client..."
-                                    value={clientName}
-                                    onValueChange={setClientName}
+                                    placeholder="Search clients..."
                                 />
                                 <CommandList>
-                                    <CommandEmpty>No client found. You can add a new one.</CommandEmpty>
+                                    <CommandEmpty>No clients found. Add one on the 'Manage Clients' page.</CommandEmpty>
                                     <CommandGroup>
                                         {clients.map((c) => (
                                         <CommandItem
-                                            key={c.name}
+                                            key={c.id}
                                             value={c.name}
                                             onSelect={(currentValue) => {
                                                 setClientName(currentValue === clientName ? "" : currentValue)
