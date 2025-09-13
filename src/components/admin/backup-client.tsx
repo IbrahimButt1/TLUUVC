@@ -40,7 +40,7 @@ export default function BackupClient({ getBackupData, restoreBackupData }: Backu
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-            a.href = url;
+a.href = url;
             a.download = `luu-visa-consultant-backup-${timestamp}.json`;
             document.body.appendChild(a);
             a.click();
@@ -90,7 +90,7 @@ export default function BackupClient({ getBackupData, restoreBackupData }: Backu
         };
         reader.onerror = () => {
             setError("Failed to read the selected file.");
-            setIsRestoring(false);
+setIsRestoring(false);
         };
         reader.readAsText(selectedFile);
     };
@@ -103,7 +103,7 @@ export default function BackupClient({ getBackupData, restoreBackupData }: Backu
                     <CardDescription>Download a complete backup of all your site's data as a single JSON file.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-sm text-muted-foreground">This backup will include services, testimonials, hero images, about content, emails, manifest entries, and site settings.</p>
+                    <p className="text-sm text-muted-foreground">This backup will include services, testimonials, hero images, about content, manifest entries, site settings, and all items in the Recycle Bin.</p>
                 </CardContent>
                 <CardFooter>
                     <Button onClick={handleDownload} disabled={isDownloading}>
