@@ -56,7 +56,7 @@ export default function ManifestList({ entries }: ManifestListProps) {
                                             entry.status === 'active' ? "border-green-600/50 text-green-700 dark:text-green-400" : "text-muted-foreground"
                                         )}
                                  >
-                                    {entry.status === 'active' ? 'Active' : 'Inactive'}
+                                    {entry.status === 'active' ? 'Released' : 'Closed'}
                                 </Badge>
                             </TableCell>
                         </TableRow>
