@@ -8,15 +8,7 @@ export default async function LogsPage() {
 
     return (
         <div className="space-y-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle>System Activity Logs</CardTitle>
-                    <CardDescription>A record of all significant actions performed in the admin panel.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <LogsClient initialLogs={initialLogs} />
-                </CardContent>
-            </Card>
+           <LogsClient initialLogs={initialLogs} />
         </div>
     );
 }

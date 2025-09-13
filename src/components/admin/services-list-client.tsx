@@ -51,20 +51,18 @@ export default function ServicesListClient({ initialServices }: { initialService
   }, [services, searchTerm]);
 
   return (
-    <div>
-       <div className="mb-6">
-         <Card className="shadow-none">
-            <div className="relative">
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                <Input
-                    type="search"
-                    placeholder="Search services..."
-                    className="w-full bg-card pr-10 pl-4"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
-        </Card>
+    <div className="space-y-6">
+       <div className="flex items-center justify-end px-1">
+          <div className="relative">
+            <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+            <Input
+                type="search"
+                placeholder="Search services..."
+                className="w-full md:w-80 bg-background"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+            />
+        </div>
       </div>
       <ServicesList 
         services={filteredServices} 

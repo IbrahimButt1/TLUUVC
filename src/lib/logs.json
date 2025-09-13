@@ -1,5 +1,11 @@
 [
   {
+    "id": "1757725520519-7xrvnhz",
+    "timestamp": "2025-09-13T01:05:20.519Z",
+    "action": "Created Manifest Entry",
+    "details": "New credit entry of $100.00 for 'Vendor'."
+  },
+  {
     "id": "1757725256115-xqzy1v8",
     "timestamp": "2025-09-13T01:00:56.115Z",
     "action": "Toggled Manifest Status",

@@ -221,15 +221,15 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-      <div className="flex items-center justify-between px-1">
-        <h1 className="text-xl font-bold">Email Inbox</h1>
+      <div className="flex items-center justify-between px-1 mb-6">
+        <h1 className="text-3xl font-bold">Email Inbox</h1>
         <div className="flex items-center gap-2">
             <div className="relative">
-              <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                   type="search"
                   placeholder="Search emails..."
-                  className="pr-12 w-full md:w-80 bg-background"
+                  className="pr-10 w-full md:w-80 bg-background"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
               />
@@ -248,7 +248,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
             </TabsList>
         </div>
       </div>
-        <div className="flex items-center p-2 border-t border-b h-14 mt-4">
+        <div className="flex items-center p-2 border-t border-b h-14">
             <div className="flex items-center gap-2">
               <Checkbox 
                 id="select-all"
@@ -289,7 +289,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
         {/* We use a shared component and just change the emails */}
       </TabsContent>
 
-      <Card className="shadow-sm border">
+      <Card className="shadow-none border">
         <CardContent className="p-0">
           <EmailList 
             emails={filteredEmails} 

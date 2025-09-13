@@ -56,7 +56,7 @@ function DeleteConfirmationButton({ isPending }: { isPending: boolean }) {
     return (
         <Button variant="destructive" type="submit" disabled={isPending}>
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-            Delete
+            Move to Recycle Bin
         </Button>
     )
 }
@@ -131,7 +131,7 @@ export default function ServicesList({ services, searchTerm, onDelete, isPending
                                                         <AlertDialogHeader>
                                                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                                             <AlertDialogDescription>
-                                                                This action cannot be undone. This will move this service to the recycle bin.
+                                                                This will move the service to the recycle bin. You can restore it later.
                                                             </AlertDialogDescription>
                                                         </AlertDialogHeader>
                                                         <AlertDialogFooter>

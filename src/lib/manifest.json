@@ -61,5 +61,14 @@
     "type": "credit",
     "amount": 58,
     "status": "active"
+  },
+  {
+    "id": "1757725520515-dpm2t8g",
+    "clientName": "Vendor",
+    "date": "2025-09-13",
+    "description": "Client Opening Balance",
+    "type": "credit",
+    "amount": 100,
+    "status": "active"
   }
 ]

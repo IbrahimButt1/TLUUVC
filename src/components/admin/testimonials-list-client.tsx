@@ -23,20 +23,18 @@ export default function TestimonialsListClient({ initialTestimonials }: { initia
   }, [testimonials, searchTerm]);
 
   return (
-    <div>
-       <div className="mb-6">
-        <Card className="shadow-none">
+    <div className="space-y-6">
+       <div className="flex items-center justify-end px-1">
           <div className="relative">
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
             <Input
                 type="search"
                 placeholder="Search testimonials..."
-                className="w-full bg-card pr-10 pl-4"
+                className="w-full md:w-80 bg-background"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-        </Card>
       </div>
       <TestimonialsList testimonials={filteredTestimonials} searchTerm={searchTerm} />
     </div>
