@@ -16,7 +16,7 @@ export interface ManifestEntry {
     description: string;
     type: 'credit' | 'debit';
     amount: number;
-    status?: 'active' | 'inactive';
+    status: 'active' | 'inactive';
 }
 
 const dataPath = path.join(process.cwd(), 'src', 'lib', 'manifest.json');
@@ -44,6 +44,12 @@ export async function getManifestEntries(): Promise<ManifestEntry[]> {
     const entries = await readManifestEntries();
     return entries.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
+
+export async function getManifestEntriesByClientId(clientId: string): Promise<ManifestEntry[]> {
+    const entries = await getManifestEntries();
+    return entries.filter(entry => entry.clientId === clientId);
+}
+
 
 export async function addManifestEntry(formData: FormData) {
     const clientId = formData.get('clientId') as string;
@@ -86,5 +92,6 @@ export async function addManifestEntry(formData: FormData) {
     await addLogEntry('Created Manifest Entry', `New ${type} entry of $${amount.toFixed(2)} for '${client.name}'.`);
     
     revalidatePath('/admin/manifest');
+    revalidatePath('/admin/ledger');
     redirect('/admin/manifest');
 }

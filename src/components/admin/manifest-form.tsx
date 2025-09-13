@@ -41,7 +41,10 @@ export default function ManifestForm({ action }: ManifestFormProps) {
 
     useEffect(() => {
         getServiceTitles().then(setServices);
-        getClients().then(setClients);
+        getClients().then((allClients) => {
+            const releasedClients = allClients.filter(c => c.status === 'released');
+            setClients(releasedClients);
+        });
     }, []);
     
     return (
@@ -58,7 +61,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                             aria-expanded={clientPopoverOpen}
                             className="w-full justify-between font-normal"
                             >
-                            {clientId ? clients.find(c => c.id === clientId)?.name : "Select an existing client..."}
+                            {clientId ? clients.find(c => c.id === clientId)?.name : "Select a client..."}
                             <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                             </Button>
                         </PopoverTrigger>
@@ -68,9 +71,9 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                                     placeholder="Search clients..."
                                 />
                                 <CommandList>
-                                    <CommandEmpty>No clients found. Add one on the 'Manage Clients' page.</CommandEmpty>
+                                    <CommandEmpty>No 'Released' clients found. Add or update one on the 'Manage Clients' page.</CommandEmpty>
                                     <CommandGroup>
-                                        {clients.filter(c => c.status === 'active').map((c) => (
+                                        {clients.map((c) => (
                                         <CommandItem
                                             key={c.id}
                                             value={c.id}

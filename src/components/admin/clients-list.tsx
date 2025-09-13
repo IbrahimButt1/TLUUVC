@@ -3,9 +3,9 @@
 
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 import {
     AlertDialog,
-    AlertDialogAction,
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
@@ -14,19 +14,20 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import type { Client } from "@/lib/clients";
+import type { Client, ClientStatus } from "@/lib/clients";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { MoreHorizontal, Trash2, Loader2, User, Power, PowerOff } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Trash2, Loader2, User, Power, PowerOff, BookOpen } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuPortal, DropdownMenuSubContent, DropdownMenuRadioGroup, DropdownMenuRadioItem } from "@/components/ui/dropdown-menu";
 import { format } from 'date-fns';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 
 interface ClientsListProps {
     clients: Client[];
     searchTerm: string;
     onDelete: (id: string) => void;
-    onToggleStatus: (id: string) => void;
+    onUpdateStatus: (id: string, newStatus: ClientStatus) => void;
     isPending: boolean;
 }
 
@@ -60,7 +61,14 @@ function DeleteConfirmationButton({ isPending }: { isPending: boolean }) {
     )
 }
 
-export default function ClientsList({ clients, searchTerm, onDelete, onToggleStatus, isPending }: ClientsListProps) {
+const statusConfig: Record<ClientStatus, { label: string; className: string }> = {
+    planned: { label: 'Planned', className: 'border-blue-600/50 text-blue-700 dark:text-blue-400' },
+    released: { label: 'Released', className: 'border-green-600/50 text-green-700 dark:text-green-400' },
+    closed: { label: 'Closed', className: 'text-muted-foreground' },
+    trash: { label: 'Trash', className: ''},
+};
+
+export default function ClientsList({ clients, searchTerm, onDelete, onUpdateStatus, isPending }: ClientsListProps) {
     const [openDialogId, setOpenDialogId] = useState<string | null>(null);
 
     return (
@@ -71,13 +79,13 @@ export default function ClientsList({ clients, searchTerm, onDelete, onToggleSta
                         <TableHead className="w-[300px]">Client Name</TableHead>
                         <TableHead>Client ID</TableHead>
                         <TableHead>Date Added</TableHead>
-                        <TableHead className="w-[120px] text-center">Status</TableHead>
+                        <TableHead className="w-[200px] text-center">Status</TableHead>
                         <TableHead className="w-[100px] text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {clients.map((client) => (
-                         <TableRow key={client.id} className={cn(client.status === 'inactive' && 'bg-muted/30 text-muted-foreground')}>
+                         <TableRow key={client.id} className={cn(client.status === 'closed' && 'bg-muted/30 text-muted-foreground')}>
                             <TableCell>
                                 <div className="flex items-center gap-4">
                                     <div className="bg-muted p-3 rounded-full">
@@ -95,13 +103,25 @@ export default function ClientsList({ clients, searchTerm, onDelete, onToggleSta
                                 {format(new Date(client.createdAt), 'PP')}
                             </TableCell>
                             <TableCell className="text-center">
-                                 <Badge variant={client.status === 'active' ? 'secondary' : 'outline'}
-                                        className={cn(
-                                            client.status === 'active' ? "border-green-600/50 text-green-700 dark:text-green-400" : "text-muted-foreground"
-                                        )}
-                                 >
-                                    {client.status === 'active' ? 'Active' : 'Inactive'}
-                                </Badge>
+                                <Select
+                                    value={client.status}
+                                    onValueChange={(newStatus) => onUpdateStatus(client.id, newStatus as ClientStatus)}
+                                    disabled={isPending}
+                                >
+                                    <SelectTrigger className={cn("h-8 border-dashed", statusConfig[client.status]?.className)}>
+                                        <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {Object.keys(statusConfig).filter(s => s !== 'trash').map(status => (
+                                            <SelectItem key={status} value={status}>
+                                                <span className={cn(statusConfig[status as ClientStatus]?.className)}>
+                                                    {statusConfig[status as ClientStatus]?.label}
+                                                </span>
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+
                             </TableCell>
                             <TableCell className="text-right">
                                  <DropdownMenu>
@@ -111,12 +131,11 @@ export default function ClientsList({ clients, searchTerm, onDelete, onToggleSta
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={() => onToggleStatus(client.id)}>
-                                            {client.status === 'active' ? (
-                                                <><PowerOff className="mr-2 h-4 w-4 text-destructive" /><span>Deactivate</span></>
-                                            ) : (
-                                                <><Power className="mr-2 h-4 w-4 text-green-600" /><span>Activate</span></>
-                                            )}
+                                        <DropdownMenuItem asChild>
+                                            <Link href={`/admin/ledger/${client.id}`}>
+                                                <BookOpen className="mr-2 h-4 w-4" />
+                                                View Ledger
+                                            </Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuSeparator />
                                         <AlertDialog open={openDialogId === client.id} onOpenChange={(isOpen) => setOpenDialogId(isOpen ? client.id : null)}>

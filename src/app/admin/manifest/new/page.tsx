@@ -11,7 +11,7 @@ export default function NewManifestEntryPage() {
                 <CardHeader className="relative">
                     <div className="space-y-1">
                         <CardTitle>Add New Manifest Entry</CardTitle>
-                        <CardDescription>Fill out the form below to log a new transaction.</CardDescription>
+                        <CardDescription>Fill out the form below to log a new transaction. Only 'Released' clients are shown.</CardDescription>
                     </div>
                     <div className="absolute top-6 right-6 w-48 space-y-1">
                         <Label htmlFor="transactionId" className="text-xs text-muted-foreground">Transaction ID</Label>

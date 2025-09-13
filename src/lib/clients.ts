@@ -7,11 +7,13 @@ import path from 'path';
 import type { ManifestEntry } from './manifest';
 import { addLogEntry } from './logs';
 
+export type ClientStatus = 'planned' | 'released' | 'closed' | 'trash';
+
 export interface Client {
     id: string;
     name: string;
     createdAt: string;
-    status?: 'active' | 'inactive' | 'trash';
+    status: ClientStatus;
 }
 
 export type AddClientState = {
@@ -28,7 +30,7 @@ async function readClients(): Promise<Client[]> {
     try {
         const fileContent = await fs.readFile(clientsDataPath, 'utf-8');
         const clients: Client[] = JSON.parse(fileContent);
-        return clients.map(c => ({...c, status: c.status || 'active'}));
+        return clients.map(c => ({...c, status: c.status || 'planned'}));
     } catch (error) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
             return [];
@@ -64,6 +66,11 @@ export async function getClients(): Promise<Client[]> {
     return clients.filter(c => c.status !== 'trash').sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 }
 
+export async function getClientById(id: string): Promise<Client | undefined> {
+    const clients = await readClients();
+    return clients.find(c => c.id === id);
+}
+
 export async function getTrashedClients(): Promise<Client[]> {
     const clients = await readClients();
     return clients.filter(c => c.status === 'trash');
@@ -82,23 +89,23 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
     const clients = await readClients();
     
     const newClient: Client = {
-        id: `${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 9)}`,
+        id: Math.random().toString(36).substring(2, 10),
         name,
         createdAt: new Date().toISOString(),
-        status: 'active',
+        status: 'planned',
     };
     
     const updatedClients = [newClient, ...clients];
 
     try {
         await writeClients(updatedClients);
-        await addLogEntry('Client Added', `New client created: '${name}'.`);
+        await addLogEntry('Client Added', `New client created: '${name}' with status 'Planned'.`);
 
         // If an opening balance was provided, create a manifest entry for it
         if (amount !== null && !isNaN(amount) && amount > 0) {
             const manifestEntries = await readManifestEntries();
             const newEntry: ManifestEntry = {
-                id: `${Date.now().toString(36)}-${Math.random().toString(36).substring(2, 9)}`,
+                id: Math.random().toString(36).substring(2, 10),
                 clientId: newClient.id,
                 clientName: name,
                 date: new Date().toISOString().split('T')[0],
@@ -113,7 +120,6 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
         }
 
         revalidatePath('/admin/client-balances');
-        revalidatePath('/admin/manifest');
         revalidatePath('/admin/manifest/new');
         return { success: true, message: `Client '${name}' has been added successfully.`, newClient };
     } catch (error) {
@@ -166,10 +172,11 @@ export async function restoreClient(formData: FormData): Promise<{ success: bool
     const client = clients.find(c => c.id === id);
     if (!client) return { success: false, error: 'Client not found.' };
 
-    clients = clients.map(c => c.id === id ? { ...c, status: 'active' } : c);
+    // Restore to 'planned' status by default
+    clients = clients.map(c => c.id === id ? { ...c, status: 'planned' } : c);
     await writeClients(clients);
     
-    await addLogEntry('Restored Client', `Client '${client.name}' restored from recycle bin.`);
+    await addLogEntry('Restored Client', `Client '${client.name}' restored from recycle bin to 'Planned' status.`);
 
     revalidatePath('/admin/client-balances');
     revalidatePath('/admin/manifest/new');
@@ -182,7 +189,7 @@ export async function restoreAllClients(): Promise<{ success: boolean, error?: s
     try {
         let clients = await readClients();
         const restoredCount = clients.filter(c => c.status === 'trash').length;
-        clients = clients.map(c => c.status === 'trash' ? { ...c, status: 'active' } : c);
+        clients = clients.map(c => c.status === 'trash' ? { ...c, status: 'planned' } : c);
         await writeClients(clients);
 
         if (restoredCount > 0) {
@@ -198,9 +205,14 @@ export async function restoreAllClients(): Promise<{ success: boolean, error?: s
     }
 }
 
-export async function toggleClientStatus(formData: FormData): Promise<{ success: boolean; error?: string }> {
+export async function updateClientStatus(formData: FormData): Promise<{ success: boolean; error?: string }> {
     const id = formData.get('id') as string;
-    if (!id) return { success: false, error: 'ID not provided' };
+    const newStatus = formData.get('status') as ClientStatus;
+    
+    if (!id || !newStatus) return { success: false, error: 'ID or new status not provided' };
+    if (!['planned', 'released', 'closed'].includes(newStatus)) {
+        return { success: false, error: 'Invalid status provided.' };
+    }
 
     try {
         const clients = await readClients();
@@ -211,23 +223,21 @@ export async function toggleClientStatus(formData: FormData): Promise<{ success:
         }
         
         const client = clients[clientIndex];
-        const currentStatus = client.status || 'active';
-        const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
         clients[clientIndex].status = newStatus;
 
         await writeClients(clients);
 
-        // Also update the status of all manifest entries for this client
+        const manifestStatusToSet = newStatus === 'closed' ? 'inactive' : 'active';
         let manifestEntries = await readManifestEntries();
         manifestEntries = manifestEntries.map(entry => {
             if (entry.clientId === client.id) {
-                return { ...entry, status: newStatus };
+                return { ...entry, status: manifestStatusToSet };
             }
             return entry;
         });
         await writeManifestEntries(manifestEntries);
 
-        await addLogEntry('Toggled Client Status', `Client '${client.name}' status changed to '${newStatus}'. All their manifest entries were updated.`);
+        await addLogEntry('Updated Client Status', `Client '${client.name}' status changed to '${newStatus}'. Their manifest entries were updated to '${manifestStatusToSet}'.`);
         
         revalidatePath('/admin/client-balances');
         revalidatePath('/admin/manifest');

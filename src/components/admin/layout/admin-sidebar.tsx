@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Palette, KeyRound, ChevronDown, User, BookUser, History, Star } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Plane, Inbox, Trash2, Home, Info, Lightbulb, MessageSquareQuote, Image as ImageIcon, Settings, Palette, KeyRound, ChevronDown, User, BookUser, History, Star, ListCollapse } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
@@ -13,7 +13,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 const navLinks = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/about', label: 'About', icon: Info },
-  { href: '/admin/client-balances', label: 'Manage Clients', icon: BookUser },
+  { href: '/admin/client-balances', label: 'Manage Clients', icon: User },
+  { href: '/admin/ledger', label: 'Client Ledger', icon: BookOpen },
   { href: '/admin/emails', label: 'Emails', icon: Inbox },
   { href: '/admin/hero', label: 'Hero Images', icon: ImageIcon },
   { href: '/admin/manifest', label: 'Manifest', icon: BookUser },
@@ -22,6 +23,7 @@ const navLinks = [
 ];
 
 const maintenanceLinks = [
+  { href: '/admin/logs', label: 'Activity Logs', icon: ListCollapse },
   { href: '/admin/emails/trash', label: 'Recycle Bin', icon: Trash2 },
   { href: '/admin/backup', label: 'Backup & Restore', icon: History },
 ];
