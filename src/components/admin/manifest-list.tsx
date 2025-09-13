@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -5,18 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import type { ManifestEntry } from "@/lib/manifest";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
-import { MoreHorizontal, Power, PowerOff, Loader2 } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "../ui/button";
 
 interface ManifestListProps {
     entries: ManifestEntry[];
-    onToggleStatus: (id: string, currentStatus: 'active' | 'inactive') => void;
-    isPending: boolean;
 }
 
 
-export default function ManifestList({ entries, onToggleStatus, isPending }: ManifestListProps) {
+export default function ManifestList({ entries }: ManifestListProps) {
     return (
         <div className="border rounded-md">
             <Table>
@@ -29,7 +25,6 @@ export default function ManifestList({ entries, onToggleStatus, isPending }: Man
                         <TableHead className="w-[120px] text-center">Type</TableHead>
                         <TableHead className="w-[120px] text-right">Amount</TableHead>
                         <TableHead className="w-[120px] text-center">Status</TableHead>
-                        <TableHead className="w-[80px] text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -63,24 +58,6 @@ export default function ManifestList({ entries, onToggleStatus, isPending }: Man
                                  >
                                     {entry.status === 'active' ? 'Active' : 'Inactive'}
                                 </Badge>
-                            </TableCell>
-                            <TableCell className="text-right">
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" className="h-8 w-8 p-0" disabled={isPending}>
-                                            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <MoreHorizontal className="h-4 w-4" />}
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuItem onClick={() => onToggleStatus(entry.id, entry.status || 'active')}>
-                                            {entry.status === 'active' ? (
-                                                <><PowerOff className="mr-2 h-4 w-4 text-destructive" /><span>Deactivate</span></>
-                                            ) : (
-                                                <><Power className="mr-2 h-4 w-4 text-green-600" /><span>Activate</span></>
-                                            )}
-                                        </DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
                             </TableCell>
                         </TableRow>
                      ))}

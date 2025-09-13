@@ -16,14 +16,17 @@ import {
 } from "@/components/ui/alert-dialog"
 import type { Client } from "@/lib/clients";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { MoreHorizontal, Trash2, Loader2, User } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { MoreHorizontal, Trash2, Loader2, User, Power, PowerOff } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { format } from 'date-fns';
+import { Badge } from '../ui/badge';
+import { cn } from '@/lib/utils';
 
 interface ClientsListProps {
     clients: Client[];
     searchTerm: string;
     onDelete: (id: string) => void;
+    onToggleStatus: (id: string, currentStatus: 'active' | 'inactive') => void;
     isPending: boolean;
 }
 
@@ -57,7 +60,7 @@ function DeleteConfirmationButton({ isPending }: { isPending: boolean }) {
     )
 }
 
-export default function ClientsList({ clients, searchTerm, onDelete, isPending }: ClientsListProps) {
+export default function ClientsList({ clients, searchTerm, onDelete, onToggleStatus, isPending }: ClientsListProps) {
     const [openDialogId, setOpenDialogId] = useState<string | null>(null);
 
     return (
@@ -65,15 +68,16 @@ export default function ClientsList({ clients, searchTerm, onDelete, isPending }
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="w-[350px]">Client Name</TableHead>
+                        <TableHead className="w-[300px]">Client Name</TableHead>
                         <TableHead>Client ID</TableHead>
                         <TableHead>Date Added</TableHead>
+                        <TableHead className="w-[120px] text-center">Status</TableHead>
                         <TableHead className="w-[100px] text-right">Actions</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {clients.map((client) => (
-                        <TableRow key={client.id}>
+                         <TableRow key={client.id} className={cn(client.status === 'inactive' && 'bg-muted/30 text-muted-foreground')}>
                             <TableCell>
                                 <div className="flex items-center gap-4">
                                     <div className="bg-muted p-3 rounded-full">
@@ -90,15 +94,31 @@ export default function ClientsList({ clients, searchTerm, onDelete, isPending }
                             <TableCell className="text-muted-foreground">
                                 {format(new Date(client.createdAt), 'PP')}
                             </TableCell>
+                            <TableCell className="text-center">
+                                 <Badge variant={client.status === 'active' ? 'secondary' : 'outline'}
+                                        className={cn(
+                                            client.status === 'active' ? "border-green-600/50 text-green-700 dark:text-green-400" : "text-muted-foreground"
+                                        )}
+                                 >
+                                    {client.status === 'active' ? 'Active' : 'Inactive'}
+                                </Badge>
+                            </TableCell>
                             <TableCell className="text-right">
                                  <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" className="h-8 w-8 p-0">
-                                            <span className="sr-only">Open menu</span>
-                                            <MoreHorizontal className="h-4 w-4" />
+                                        <Button variant="ghost" className="h-8 w-8 p-0" disabled={isPending}>
+                                            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <MoreHorizontal className="h-4 w-4" />}
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
+                                        <DropdownMenuItem onClick={() => onToggleStatus(client.id, client.status || 'active')}>
+                                            {client.status === 'active' ? (
+                                                <><PowerOff className="mr-2 h-4 w-4 text-destructive" /><span>Deactivate</span></>
+                                            ) : (
+                                                <><Power className="mr-2 h-4 w-4 text-green-600" /><span>Activate</span></>
+                                            )}
+                                        </DropdownMenuItem>
+                                        <DropdownMenuSeparator />
                                         <AlertDialog open={openDialogId === client.id} onOpenChange={(isOpen) => setOpenDialogId(isOpen ? client.id : null)}>
                                             <AlertDialogTrigger asChild>
                                                 <DropdownMenuItem 

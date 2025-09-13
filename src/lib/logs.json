@@ -1,5 +1,17 @@
 [
   {
+    "id": "1757726630989-w1s2wq4",
+    "timestamp": "2025-09-13T01:23:50.989Z",
+    "action": "Opening Balance Set",
+    "details": "Opening balance for 'Ali' set to $5000.00 (credit)."
+  },
+  {
+    "id": "1757726630964-c62rnl3",
+    "timestamp": "2025-09-13T01:23:50.964Z",
+    "action": "Client Added",
+    "details": "New client created: 'Ali'."
+  },
+  {
     "id": "1757726247419-zy4uvep",
     "timestamp": "2025-09-13T01:17:27.419Z",
     "action": "Created Manifest Entry",

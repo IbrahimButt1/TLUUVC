@@ -1,3 +1,4 @@
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -82,32 +83,3 @@ export async function addManifestEntry(formData: FormData) {
     redirect('/admin/manifest');
 }
 
-
-export async function toggleManifestEntryStatus(formData: FormData): Promise<{ success: boolean; error?: string }> {
-    const id = formData.get('id') as string;
-    if (!id) return { success: false, error: 'ID not provided' };
-
-    try {
-        const entries = await readManifestEntries();
-        const entryIndex = entries.findIndex(e => e.id === id);
-
-        if (entryIndex === -1) {
-            return { success: false, error: 'Manifest entry not found.' };
-        }
-        
-        const currentStatus = entries[entryIndex].status || 'active';
-        const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-        entries[entryIndex].status = newStatus;
-
-        await writeManifestEntries(entries);
-        await addLogEntry('Toggled Manifest Status', `Entry ID '${id}' status changed to '${newStatus}'.`);
-        
-        revalidatePath('/admin/manifest');
-        
-        return { success: true };
-
-    } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
-        return { success: false, error: errorMessage };
-    }
-}

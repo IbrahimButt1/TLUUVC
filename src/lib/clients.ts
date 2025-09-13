@@ -11,7 +11,7 @@ export interface Client {
     id: string;
     name: string;
     createdAt: string;
-    status?: 'active' | 'trash';
+    status?: 'active' | 'inactive' | 'trash';
 }
 
 export type AddClientState = {
@@ -46,6 +46,9 @@ async function readManifestEntries(): Promise<ManifestEntry[]> {
         const fileContent = await fs.readFile(manifestDataPath, 'utf-8');
         return JSON.parse(fileContent);
     } catch (error) {
+        if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+            return [];
+        }
         return [];
     }
 }
@@ -53,6 +56,7 @@ async function readManifestEntries(): Promise<ManifestEntry[]> {
 async function writeManifestEntries(entries: ManifestEntry[]): Promise<void> {
     await fs.writeFile(manifestDataPath, JSON.stringify(entries, null, 2), 'utf-8');
 }
+
 
 export async function getClients(): Promise<Client[]> {
     const clients = await readClients();
@@ -111,6 +115,7 @@ export async function addClient(prevState: any, formData: FormData): Promise<Add
 
         revalidatePath('/admin/client-balances');
         revalidatePath('/admin/manifest');
+        revalidatePath('/admin/manifest/new');
         return { success: true, message: `Client '${name}' has been added successfully.` };
     } catch (error) {
         return { success: false, error: 'Failed to save the new client. Please try again.' };
@@ -191,5 +196,47 @@ export async function restoreAllClients(): Promise<{ success: boolean, error?: s
         return { success: true };
     } catch (e) {
         return { success: false, error: "Failed to restore all clients." };
+    }
+}
+
+export async function toggleClientStatus(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const id = formData.get('id') as string;
+    if (!id) return { success: false, error: 'ID not provided' };
+
+    try {
+        const clients = await readClients();
+        const clientIndex = clients.findIndex(c => c.id === id);
+
+        if (clientIndex === -1) {
+            return { success: false, error: 'Client not found.' };
+        }
+        
+        const client = clients[clientIndex];
+        const currentStatus = client.status || 'active';
+        const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+        clients[clientIndex].status = newStatus;
+
+        await writeClients(clients);
+
+        // Also update the status of all manifest entries for this client
+        let manifestEntries = await readManifestEntries();
+        manifestEntries = manifestEntries.map(entry => {
+            if (entry.clientName === client.name) {
+                return { ...entry, status: newStatus };
+            }
+            return entry;
+        });
+        await writeManifestEntries(manifestEntries);
+
+        await addLogEntry('Toggled Client Status', `Client '${client.name}' status changed to '${newStatus}'. All their manifest entries were updated.`);
+        
+        revalidatePath('/admin/client-balances');
+        revalidatePath('/admin/manifest');
+        
+        return { success: true };
+
+    } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        return { success: false, error: errorMessage };
     }
 }

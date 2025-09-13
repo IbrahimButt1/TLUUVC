@@ -1,8 +1,8 @@
+
 'use client';
 
 import { useState, useMemo, useTransition } from 'react';
 import type { ManifestEntry } from '@/lib/manifest';
-import { toggleManifestEntryStatus } from '@/lib/manifest';
 import ManifestList from './manifest-list';
 import { Input } from '@/components/ui/input';
 import { Search } from 'lucide-react';
@@ -15,38 +15,7 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
   const [entries, setEntries] = useState(initialEntries);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('all');
-  const [isPending, startTransition] = useTransition();
-  const { toast } = useToast();
-
-  const handleToggleStatus = (id: string, currentStatus: 'active' | 'inactive') => {
-    startTransition(async () => {
-      const originalEntries = [...entries];
-      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-      
-      // Optimistic update
-      setEntries(current => current.map(e => e.id === id ? { ...e, status: newStatus } : e));
-      
-      const formData = new FormData();
-      formData.append('id', id);
-
-      try {
-        const result = await toggleManifestEntryStatus(formData);
-        if (result.success) {
-          toast({
-            title: "Status Updated",
-            description: `Entry has been marked as ${newStatus}.`,
-          });
-        } else {
-          setEntries(originalEntries);
-          toast({ title: "Error", description: result.error, variant: "destructive" });
-        }
-      } catch (error) {
-        setEntries(originalEntries);
-        toast({ title: "Error", description: "Failed to update status. Please try again.", variant: "destructive" });
-      }
-    });
-  };
-
+  
   const filteredAndSortedEntries = useMemo(() => {
     let tabFiltered = entries;
     if (activeTab === 'active') {
@@ -160,8 +129,6 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
             </TabsContent>
             <ManifestList 
                 entries={filteredAndSortedEntries} 
-                onToggleStatus={handleToggleStatus}
-                isPending={isPending}
             />
         </CardContent>
     </Card>
