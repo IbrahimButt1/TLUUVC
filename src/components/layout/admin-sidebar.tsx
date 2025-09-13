@@ -22,7 +22,7 @@ const navLinks = [
 ];
 
 const maintenanceLinks = [
-  { href: '/admin/emails/trash', label: 'Trash', icon: Trash2 },
+  { href: '/admin/emails/trash', label: 'Recycle Bin', icon: Trash2 },
   { href: '/admin/backup', label: 'Backup & Restore', icon: History },
 ];
 
