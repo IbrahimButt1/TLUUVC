@@ -2,30 +2,19 @@
 
 import { useState, useMemo, useTransition } from 'react';
 import type { ManifestEntry } from '@/lib/manifest';
-import { closeOutManifestEntries, getManifestAsJson } from '@/lib/manifest';
+import { getManifestEntries } from '@/lib/manifest';
 import ManifestList from './manifest-list';
 import { Input } from '@/components/ui/input';
-import { Search, Trash2, Loader2, Info, Download } from 'lucide-react';
+import { Search, Loader2, Download } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import * as XLSX from 'xlsx';
+
 
 export default function ManifestClient({ initialEntries }: { initialEntries: ManifestEntry[] }) {
   const [entries, setEntries] = useState(initialEntries);
-  const [recentlyClosed, setRecentlyClosed] = useState<ManifestEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isPending, startTransition] = useTransition();
   const [isDownloading, setIsDownloading] = useState(false);
   const { toast } = useToast();
   
@@ -51,45 +40,32 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
   }, { debit: 0, credit: 0 });
 
   const balance = totals.credit - totals.debit;
-  
-  const handleCloseOut = () => {
-    startTransition(async () => {
-        try {
-            const closedEntries = await closeOutManifestEntries();
-            
-            const allEntries = [...entries.map(e => activeEntries.find(ae => ae.id === e.id) ? {...e, status: 'inactive' as const} : e )];
-            setEntries(allEntries);
-
-            setRecentlyClosed(closedEntries);
-            toast({
-                title: "Records Closed Out",
-                description: "All active transaction records have been archived.",
-            });
-        } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to close out records. Please try again.",
-                variant: "destructive",
-            });
-        }
-    });
-  }
 
   const handleDownload = async () => {
     setIsDownloading(true);
     try {
-        const jsonData = await getManifestAsJson();
-        const blob = new Blob([jsonData], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
+        const allEntries = await getManifestEntries();
+        // Format data for Excel
+        const dataToExport = allEntries.map(e => ({
+            "Transaction ID": e.id,
+            "Client ID": e.clientId,
+            "Client Name": e.clientName,
+            "Date": e.date,
+            "Description": e.description,
+            "Type": e.type,
+            "Amount": e.amount,
+            "Status": e.status,
+        }));
+        
+        const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Manifest");
+
+        // Generate and trigger download
         const timestamp = new Date().toISOString().split('T')[0];
-        a.href = url;
-        a.download = `manifest-backup-${timestamp}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        toast({ title: "Manifest Downloaded", description: "All transaction records have been saved." });
+        XLSX.writeFile(workbook, `manifest-backup-${timestamp}.xls`, { bookType: 'biff8' });
+
+        toast({ title: "Manifest Downloaded", description: "All transaction records have been saved as an Excel file." });
     } catch (err) {
         toast({ title: "Error", description: "Failed to download manifest.", variant: "destructive" });
         console.error(err);
@@ -131,23 +107,6 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                 </CardContent>
             </Card>
         </div>
-      
-      {recentlyClosed.length > 0 && (
-            <Card className="mt-6 border-amber-500/50 bg-amber-50/50 dark:bg-amber-900/10">
-                <CardHeader>
-                    <div className="flex items-center gap-3">
-                        <Info className="h-6 w-6 text-amber-600"/>
-                        <div>
-                            <CardTitle>Recently Closed Records</CardTitle>
-                            <CardDescription>The following records were just moved to 'inactive' status.</CardDescription>
-                        </div>
-                    </div>
-                </CardHeader>
-                <CardContent>
-                    <ManifestList entries={recentlyClosed} />
-                </CardContent>
-            </Card>
-        )}
 
       <Card className="mt-6">
             <CardHeader className="flex flex-row items-center justify-between">
@@ -160,28 +119,6 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                         {isDownloading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
                         Download Records
                     </Button>
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <Button variant="destructive" size="sm" disabled={isPending || activeEntries.length === 0}>
-                                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
-                                Close Out Records
-                            </Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently mark all <strong className="font-bold">{activeEntries.length} active</strong> transaction(s) as 'inactive', effectively archiving them.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={handleCloseOut} className="bg-destructive hover:bg-destructive/90">
-                                    Yes, close them out
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
                     <div className="relative">
                         <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                         <Input
