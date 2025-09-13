@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { format } from 'date-fns';
 import type { Email } from "@/lib/emails";
@@ -41,6 +41,20 @@ function RestoreButton({ isPending, onRestore }: ActionButtonProps & { onRestore
     )
 }
 
+function EmailDate({ dateString }: { dateString: string }) {
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isMounted) {
+        return <span>...</span>;
+    }
+
+    return <span>{format(new Date(dateString), "PPP p")}</span>;
+}
+
 
 export default function TrashEmails({ emails, searchTerm, onRestore, onDelete, isPending }: { emails: Email[], searchTerm: string, onRestore: (id: string) => void, onDelete: (id: string) => void, isPending: boolean }) {
     
@@ -66,7 +80,7 @@ export default function TrashEmails({ emails, searchTerm, onRestore, onDelete, i
                                 <div className="text-sm text-muted-foreground">{email.subject} - <span className="italic">{email.message.substring(0,50)}...</span></div>
                             </TableCell>
                              <TableCell className="text-sm text-muted-foreground">
-                                {format(new Date(email.receivedAt), "PPP p")}
+                                <EmailDate dateString={email.receivedAt} />
                             </TableCell>
                             <TableCell className="text-right space-x-2">
                                 <RestoreButton isPending={isPending} onRestore={() => onRestore(email.id)} />
