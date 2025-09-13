@@ -51,7 +51,7 @@ export default function ManifestForm({ action }: ManifestFormProps) {
         <form action={action} className="space-y-6">
             <div className="grid grid-cols-2 gap-6">
                 <div className="space-y-2">
-                    <Label htmlFor="clientName">Client Name</Label>
+                    <Label htmlFor="clientId">Client Name</Label>
                     <input type="hidden" name="clientId" value={clientId} />
                     <Popover open={clientPopoverOpen} onOpenChange={setClientPopoverOpen}>
                         <PopoverTrigger asChild>
