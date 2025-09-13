@@ -1,5 +1,47 @@
 [
   {
+    "id": "1757728140734-vor7fmd",
+    "timestamp": "2025-09-13T01:49:00.735Z",
+    "action": "Updated Client Status",
+    "details": "Client 'Ali' status changed to 'released'. Their manifest entries were updated to 'active'."
+  },
+  {
+    "id": "1757728136257-38bad0v",
+    "timestamp": "2025-09-13T01:48:56.257Z",
+    "action": "Updated Client Status",
+    "details": "Client 'Awias Butt' status changed to 'planned'. Their manifest entries were updated to 'active'."
+  },
+  {
+    "id": "1757728126820-8kjrikp",
+    "timestamp": "2025-09-13T01:48:46.820Z",
+    "action": "Updated Client Status",
+    "details": "Client 'Ali' status changed to 'planned'. Their manifest entries were updated to 'active'."
+  },
+  {
+    "id": "1757728117970-m31m9zl",
+    "timestamp": "2025-09-13T01:48:37.970Z",
+    "action": "Updated Client Status",
+    "details": "Client 'Hello Baby' status changed to 'planned'. Their manifest entries were updated to 'active'."
+  },
+  {
+    "id": "1757728110672-4kq2yuw",
+    "timestamp": "2025-09-13T01:48:30.672Z",
+    "action": "Updated Client Status",
+    "details": "Client 'Ali Butt' status changed to 'planned'. Their manifest entries were updated to 'active'."
+  },
+  {
+    "id": "1757728107008-1xeozuz",
+    "timestamp": "2025-09-13T01:48:27.008Z",
+    "action": "Updated Client Status",
+    "details": "Client 'Ali Butt' status changed to 'closed'. Their manifest entries were updated to 'inactive'."
+  },
+  {
+    "id": "1757728075732-r4oayjv",
+    "timestamp": "2025-09-13T01:47:55.732Z",
+    "action": "Updated Client Status",
+    "details": "Client 'Hello Baby' status changed to 'released'. Their manifest entries were updated to 'active'."
+  },
+  {
     "id": "1757727317958-n01ukji",
     "timestamp": "2025-09-13T01:35:17.958Z",
     "action": "Opening Balance Set",
