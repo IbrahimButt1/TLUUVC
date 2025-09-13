@@ -208,15 +208,13 @@ export default function TrashClient({
                             <CardTitle>Recycled Emails</CardTitle>
                             <CardDescription>Emails that have been moved to the recycle bin. Restore them or delete them permanently.</CardDescription>
                         </CardHeader>
-                        <CardContent>
-                            <TrashEmails 
-                                emails={filteredEmails} 
-                                searchTerm={searchTerm} 
-                                onRestore={(id) => handleAction(restoreEmail, id, 'emails')}
-                                onDelete={(id) => handleAction(permanentlyDeleteEmail, id, 'emails')}
-                                isPending={isPending}
-                            />
-                        </CardContent>
+                        <TrashEmails 
+                            emails={filteredEmails} 
+                            searchTerm={searchTerm} 
+                            onRestore={(id) => handleAction(restoreEmail, id, 'emails')}
+                            onDelete={(id) => handleAction(permanentlyDeleteEmail, id, 'emails')}
+                            isPending={isPending}
+                        />
                     </Card>
                 )}
                  {activeCategory === 'hero-images' && (
