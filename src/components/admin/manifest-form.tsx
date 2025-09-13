@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Loader2, Check, ChevronsUpDown } from 'lucide-react';
+import { Loader2, Check, ChevronsUpDown, XCircle, ArrowDownLeft, ArrowUpRight } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { getServiceTitles, type ServiceTitle } from '@/lib/services';
@@ -144,13 +144,19 @@ export default function ManifestForm({ action }: ManifestFormProps) {
                  <div className="space-y-2">
                     <Label htmlFor="type">Transaction Type</Label>
                     <RadioGroup defaultValue="credit" name="type" className="flex gap-4 pt-2">
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 group">
                             <RadioGroupItem value="credit" id="credit" />
-                            <Label htmlFor="credit">Credit</Label>
+                            <Label htmlFor="credit" className="flex items-center gap-2 cursor-pointer text-muted-foreground group-hover:text-foreground transition-colors">
+                                <ArrowDownLeft className="h-5 w-5 text-green-500 transition-transform group-hover:scale-110"/>
+                                <span className="font-semibold">Credit</span>
+                            </Label>
                         </div>
-                        <div className="flex items-center space-x-2">
+                        <div className="flex items-center space-x-2 group">
                             <RadioGroupItem value="debit" id="debit" />
-                            <Label htmlFor="debit">Debit</Label>
+                            <Label htmlFor="debit" className="flex items-center gap-2 cursor-pointer text-muted-foreground group-hover:text-foreground transition-colors">
+                                <ArrowUpRight className="h-5 w-5 text-red-500 transition-transform group-hover:scale-110"/>
+                                <span className="font-semibold">Debit</span>
+                            </Label>
                         </div>
                     </RadioGroup>
                 </div>
