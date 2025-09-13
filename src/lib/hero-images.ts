@@ -44,17 +44,6 @@ export async function getTrashedHeroImages(): Promise<HeroImage[]> {
     return images.filter(img => img.status === 'trash');
 }
 
-export async function getPaginatedHeroImages(page: number, limit: number) {
-    const allImages = await getHeroImages();
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const images = allImages.slice(startIndex, endIndex);
-    return {
-        images,
-        totalCount: allImages.length
-    }
-}
-
 export async function getHeroImageById(id: string): Promise<HeroImage | undefined> {
     const images = await readHeroImages();
     return images.find(s => s.id === id);

@@ -9,19 +9,24 @@ interface PaginationControlsProps {
     currentPage: number;
     totalPages: number;
     basePath: string;
+    onPageChange?: (page: number) => void;
 }
 
-export default function PaginationControls({ currentPage, totalPages, basePath }: PaginationControlsProps) {
+export default function PaginationControls({ currentPage, totalPages, basePath, onPageChange }: PaginationControlsProps) {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
 
     const changePage = (newPage: number) => {
-        const current = new URLSearchParams(Array.from(searchParams.entries()));
-        current.set("page", String(newPage));
-        const search = current.toString();
-        const query = search ? `?${search}` : "";
-        router.push(`${pathname}${query}`);
+        if (onPageChange) {
+            onPageChange(newPage);
+        } else {
+            const current = new URLSearchParams(Array.from(searchParams.entries()));
+            current.set("page", String(newPage));
+            const search = current.toString();
+            const query = search ? `?${search}` : "";
+            router.push(`${pathname}${query}`);
+        }
     }
     
     if (totalPages <= 1) {
