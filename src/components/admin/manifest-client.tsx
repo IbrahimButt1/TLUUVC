@@ -3,17 +3,30 @@
 
 import { useState, useMemo, useTransition } from 'react';
 import type { ManifestEntry } from '@/lib/manifest';
+import { flushManifestEntries } from '@/lib/manifest';
 import ManifestList from './manifest-list';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, Trash2, Loader2 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { useToast } from '@/hooks/use-toast';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import ManifestChart from './manifest-chart';
+import { Button } from '@/components/ui/button';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 export default function ManifestClient({ initialEntries }: { initialEntries: ManifestEntry[] }) {
   const [entries, setEntries] = useState(initialEntries);
   const [searchTerm, setSearchTerm] = useState('');
+  const [isPending, startTransition] = useTransition();
+  const { toast } = useToast();
   
   const filteredAndSortedEntries = useMemo(() => {
     return searchTerm
@@ -37,6 +50,25 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
   }, { debit: 0, credit: 0 });
 
   const balance = totals.credit - totals.debit;
+  
+  const handleFlush = () => {
+    startTransition(async () => {
+        try {
+            await flushManifestEntries();
+            setEntries([]);
+            toast({
+                title: "Transactions Cleared",
+                description: "All transaction history has been permanently deleted.",
+            });
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "Failed to clear transactions. Please try again.",
+                variant: "destructive",
+            });
+        }
+    });
+  }
 
 
   return (
@@ -79,15 +111,39 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                     <CardTitle>Transaction History</CardTitle>
                     <CardDescription>A complete log of all debit and credit entries.</CardDescription>
                 </div>
-                <div className="relative">
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input
-                        type="search"
-                        placeholder="Search transactions..."
-                        className="w-full md:w-80 bg-background pr-10"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                 <div className="flex items-center gap-2">
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                            <Button variant="destructive" size="sm" disabled={isPending || entries.length === 0}>
+                                {isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Trash2 className="mr-2 h-4 w-4" />}
+                                Flush All Records
+                            </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This action cannot be undone. This will permanently delete all transaction history records.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={handleFlush} className="bg-destructive hover:bg-destructive/90">
+                                    Yes, delete all
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                    <div className="relative">
+                        <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                        <Input
+                            type="search"
+                            placeholder="Search transactions..."
+                            className="w-full md:w-80 bg-background pr-10"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                 </div>
             </CardHeader>
             <CardContent>

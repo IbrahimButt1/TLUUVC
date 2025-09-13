@@ -95,3 +95,10 @@ export async function addManifestEntry(formData: FormData) {
     revalidatePath('/admin/ledger');
     redirect('/admin/manifest');
 }
+
+export async function flushManifestEntries() {
+    await writeManifestEntries([]);
+    await addLogEntry('Flushed Transactions', 'All transaction history records were permanently deleted.');
+    revalidatePath('/admin/manifest');
+    revalidatePath('/admin/ledger', 'layout');
+}
