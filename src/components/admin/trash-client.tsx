@@ -19,7 +19,6 @@ import TrashEmails from './trash-emails';
 import TrashHeroImages from './trash-hero-images';
 import TrashServices from './trash-services';
 import TrashTestimonials from './trash-testimonials';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
 
 
@@ -158,38 +157,28 @@ export default function TrashClient({
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
                  {activeCategoryData && activeCategoryData.count > 0 && (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="sm" className="flex items-center gap-2">
-                                <MoreVertical className="h-4 w-4" />
-                                <span>Options</span>
+                    <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                             <Button variant="outline" size="sm" className="flex items-center gap-2">
+                                <RotateCw className="h-4 w-4" />
+                                <span>Restore all {activeCategoryData.label}</span>
                             </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="start">
-                             <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                                        <RotateCw className="mr-2 h-4 w-4" />
-                                        Restore all {activeCategoryData.label}
-                                    </DropdownMenuItem>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                        <AlertDialogDescription>
-                                            This will restore all {activeCategoryData.count} {activeCategoryData.label.toLowerCase()} in the recycle bin.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                        <AlertDialogAction onClick={() => handleRestoreAll(activeCategory)}>
-                                            Yes, restore all
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This will restore all {activeCategoryData.count} {activeCategoryData.label.toLowerCase()} in the recycle bin.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleRestoreAll(activeCategory)}>
+                                    Yes, restore all
+                                </AlertDialogAction>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
                  )}
             </div>
             <div className="relative">
