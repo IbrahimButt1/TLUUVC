@@ -50,11 +50,10 @@ export default function TrashClient({
     action: (formData: FormData) => Promise<{ success: boolean; error?: string }>,
     itemId: string,
     itemType: 'email' | 'heroImage' | 'service' | 'testimonial',
-    successMessage: string,
-    isRestore: boolean = false,
+    successMessage: string
   ) => {
     startTransition(async () => {
-      // Optimistically update the UI
+      // Optimistically update the UI by removing the item from the list
       const stateMap = {
         email: emails,
         heroImage: heroImages,
@@ -72,14 +71,9 @@ export default function TrashClient({
       const originalItems = [...stateMap[itemType]];
       const setState = setStateMap[itemType];
       
-      // For restore, we modify the item. For delete, we filter it out.
-      if (isRestore) {
-        // @ts-ignore
-        setState((currentItems: T[]) => currentItems.map(item => item.id === itemId ? { ...item, status: 'inbox' } : item));
-      } else {
-        // @ts-ignore
-        setState((currentItems: T[]) => currentItems.filter(item => item.id !== itemId));
-      }
+      // Both restore and delete actions should remove the item from the trash view
+      // @ts-ignore
+      setState((currentItems: T[]) => currentItems.filter(item => item.id !== itemId));
       
       const formData = new FormData();
       formData.append('id', itemId);
@@ -90,12 +84,12 @@ export default function TrashClient({
             toast({ title: successMessage });
         } else {
             // @ts-ignore
-            setState(originalItems);
+            setState(originalItems); // Revert on error
             toast({ title: "Error", description: result.error || "An unknown error occurred", variant: "destructive" });
         }
       } catch (error) {
         // @ts-ignore
-        setState(originalItems); 
+        setState(originalItems); // Revert on error
         const errorMessage = error instanceof Error ? error.message : "Failed to perform action. Please try again.";
         toast({
           title: "Error",
@@ -178,7 +172,7 @@ export default function TrashClient({
                             <TrashEmails 
                                 emails={filteredEmails} 
                                 searchTerm={searchTerm} 
-                                onRestore={(id) => handleAction(restoreEmail, id, 'email', "Email restored.", true)}
+                                onRestore={(id) => handleAction(restoreEmail, id, 'email', "Email restored.")}
                                 onDelete={(id) => handleAction(permanentlyDeleteEmail, id, 'email', "Email permanently deleted.")}
                                 isPending={isPending}
                             />
@@ -195,7 +189,7 @@ export default function TrashClient({
                             <TrashHeroImages
                                 images={filteredHeroImages}
                                 searchTerm={searchTerm}
-                                onRestore={(id) => handleAction(restoreHeroImage, id, 'heroImage', "Hero Image restored.", true)}
+                                onRestore={(id) => handleAction(restoreHeroImage, id, 'heroImage', "Hero Image restored.")}
                                 onDelete={(id) => handleAction(permanentlyDeleteHeroImage, id, 'heroImage', "Hero Image permanently deleted.")}
                                 isPending={isPending}
                                 />
@@ -212,7 +206,7 @@ export default function TrashClient({
                             <TrashServices
                                 services={filteredServices}
                                 searchTerm={searchTerm}
-                                onRestore={(id) => handleAction(restoreService, id, 'service', "Service restored.", true)}
+                                onRestore={(id) => handleAction(restoreService, id, 'service', "Service restored.")}
                                 onDelete={(id) => handleAction(permanentlyDeleteService, id, 'service', "Service permanently deleted.")}
                                 isPending={isPending}
                                 />
@@ -229,7 +223,7 @@ export default function TrashClient({
                             <TrashTestimonials
                                 testimonials={filteredTestimonials}
                                 searchTerm={searchTerm}
-                                onRestore={(id) => handleAction(restoreTestimonial, id, 'testimonial', "Testimonial restored.", true)}
+                                onRestore={(id) => handleAction(restoreTestimonial, id, 'testimonial', "Testimonial restored.")}
                                 onDelete={(id) => handleAction(permanentlyDeleteTestimonial, id, 'testimonial', "Testimonial permanently deleted.")}
                                 isPending={isPending}
                                 />
