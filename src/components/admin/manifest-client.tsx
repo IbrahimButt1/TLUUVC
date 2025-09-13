@@ -30,11 +30,11 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                 <CardDescription>A complete log of all debit and credit entries.</CardDescription>
             </div>
             <div className="relative w-full max-w-sm">
-                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                     type="search"
                     placeholder="Search transactions..."
-                    className="w-full bg-background pr-10"
+                    className="w-full bg-background pr-12"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />

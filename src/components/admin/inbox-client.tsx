@@ -85,20 +85,10 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
     }
   };
 
-  const handleUndoDelete = (idsToRestore: string[]) => {
+  const handleUndoDelete = (idsToRestore: string[], originalEmailsState: Email[]) => {
     startTransition(async () => {
-        // Optimistic update to restore emails in UI, preserving their original state.
-        setEmails(current => {
-            const restoredEmails = current.map(e => {
-                if (idsToRestore.includes(e.id)) {
-                  // Find the original state from before the optimistic delete
-                  const originalEmail = emails.find(orig => orig.id === e.id);
-                  return originalEmail ? { ...originalEmail, status: 'inbox' } : e;
-                }
-                return e;
-            });
-            return restoredEmails;
-        });
+        // Optimistic update to restore emails in UI
+        setEmails(originalEmailsState);
 
         // Server action to restore each email
         for (const id of idsToRestore) {
@@ -132,9 +122,9 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
         }
 
         toast({
-          title: `${ids.length} email(s) moved to recycle bin.`,
+          title: `${ids.length} email(s) moved to Recycle Bin.`,
           action: (
-            <ToastAction altText="Undo" onClick={() => handleUndoDelete(ids)}>
+            <ToastAction altText="Undo" onClick={() => handleUndoDelete(ids, originalEmails)}>
               Undo
             </ToastAction>
           ),
@@ -145,7 +135,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
         setEmails(originalEmails);
         toast({
           title: "Error",
-          description: "Failed to move emails to recycle bin.",
+          description: "Failed to move emails to Recycle Bin.",
           variant: "destructive",
         });
       }
@@ -235,11 +225,11 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
         <h1 className="text-xl font-bold">Email Inbox</h1>
         <div className="flex items-center gap-2">
             <div className="relative">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+              <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
               <Input
                   type="search"
                   placeholder="Search emails..."
-                  className="pr-10 w-full md:w-80 bg-background"
+                  className="pr-12 w-full md:w-80 bg-background"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
               />

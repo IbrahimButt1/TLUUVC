@@ -55,11 +55,11 @@ export default function ServicesListClient({ initialServices }: { initialService
        <div className="mb-6">
          <Card className="shadow-none">
             <div className="relative">
-                <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
                 <Input
                     type="search"
                     placeholder="Search services..."
-                    className="w-full bg-card pr-12 pl-4"
+                    className="w-full bg-card pr-10 pl-4"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                 />

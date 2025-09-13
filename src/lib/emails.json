@@ -17,7 +17,7 @@
     "message": "Urgent",
     "receivedAt": "2025-09-08T11:18:06.070Z",
     "read": true,
-    "status": "inbox"
+    "status": "trash"
   },
   {
     "id": "1757330367338-cc078lz",
@@ -90,7 +90,7 @@
     "message": "Ok",
     "receivedAt": "2025-09-12T23:22:41.840Z",
     "read": true,
-    "status": "inbox",
+    "status": "trash",
     "favorited": false
   },
   {
