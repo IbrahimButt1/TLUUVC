@@ -72,16 +72,6 @@ export default function ManifestClient({ initialEntries }: { initialEntries: Man
                 </CardContent>
             </Card>
         </div>
-
-      <Card>
-          <CardHeader>
-              <CardTitle>Financial Overview (Active Entries)</CardTitle>
-              <CardDescription>A visual summary of your credits, debits, and running balance based on active transactions.</CardDescription>
-          </CardHeader>
-          <CardContent>
-              <ManifestChart entries={activeEntries} />
-          </CardContent>
-      </Card>
       
       <Card className="mt-6">
             <CardHeader className="flex flex-row items-center justify-between">
