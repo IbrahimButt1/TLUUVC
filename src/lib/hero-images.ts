@@ -166,3 +166,17 @@ export async function restoreHeroImage(formData: FormData): Promise<{ success: b
     revalidatePath('/admin/emails/trash');
     return { success: true };
 }
+
+export async function restoreAllHeroImages(): Promise<{ success: boolean, error?: string }> {
+    try {
+        let images = await readHeroImages();
+        images = images.map(img => img.status === 'trash' ? { ...img, status: 'active' } : img);
+        await writeHeroImages(images);
+        revalidatePath('/');
+        revalidatePath('/admin/hero');
+        revalidatePath('/admin/emails/trash');
+        return { success: true };
+    } catch (e) {
+        return { success: false, error: "Failed to restore all hero images." };
+    }
+}

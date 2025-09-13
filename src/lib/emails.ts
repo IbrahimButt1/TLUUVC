@@ -88,13 +88,18 @@ export async function markEmailAsRead(formData: FormData): Promise<{ success: bo
 
     try {
         const emails = await readEmails();
-        const updatedEmails = emails.map(email => 
-            email.id === id ? { ...email, read: true } : email
-        );
-        await writeEmails(updatedEmails);
+        const emailIndex = emails.findIndex(e => e.id === id);
 
-        revalidatePath('/admin/emails');
-        revalidatePath('/admin', 'layout');
+        if (emailIndex === -1) {
+            return { success: false, error: 'Email not found.'};
+        }
+
+        if (!emails[emailIndex].read) {
+            emails[emailIndex].read = true;
+            await writeEmails(emails);
+            revalidatePath('/admin/emails');
+            revalidatePath('/admin', 'layout');
+        }
 
         return { success: true };
     } catch (error) {
@@ -153,6 +158,20 @@ export async function restoreEmail(formData: FormData): Promise<{ success: boole
     revalidatePath('/admin/emails/trash');
     revalidatePath('/admin', 'layout');
     return { success: true };
+}
+
+export async function restoreAllEmails(): Promise<{ success: boolean; error?: string }> {
+    try {
+        let emails = await readEmails();
+        emails = emails.map(e => e.status === 'trash' ? { ...e, status: 'inbox' } : e);
+        await writeEmails(emails);
+        revalidatePath('/admin/emails');
+        revalidatePath('/admin/emails/trash');
+        revalidatePath('/admin', 'layout');
+        return { success: true };
+    } catch(e) {
+        return { success: false, error: "Failed to restore all emails."}
+    }
 }
 
 export async function toggleEmailFavorite(formData: FormData): Promise<{ success: boolean; error?: string }> {

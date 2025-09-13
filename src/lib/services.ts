@@ -187,3 +187,17 @@ export async function restoreService(formData: FormData): Promise<{ success: boo
     revalidatePath('/admin/emails/trash');
     return { success: true };
 }
+
+export async function restoreAllServices(): Promise<{ success: boolean, error?: string }> {
+    try {
+        let services = await readServices();
+        services = services.map(s => s.status === 'trash' ? { ...s, status: 'active' } : s);
+        await writeServices(services);
+        revalidatePath('/');
+        revalidatePath('/admin/services');
+        revalidatePath('/admin/emails/trash');
+        return { success: true };
+    } catch (e) {
+        return { success: false, error: "Failed to restore all services." };
+    }
+}

@@ -5,12 +5,12 @@ import type { Email } from '@/lib/emails';
 import type { HeroImage } from '@/lib/hero-images';
 import type { Service } from '@/lib/services';
 import type { Testimonial } from '@/lib/testimonials';
-import { permanentlyDeleteEmail, restoreEmail } from '@/lib/emails';
-import { permanentlyDeleteHeroImage, restoreHeroImage } from '@/lib/hero-images';
-import { permanentlyDeleteService, restoreService } from '@/lib/services';
-import { permanentlyDeleteTestimonial, restoreTestimonial } from '@/lib/testimonials';
+import { permanentlyDeleteEmail, restoreEmail, restoreAllEmails } from '@/lib/emails';
+import { permanentlyDeleteHeroImage, restoreHeroImage, restoreAllHeroImages } from '@/lib/hero-images';
+import { permanentlyDeleteService, restoreService, restoreAllServices } from '@/lib/services';
+import { permanentlyDeleteTestimonial, restoreTestimonial, restoreAllTestimonials } from '@/lib/testimonials';
 import { Input } from '@/components/ui/input';
-import { Search, Loader2, Mail, Image as ImageIcon, Briefcase, MessageSquareQuote } from 'lucide-react';
+import { Search, Loader2, Mail, Image as ImageIcon, Briefcase, MessageSquareQuote, MoreVertical, RotateCw } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -19,6 +19,8 @@ import TrashEmails from './trash-emails';
 import TrashHeroImages from './trash-hero-images';
 import TrashServices from './trash-services';
 import TrashTestimonials from './trash-testimonials';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '../ui/alert-dialog';
 
 
 interface TrashClientProps {
@@ -29,6 +31,8 @@ interface TrashClientProps {
 }
 
 type Category = 'emails' | 'hero-images' | 'services' | 'testimonials';
+
+type AnyItem = Email | HeroImage | Service | Testimonial;
 
 export default function TrashClient({
   initialEmails,
@@ -45,51 +49,37 @@ export default function TrashClient({
   const [searchTerm, setSearchTerm] = useState('');
   const [isPending, startTransition] = useTransition();
   const { toast } = useToast();
+  
+  type StateUpdater<T> = React.Dispatch<React.SetStateAction<T[]>>;
+  const stateMap = {
+    emails: { items: emails, setItems: setEmails as StateUpdater<AnyItem>, restoreAll: restoreAllEmails },
+    'hero-images': { items: heroImages, setItems: setHeroImages as StateUpdater<AnyItem>, restoreAll: restoreAllHeroImages },
+    services: { items: services, setItems: setServices as StateUpdater<AnyItem>, restoreAll: restoreAllServices },
+    testimonials: { items: testimonials, setItems: setTestimonials as StateUpdater<AnyItem>, restoreAll: restoreAllTestimonials },
+  };
 
-  const handleAction = <T extends {id: string; read?: boolean}>(
+  const handleAction = (
     action: (formData: FormData) => Promise<{ success: boolean; error?: string }>,
     itemId: string,
-    itemType: 'email' | 'heroImage' | 'service' | 'testimonial',
-    successMessage: string
+    itemType: Category
   ) => {
     startTransition(async () => {
-      // Optimistically update the UI by removing the item from the list
-      const stateMap = {
-        email: emails,
-        heroImage: heroImages,
-        service: services,
-        testimonial: testimonials
-      };
+      const { items, setItems } = stateMap[itemType];
+      const originalItems = [...items];
       
-      const setStateMap = {
-        email: setEmails,
-        heroImage: setHeroImages,
-        service: setServices,
-        testimonial: setTestimonials
-      };
-
-      const originalItems = [...stateMap[itemType]];
-      const setState = setStateMap[itemType];
-      
-      // Both restore and delete actions should remove the item from the trash view
-      // @ts-ignore
-      setState((currentItems: T[]) => currentItems.filter(item => item.id !== itemId));
+      setItems((currentItems: AnyItem[]) => currentItems.filter(item => item.id !== itemId));
       
       const formData = new FormData();
       formData.append('id', itemId);
 
       try {
         const result = await action(formData);
-        if (result.success) {
-            toast({ title: successMessage });
-        } else {
-            // @ts-ignore
-            setState(originalItems); // Revert on error
+        if (!result.success) {
+            setItems(originalItems);
             toast({ title: "Error", description: result.error || "An unknown error occurred", variant: "destructive" });
         }
       } catch (error) {
-        // @ts-ignore
-        setState(originalItems); // Revert on error
+        setItems(originalItems);
         const errorMessage = error instanceof Error ? error.message : "Failed to perform action. Please try again.";
         toast({
           title: "Error",
@@ -99,6 +89,27 @@ export default function TrashClient({
       }
     });
   };
+  
+  const handleRestoreAll = (category: Category) => {
+    startTransition(async () => {
+        const { items, setItems, restoreAll } = stateMap[category];
+        const originalItems = [...items];
+        setItems([]);
+
+        try {
+            const result = await restoreAll();
+             if (result.success) {
+                toast({ title: "Success", description: `All items in this category have been restored.` });
+            } else {
+                setItems(originalItems);
+                toast({ title: "Error", description: result.error, variant: "destructive" });
+            }
+        } catch(error) {
+            setItems(originalItems);
+            toast({ title: "Error", description: `Failed to restore all items.`, variant: "destructive" });
+        }
+    });
+  }
 
   const filteredEmails: Email[] = useMemo(() => {
     return searchTerm
@@ -140,17 +151,58 @@ export default function TrashClient({
       { id: 'testimonials', label: 'Testimonials', count: filteredTestimonials.length, icon: MessageSquareQuote },
   ];
 
+  const activeCategoryData = categories.find(c => c.id === activeCategory);
+
   return (
     <div className="space-y-6">
-        <div className="relative">
-            <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-            type="search"
-            placeholder="Search all recycled items..."
-            className="w-full pr-12 pl-4"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            />
+        <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+                <h1 className="text-3xl font-bold">Recycle Bin</h1>
+                 {activeCategoryData && activeCategoryData.count > 0 && (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm" className="flex items-center gap-2">
+                                <MoreVertical className="h-4 w-4" />
+                                <span>Options</span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start">
+                             <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                        <RotateCw className="mr-2 h-4 w-4" />
+                                        Restore all {activeCategoryData.label}
+                                    </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            This will restore all {activeCategoryData.count} {activeCategoryData.label.toLowerCase()} in the recycle bin.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleRestoreAll(activeCategory)}>
+                                            Yes, restore all
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                 )}
+            </div>
+            <div className="relative">
+                <Search className="absolute right-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                type="search"
+                placeholder="Search all recycled items..."
+                className="w-full pr-12 pl-4"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
         </div>
       
         {isPending && (
@@ -172,8 +224,8 @@ export default function TrashClient({
                             <TrashEmails 
                                 emails={filteredEmails} 
                                 searchTerm={searchTerm} 
-                                onRestore={(id) => handleAction(restoreEmail, id, 'email', "Email restored.")}
-                                onDelete={(id) => handleAction(permanentlyDeleteEmail, id, 'email', "Email permanently deleted.")}
+                                onRestore={(id) => handleAction(restoreEmail, id, 'emails')}
+                                onDelete={(id) => handleAction(permanentlyDeleteEmail, id, 'emails')}
                                 isPending={isPending}
                             />
                         </CardContent>
@@ -189,8 +241,8 @@ export default function TrashClient({
                             <TrashHeroImages
                                 images={filteredHeroImages}
                                 searchTerm={searchTerm}
-                                onRestore={(id) => handleAction(restoreHeroImage, id, 'heroImage', "Hero Image restored.")}
-                                onDelete={(id) => handleAction(permanentlyDeleteHeroImage, id, 'heroImage', "Hero Image permanently deleted.")}
+                                onRestore={(id) => handleAction(restoreHeroImage, id, 'hero-images')}
+                                onDelete={(id) => handleAction(permanentlyDeleteHeroImage, id, 'hero-images')}
                                 isPending={isPending}
                                 />
                         </CardContent>
@@ -206,8 +258,8 @@ export default function TrashClient({
                             <TrashServices
                                 services={filteredServices}
                                 searchTerm={searchTerm}
-                                onRestore={(id) => handleAction(restoreService, id, 'service', "Service restored.")}
-                                onDelete={(id) => handleAction(permanentlyDeleteService, id, 'service', "Service permanently deleted.")}
+                                onRestore={(id) => handleAction(restoreService, id, 'services')}
+                                onDelete={(id) => handleAction(permanentlyDeleteService, id, 'services')}
                                 isPending={isPending}
                                 />
                         </CardContent>
@@ -223,8 +275,8 @@ export default function TrashClient({
                             <TrashTestimonials
                                 testimonials={filteredTestimonials}
                                 searchTerm={searchTerm}
-                                onRestore={(id) => handleAction(restoreTestimonial, id, 'testimonial', "Testimonial restored.")}
-                                onDelete={(id) => handleAction(permanentlyDeleteTestimonial, id, 'testimonial', "Testimonial permanently deleted.")}
+                                onRestore={(id) => handleAction(restoreTestimonial, id, 'testimonials')}
+                                onDelete={(id) => handleAction(permanentlyDeleteTestimonial, id, 'testimonials')}
                                 isPending={isPending}
                                 />
                         </CardContent>

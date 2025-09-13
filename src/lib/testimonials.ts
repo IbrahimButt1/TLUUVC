@@ -163,3 +163,17 @@ export async function restoreTestimonial(formData: FormData): Promise<{ success:
     revalidatePath('/admin/emails/trash');
     return { success: true };
 }
+
+export async function restoreAllTestimonials(): Promise<{ success: boolean, error?: string }> {
+    try {
+        let testimonials = await readTestimonials();
+        testimonials = testimonials.map(t => t.status === 'trash' ? { ...t, status: 'active' } : t);
+        await writeTestimonials(testimonials);
+        revalidatePath('/');
+        revalidatePath('/admin/testimonials');
+        revalidatePath('/admin/emails/trash');
+        return { success: true };
+    } catch (e) {
+        return { success: false, error: "Failed to restore all testimonials." };
+    }
+}
