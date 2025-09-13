@@ -1,5 +1,83 @@
 [
   {
+    "id": "1757762309977-ewy8q8p",
+    "timestamp": "2025-09-13T11:18:29.977Z",
+    "action": "Created Manifest Entry",
+    "details": "New debit entry of $50.00 for 'Ali'."
+  },
+  {
+    "id": "1757762257788-7hykb5d",
+    "timestamp": "2025-09-13T11:17:37.788Z",
+    "action": "Created Manifest Entry",
+    "details": "New credit entry of $500.00 for 'Azeem'."
+  },
+  {
+    "id": "1757762240344-rmpc3mo",
+    "timestamp": "2025-09-13T11:17:20.344Z",
+    "action": "Updated Client Status",
+    "details": "Client 'Azeem' status changed to 'released'. Their manifest entries were updated to 'active'."
+  },
+  {
+    "id": "1757762193399-00t8hcd",
+    "timestamp": "2025-09-13T11:16:33.399Z",
+    "action": "Opening Balance Set",
+    "details": "Opening balance for 'Azeem' set to $1000.00 (credit)."
+  },
+  {
+    "id": "1757762193397-vzwu1af",
+    "timestamp": "2025-09-13T11:16:33.397Z",
+    "action": "Client Added",
+    "details": "New client created: 'Azeem' with status 'Planned'."
+  },
+  {
+    "id": "1757762050246-touauh2",
+    "timestamp": "2025-09-13T11:14:10.246Z",
+    "action": "Deleted Email",
+    "details": "Email from 'Azem' moved to recycle bin."
+  },
+  {
+    "id": "1757762045717-7dsyqie",
+    "timestamp": "2025-09-13T11:14:05.717Z",
+    "action": "Restored Email",
+    "details": "Email from 'Azem' restored from recycle bin."
+  },
+  {
+    "id": "1757762042242-c8adfk2",
+    "timestamp": "2025-09-13T11:14:02.242Z",
+    "action": "Deleted Email",
+    "details": "Email from 'Azem' moved to recycle bin."
+  },
+  {
+    "id": "1757762032360-l4gzvcz",
+    "timestamp": "2025-09-13T11:13:52.360Z",
+    "action": "Marked Email as Read",
+    "details": "Email ID '1757762010286-shagvww' marked as read."
+  },
+  {
+    "id": "1757762025702-4pdz1mq",
+    "timestamp": "2025-09-13T11:13:45.702Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757762010286-shagvww'."
+  },
+  {
+    "id": "1757762010289-nrnociu",
+    "timestamp": "2025-09-13T11:13:30.289Z",
+    "action": "New Inquiry Received",
+    "details": "Email from 'Azem' with subject 'Student Visas'."
+  },
+  {
+    "id": "1757761847774-rxgtqxq",
+    "timestamp": "2025-09-13T11:10:47.774Z",
+    "action": "Successful Login",
+    "details": "User 'Butt' logged in."
+  },
+  {
+    "id": "1757761644183-z53fpej",
+    "timestamp": "2025-09-13T11:07:24.183Z",
+    "action": "Successful Login",
+    "details": "User 'Butt' logged in."
+  },
+  {
     "id": "1757730235885-rrh2frb",
     "timestamp": "2025-09-13T02:23:55.885Z",
     "action": "Closed Out Records",

@@ -1,1 +1,32 @@
-[]
+[
+  {
+    "id": "1757762309976-a4qtrgc",
+    "clientId": "1757726630960-bhjzqpd",
+    "clientName": "Ali",
+    "date": "2025-09-13",
+    "description": "Payment for Work Visas",
+    "type": "debit",
+    "amount": 50,
+    "status": "active"
+  },
+  {
+    "id": "1757762257787-zli7r9j",
+    "clientId": "lllx3ihq",
+    "clientName": "Azeem",
+    "date": "2025-09-13",
+    "description": "Payment for Work Visas",
+    "type": "credit",
+    "amount": 500,
+    "status": "active"
+  },
+  {
+    "id": "lqnn7gdr",
+    "clientId": "lllx3ihq",
+    "clientName": "Azeem",
+    "date": "2025-09-13",
+    "description": "Client Opening Balance",
+    "type": "credit",
+    "amount": 1000,
+    "status": "active"
+  }
+]

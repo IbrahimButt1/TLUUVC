@@ -114,5 +114,16 @@
     "read": true,
     "status": "inbox",
     "favorited": false
+  },
+  {
+    "id": "1757762010286-shagvww",
+    "name": "Azem",
+    "email": "Azeem123@gmail.com",
+    "subject": "Student Visas",
+    "message": "Give me UK visa details.",
+    "receivedAt": "2025-09-13T11:13:30.286Z",
+    "read": true,
+    "status": "trash",
+    "favorited": true
   }
 ]
