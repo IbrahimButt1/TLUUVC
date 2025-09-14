@@ -9,7 +9,7 @@ interface PaginationControlsProps {
     currentPage: number;
     totalPages: number;
     basePath: string;
-    query?: Record<string, string>; // ✅ yahan optional: additional filters ke liye
+    query?: Record<string, string>;
     onPageChange?: (page: number) => void;
 }
 
@@ -27,8 +27,15 @@ export default function PaginationControls({
         if (onPageChange) {
             onPageChange(newPage);
         } else {
-            // ✅ searchParams ki jagah ye safe hai:
-            const params = new URLSearchParams(query);
+            // Filter out unnecessary params to prevent URL bloat
+            const filteredQuery: Record<string, string> = {};
+            for (const key in query) {
+                if (key !== 'status' && key !== 'value' && query[key]) {
+                    filteredQuery[key] = query[key]!;
+                }
+            }
+
+            const params = new URLSearchParams(filteredQuery);
             params.set("page", String(newPage));
 
             const search = params.toString();
