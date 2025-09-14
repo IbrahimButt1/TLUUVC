@@ -1,5 +1,77 @@
 [
   {
+    "id": "1757889501007-6qwk80b",
+    "timestamp": "2025-09-14T22:38:21.007Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757330367338-cc078lz'."
+  },
+  {
+    "id": "1757889500509-zmrc0gs",
+    "timestamp": "2025-09-14T22:38:20.509Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757549731300-9b81bdx'."
+  },
+  {
+    "id": "1757889498108-6yx4r0w",
+    "timestamp": "2025-09-14T22:38:18.108Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757718829392-sdw0na7'."
+  },
+  {
+    "id": "1757889497502-y4p4jml",
+    "timestamp": "2025-09-14T22:38:17.502Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757719112333-q6z22sy'."
+  },
+  {
+    "id": "1757889496224-ucd9lem",
+    "timestamp": "2025-09-14T22:38:16.224Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757886544985-v87byb0'."
+  },
+  {
+    "id": "1757889495248-5onryj8",
+    "timestamp": "2025-09-14T22:38:15.248Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757888927843-y28bujo'."
+  },
+  {
+    "id": "1757889472470-tqqca6s",
+    "timestamp": "2025-09-14T22:37:52.470Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757719538462-gzr4kmi'."
+  },
+  {
+    "id": "1757889471513-7xe4m68",
+    "timestamp": "2025-09-14T22:37:51.513Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757327817813-vtpyzdt'."
+  },
+  {
+    "id": "1757889470492-kbyy28w",
+    "timestamp": "2025-09-14T22:37:50.492Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757592898756-x0qqdho'."
+  },
+  {
+    "id": "1757889469529-i2o36yg",
+    "timestamp": "2025-09-14T22:37:49.529Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757719516978-qe2ddq2'."
+  },
+  {
+    "id": "1757889465956-2wm2zrc",
+    "timestamp": "2025-09-14T22:37:45.956Z",
+    "action": "Toggled Email Favorite",
+    "details": "Favorited email ID '1757888791703-krrgp40'."
+  },
+  {
+    "id": "1757889439631-qf8o4ug",
+    "timestamp": "2025-09-14T22:37:19.631Z",
+    "action": "Marked All as Read",
+    "details": "All emails in the inbox were marked as read."
+  },
+  {
     "id": "1757888944718-w1o05vh",
     "timestamp": "2025-09-14T22:29:04.718Z",
     "action": "Marked Email as Read",
