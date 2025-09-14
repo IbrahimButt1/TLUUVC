@@ -20,7 +20,7 @@ import { cn } from '@/lib/utils';
 
 
 interface ServiceFormProps {
-    action: (imageDataUri: string, formData: FormData) => Promise<void>;
+    action: (formData: FormData) => Promise<void>;
     service?: Service;
     submitText: string;
 }
@@ -54,7 +54,6 @@ const MAX_FILE_SIZE_MB = 1;
 
 export default function ServiceForm({ action, service, submitText }: ServiceFormProps) {
     const [imagePreview, setImagePreview] = useState<string | null>(service?.image || null);
-    const [imageDataUri, setImageDataUri] = useState("");
     const [imageRemoved, setImageRemoved] = useState(false);
     const { toast } = useToast();
     const [title, setTitle] = useState(service?.title || "");
@@ -86,18 +85,14 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
             reader.onload = (event) => {
                 const dataUrl = event.target?.result as string;
                 setImagePreview(dataUrl);
-                setImageDataUri(dataUrl);
                 setImageRemoved(false);
             };
             reader.readAsDataURL(file);
         }
     };
     
-    const formAction = action.bind(null, imageDataUri);
-
     const handleRemoveImage = () => {
         setImagePreview(null);
-        setImageDataUri("");
         setImageRemoved(true);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
@@ -106,7 +101,7 @@ export default function ServiceForm({ action, service, submitText }: ServiceForm
     };
 
     return (
-        <form action={formAction} className="space-y-6">
+        <form action={action} className="space-y-6">
             {service && <input type="hidden" name="id" value={service.id} />}
             <input type="hidden" name="imageRemoved" value={imageRemoved.toString()} />
             <div className="space-y-2">

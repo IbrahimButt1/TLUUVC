@@ -1,4 +1,3 @@
-
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -70,12 +69,13 @@ function generateId(title: string): string {
     return title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
-export async function addService(imageDataUri: string, formData: FormData) {
+export async function addService(formData: FormData) {
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const icon = formData.get('icon') as string;
     const longDescription = formData.get('longDescription') as string;
     const requirementsRaw = formData.get('requirements') as string;
+    const imageFile = formData.get('imageFile') as File | null;
     const imageRemoved = formData.get('imageRemoved') === 'true';
 
     if (!title || !description || !icon) {
@@ -85,8 +85,16 @@ export async function addService(imageDataUri: string, formData: FormData) {
     let imageUrl = 'https://picsum.photos/800/600';
     if(imageRemoved) {
         imageUrl = "";
-    } else if (imageDataUri) {
-        imageUrl = await uploadImage(imageDataUri, `service-${Date.now()}`);
+    } else if (imageFile && imageFile.size > 0) {
+        try {
+            const arrayBuffer = await imageFile.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            const dataUri = `data:${imageFile.type};base64,${buffer.toString('base64')}`;
+            imageUrl = await uploadImage(dataUri, `service-${Date.now()}`);
+        } catch (e) {
+             // Handle upload error if necessary
+             console.error("Image upload failed:", e);
+        }
     }
 
     const newService: Service = {
@@ -112,13 +120,14 @@ export async function addService(imageDataUri: string, formData: FormData) {
     redirect('/admin/services');
 }
 
-export async function updateService(imageDataUri: string, formData: FormData) {
+export async function updateService(formData: FormData) {
     const id = formData.get('id') as string;
     const title = formData.get('title') as string;
     const description = formData.get('description') as string;
     const icon = formData.get('icon') as string;
     const longDescription = formData.get('longDescription') as string;
     const requirementsRaw = formData.get('requirements') as string;
+    const imageFile = formData.get('imageFile') as File | null;
     const imageRemoved = formData.get('imageRemoved') === 'true';
     
     const services = await readServices();
@@ -128,8 +137,16 @@ export async function updateService(imageDataUri: string, formData: FormData) {
         let imageUrl = services[serviceIndex].image;
          if (imageRemoved) {
             imageUrl = "";
-        } else if (imageDataUri && imageDataUri.startsWith('data:image')) {
-            imageUrl = await uploadImage(imageDataUri, `service-${Date.now()}`);
+        } else if (imageFile && imageFile.size > 0) {
+            try {
+                const arrayBuffer = await imageFile.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+                const dataUri = `data:${imageFile.type};base64,${buffer.toString('base64')}`;
+                imageUrl = await uploadImage(dataUri, `service-${Date.now()}`);
+            } catch (e) {
+                // Handle upload error if necessary
+                console.error("Image upload failed:", e);
+            }
         }
         
         services[serviceIndex] = { 

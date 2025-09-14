@@ -1,11 +1,10 @@
-
 'use server';
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import fs from 'fs/promises';
 import path from 'path';
-import { uploadImage } from './storage';
+import { uploadImage } from '@/lib/storage';
 import { addLogEntry } from './logs';
 
 export interface Testimonial {
@@ -55,12 +54,13 @@ function generateId(name: string): string {
     return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 }
 
-export async function addTestimonial(imageDataUri: string, formData: FormData) {
+export async function addTestimonial(formData: FormData) {
     const name = formData.get('name') as string;
     const destination = formData.get('destination') as string;
     const testimonial = formData.get('testimonial') as string;
     const role = formData.get('role') as string;
     const country = formData.get('country') as string;
+    const imageFile = formData.get('imageFile') as File | null;
     const imageRemoved = formData.get('imageRemoved') === 'true';
 
     if (!name || !destination || !testimonial || !role || !country) {
@@ -70,8 +70,15 @@ export async function addTestimonial(imageDataUri: string, formData: FormData) {
     let imageUrl = 'https://picsum.photos/100/100';
     if(imageRemoved) {
         imageUrl = "";
-    } else if (imageDataUri) {
-        imageUrl = await uploadImage(imageDataUri, `testimonial-${Date.now()}`);
+    } else if (imageFile && imageFile.size > 0) {
+        try {
+            const arrayBuffer = await imageFile.arrayBuffer();
+            const buffer = Buffer.from(arrayBuffer);
+            const dataUri = `data:${imageFile.type};base64,${buffer.toString('base64')}`;
+            imageUrl = await uploadImage(dataUri, `testimonial-${Date.now()}`);
+        } catch (e) {
+            console.error("Image upload failed:", e);
+        }
     }
 
     const newTestimonial: Testimonial = {
@@ -97,13 +104,14 @@ export async function addTestimonial(imageDataUri: string, formData: FormData) {
     redirect('/admin/testimonials');
 }
 
-export async function updateTestimonial(imageDataUri: string, formData: FormData) {
+export async function updateTestimonial(formData: FormData) {
     const id = formData.get('id') as string;
     const name = formData.get('name') as string;
     const destination = formData.get('destination') as string;
     const testimonial = formData.get('testimonial') as string;
     const role = formData.get('role') as string;
     const country = formData.get('country') as string;
+    const imageFile = formData.get('imageFile') as File | null;
     const imageRemoved = formData.get('imageRemoved') === 'true';
 
     
@@ -114,8 +122,15 @@ export async function updateTestimonial(imageDataUri: string, formData: FormData
         let imageUrl = testimonials[testimonialIndex].image;
         if (imageRemoved) {
             imageUrl = "";
-        } else if (imageDataUri && imageDataUri.startsWith('data:image')) {
-            imageUrl = await uploadImage(imageDataUri, `testimonial-${Date.now()}`);
+        } else if (imageFile && imageFile.size > 0) {
+            try {
+                const arrayBuffer = await imageFile.arrayBuffer();
+                const buffer = Buffer.from(arrayBuffer);
+                const dataUri = `data:${imageFile.type};base64,${buffer.toString('base64')}`;
+                imageUrl = await uploadImage(dataUri, `testimonial-${Date.now()}`);
+            } catch (e) {
+                console.error("Image upload failed:", e);
+            }
         }
         testimonials[testimonialIndex] = { ...testimonials[testimonialIndex], id, name, destination, testimonial, image: imageUrl, role, country };
         await writeTestimonials(testimonials);

@@ -14,7 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 
 
 interface HeroImageFormProps {
-    action: (imageDataUri: string, formData: FormData) => Promise<void>;
+    action: (formData: FormData) => Promise<void>;
     image?: HeroImage;
     submitText: string;
 }
@@ -33,7 +33,6 @@ const MAX_FILE_SIZE_MB = 1;
 
 export default function HeroImageForm({ action, image, submitText }: HeroImageFormProps) {
     const [imagePreview, setImagePreview] = useState<string | null>(image?.image || null);
-    const [imageDataUri, setImageDataUri] = useState("");
     const [imageRemoved, setImageRemoved] = useState(false);
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -63,18 +62,14 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
             reader.onload = (event) => {
                 const dataUrl = event.target?.result as string;
                 setImagePreview(dataUrl);
-                setImageDataUri(dataUrl);
                 setImageRemoved(false);
             };
             reader.readAsDataURL(file);
         }
     };
     
-    const formAction = action.bind(null, imageDataUri);
-    
     const handleRemoveImage = () => {
         setImagePreview(null);
-        setImageDataUri("");
         setImageRemoved(true);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
@@ -83,7 +78,7 @@ export default function HeroImageForm({ action, image, submitText }: HeroImageFo
     };
     
     return (
-        <form action={formAction} className="space-y-6">
+        <form action={action} className="space-y-6">
             {image && <input type="hidden" name="id" value={image.id} />}
             <input type="hidden" name="imageRemoved" value={imageRemoved.toString()} />
             <div className="space-y-2">

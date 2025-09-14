@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/popover"
 
 interface TestimonialFormProps {
-    action: (imageDataUri: string, formData: FormData) => Promise<void>;
+    action: (formData: FormData) => Promise<void>;
     testimonial?: Testimonial;
     submitText: string;
 }
@@ -65,7 +65,6 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
     const [selectedRole, setSelectedRole] = useState(testimonial?.role || "");
     const [selectedCountry, setSelectedCountry] = useState(testimonial?.country || "");
     const [imagePreview, setImagePreview] = useState(testimonial?.image || null);
-    const [imageDataUri, setImageDataUri] = useState("");
     const [imageRemoved, setImageRemoved] = useState(false);
     const { toast } = useToast();
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -91,18 +90,14 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
             reader.onload = (event) => {
                 const dataUrl = event.target?.result as string;
                 setImagePreview(dataUrl);
-                setImageDataUri(dataUrl);
                 setImageRemoved(false);
             };
             reader.readAsDataURL(file);
         }
     };
 
-    const formAction = action.bind(null, imageDataUri);
-
     const handleRemoveImage = () => {
         setImagePreview(null);
-        setImageDataUri("");
         setImageRemoved(true);
         if (fileInputRef.current) {
             fileInputRef.current.value = "";
@@ -112,7 +107,7 @@ export default function TestimonialForm({ action, testimonial, submitText }: Tes
 
 
     return (
-        <form action={formAction} className="space-y-6">
+        <form action={action} className="space-y-6">
             {testimonial && <input type="hidden" name="id" value={testimonial.id} />}
             <input type="hidden" name="destination" value={destinationValue} />
             <input type="hidden" name="role" value={selectedRole} />
