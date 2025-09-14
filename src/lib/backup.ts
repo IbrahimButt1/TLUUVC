@@ -15,7 +15,7 @@ const dataFiles = [
     'services.json',
     'site-settings.json',
     'testimonials.json',
-    'client-balances.json',
+    // 'client-balances.json' is obsolete
     'logs.json'
 ];
 

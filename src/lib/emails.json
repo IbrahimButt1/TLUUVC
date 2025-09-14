@@ -183,5 +183,16 @@
     "read": true,
     "status": "inbox",
     "favorited": false
+  },
+  {
+    "id": "1757892665069-j44ltg6",
+    "name": "New user",
+    "email": "sweetbutt786734@gmail.com",
+    "subject": "Work Visas",
+    "message": "USA Visa Details",
+    "receivedAt": "2025-09-14T23:31:05.069Z",
+    "read": false,
+    "status": "inbox",
+    "favorited": false
   }
 ]

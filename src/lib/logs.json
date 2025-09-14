@@ -1,5 +1,11 @@
 [
   {
+    "id": "1757892665072-purrikw",
+    "timestamp": "2025-09-14T23:31:05.072Z",
+    "action": "New Inquiry Received",
+    "details": "Email from 'New user' with subject 'Work Visas'."
+  },
+  {
     "id": "1757889760345-gtftplx",
     "timestamp": "2025-09-14T22:42:40.345Z",
     "action": "Toggled Email Favorite",
