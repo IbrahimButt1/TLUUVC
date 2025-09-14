@@ -1,5 +1,47 @@
 [
   {
+    "id": "1757886544999-inr1ry0",
+    "timestamp": "2025-09-14T21:49:04.999Z",
+    "action": "New Inquiry Received",
+    "details": "Email from 'Ali' with subject 'Student Visas'."
+  },
+  {
+    "id": "1757886468434-14hqf5m",
+    "timestamp": "2025-09-14T21:47:48.434Z",
+    "action": "Deleted Email",
+    "details": "Email from 'Tahir Butt' moved to recycle bin."
+  },
+  {
+    "id": "1757886467045-sb4meg8",
+    "timestamp": "2025-09-14T21:47:47.045Z",
+    "action": "Marked Email as Read",
+    "details": "Email ID '1757886407095-gie5511' marked as read."
+  },
+  {
+    "id": "1757886466016-ded1v4u",
+    "timestamp": "2025-09-14T21:47:46.016Z",
+    "action": "Deleted Email",
+    "details": "Email from 'Butt' moved to recycle bin."
+  },
+  {
+    "id": "1757886463157-5regnkm",
+    "timestamp": "2025-09-14T21:47:43.157Z",
+    "action": "Marked Email as Read",
+    "details": "Email ID '1757886454595-r8l9ry6' marked as read."
+  },
+  {
+    "id": "1757886454597-xpr7ikg",
+    "timestamp": "2025-09-14T21:47:34.597Z",
+    "action": "New Inquiry Received",
+    "details": "Email from 'Butt' with subject 'Work Visas'."
+  },
+  {
+    "id": "1757886407103-4mv6t5r",
+    "timestamp": "2025-09-14T21:46:47.103Z",
+    "action": "New Inquiry Received",
+    "details": "Email from 'Tahir Butt' with subject 'Student Visas'."
+  },
+  {
     "id": "1757762309977-ewy8q8p",
     "timestamp": "2025-09-13T11:18:29.977Z",
     "action": "Created Manifest Entry",

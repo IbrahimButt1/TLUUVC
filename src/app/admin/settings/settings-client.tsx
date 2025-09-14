@@ -8,12 +8,18 @@ import CredentialsForm from "@/components/admin/credentials-form";
 import ProfileForm from "@/components/admin/profile-form";
 import type { SiteSettings } from "@/lib/site-settings";
 
-export default function SettingsClient({ settings, tab }: { settings: SiteSettings; tab: string }) {
+export default function SettingsClient({
+  settings,
+  tab,
+}: {
+  settings: SiteSettings;
+  tab: string;
+}) {
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleTabChange = (value: string) => {
-    router.replace(`${pathname}?tab=${value}`);
+  const handleTabChange = (newTab: string) => {
+    router.replace(`${pathname}?tab=${newTab}`);
   };
 
   return (
@@ -40,7 +46,7 @@ export default function SettingsClient({ settings, tab }: { settings: SiteSettin
         <Card>
           <CardHeader>
             <CardTitle>Admin Credentials</CardTitle>
-            <CardDescription>Manage administrator username and password.</CardDescription>
+            <CardDescription>Manage admin username & password.</CardDescription>
           </CardHeader>
           <CardContent>
             <CredentialsForm settings={settings} />
@@ -52,7 +58,7 @@ export default function SettingsClient({ settings, tab }: { settings: SiteSettin
         <Card>
           <CardHeader>
             <CardTitle>Admin Profile</CardTitle>
-            <CardDescription>Update your profile picture.</CardDescription>
+            <CardDescription>Update your admin profile picture.</CardDescription>
           </CardHeader>
           <CardContent>
             <ProfileForm settings={settings} />

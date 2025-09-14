@@ -125,5 +125,38 @@
     "read": true,
     "status": "trash",
     "favorited": true
+  },
+  {
+    "id": "1757886407095-gie5511",
+    "name": "Tahir Butt",
+    "email": "Bk1414551@gmail.com",
+    "subject": "Student Visas",
+    "message": "Ok",
+    "receivedAt": "2025-09-14T21:46:47.095Z",
+    "read": true,
+    "status": "trash",
+    "favorited": false
+  },
+  {
+    "id": "1757886454595-r8l9ry6",
+    "name": "Butt",
+    "email": "Bk1414551@gmail.com",
+    "subject": "Work Visas",
+    "message": "Hi",
+    "receivedAt": "2025-09-14T21:47:34.595Z",
+    "read": true,
+    "status": "trash",
+    "favorited": false
+  },
+  {
+    "id": "1757886544985-v87byb0",
+    "name": "Ali",
+    "email": "Bk1414551@gmail.com",
+    "subject": "Student Visas",
+    "message": "Hi",
+    "receivedAt": "2025-09-14T21:49:04.985Z",
+    "read": false,
+    "status": "inbox",
+    "favorited": false
   }
 ]
