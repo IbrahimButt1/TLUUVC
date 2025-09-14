@@ -38,11 +38,22 @@ async function writeEmails(emails: Email[]): Promise<void> {
     await fs.writeFile(dataPath, JSON.stringify(emails, null, 2), 'utf-8');
 }
 
-export async function getEmails(): Promise<Email[]> {
-    const emails = await readEmails();
-    return emails
+export async function getEmails(options?: { page?: number; perPage?: number }): Promise<{data: Email[], totalPages: number}> {
+    const allEmails = await readEmails();
+    const inboxEmails = allEmails
         .filter(e => e.status === 'inbox')
         .sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime());
+
+    if (!options?.page || !options?.perPage) {
+        return { data: inboxEmails, totalPages: 1 };
+    }
+    
+    const { page, perPage } = options;
+    const totalPages = Math.ceil(inboxEmails.length / perPage);
+    const startIndex = (page - 1) * perPage;
+    const paginatedEmails = inboxEmails.slice(startIndex, startIndex + perPage);
+    
+    return { data: paginatedEmails, totalPages };
 }
 
 export async function getFavoritedEmails(): Promise<Email[]> {

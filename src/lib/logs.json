@@ -1,5 +1,11 @@
 [
   {
+    "id": "1757888791706-lzaj2my",
+    "timestamp": "2025-09-14T22:26:31.706Z",
+    "action": "New Inquiry Received",
+    "details": "Email from 'Butt' with subject 'Work Visas'."
+  },
+  {
     "id": "1757887511628-zsc9kef",
     "timestamp": "2025-09-14T22:05:11.628Z",
     "action": "Marked Email as Read",
