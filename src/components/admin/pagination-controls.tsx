@@ -2,33 +2,42 @@
 
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 interface PaginationControlsProps {
     currentPage: number;
     totalPages: number;
     basePath: string;
+    query?: Record<string, string>; // ✅ yahan optional: additional filters ke liye
     onPageChange?: (page: number) => void;
 }
 
-export default function PaginationControls({ currentPage, totalPages, basePath, onPageChange }: PaginationControlsProps) {
+export default function PaginationControls({
+    currentPage,
+    totalPages,
+    basePath,
+    query = {},
+    onPageChange,
+}: PaginationControlsProps) {
     const router = useRouter();
     const pathname = usePathname();
-    const searchParams = useSearchParams();
 
     const changePage = (newPage: number) => {
         if (onPageChange) {
             onPageChange(newPage);
         } else {
-            const current = new URLSearchParams(Array.from(searchParams.entries()));
-            current.set("page", String(newPage));
-            const search = current.toString();
-            const query = search ? `?${search}` : "";
-            router.push(`${pathname}${query}`);
+            // ✅ searchParams ki jagah ye safe hai:
+            const params = new URLSearchParams(query);
+            params.set("page", String(newPage));
+
+            const search = params.toString();
+            const queryStr = search ? `?${search}` : "";
+
+            router.push(`${pathname}${queryStr}`);
         }
-    }
-    
+    };
+
     if (totalPages <= 1) {
         return null;
     }
@@ -56,7 +65,7 @@ export default function PaginationControls({ currentPage, totalPages, basePath, 
                 disabled={currentPage === totalPages}
             >
                 Next
-                 <ChevronRight className="h-4 w-4 ml-2" />
+                <ChevronRight className="h-4 w-4 ml-2" />
             </Button>
         </div>
     );

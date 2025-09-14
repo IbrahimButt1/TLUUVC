@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useMemo, useTransition, useEffect } from 'react';
@@ -33,7 +34,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
   useEffect(() => {
     // Poll for new emails every 5 seconds
     const interval = setInterval(async () => {
-      const latestEmails = await getEmails();
+      const { data: latestEmails } = await getEmails({ page: 1, perPage: 50}); // Fetch a reasonable number for polling
       // Only update state if the email lists are different to avoid unnecessary re-renders
       if (JSON.stringify(latestEmails) !== JSON.stringify(emails.filter(e => e.status === 'inbox'))) {
          // This logic ensures existing state (like selections) isn't wiped out
@@ -53,6 +54,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
 
 
   const filteredEmails = useMemo(() => {
+    if (!emails) return []; // Add a guard clause to prevent error
     let tabFiltered = emails.filter(e => e.status === 'inbox');
     if (activeTab === 'unread') {
       tabFiltered = emails.filter(email => email.status === 'inbox' && !email.read);
@@ -217,7 +219,7 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
   const isAllSelected = filteredEmails.length > 0 && selectedEmails.length === filteredEmails.length;
   const isIndeterminate = selectedEmails.length > 0 && selectedEmails.length < filteredEmails.length;
 
-  const unreadCount = useMemo(() => emails.filter(e => e.status === 'inbox' && !e.read).length, [emails]);
+  const unreadCount = useMemo(() => emails?.filter(e => e.status === 'inbox' && !e.read).length ?? 0, [emails]);
 
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
