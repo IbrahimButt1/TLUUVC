@@ -8,7 +8,7 @@
     "receivedAt": "2025-09-08T10:36:57.813Z",
     "read": true,
     "status": "inbox",
-    "favorited": true
+    "favorited": false
   },
   {
     "id": "1757330286070-froan9s",
@@ -29,7 +29,7 @@
     "receivedAt": "2025-09-08T11:19:27.338Z",
     "read": true,
     "status": "inbox",
-    "favorited": true
+    "favorited": false
   },
   {
     "id": "1757427827527-lj5le7s",
@@ -50,7 +50,7 @@
     "receivedAt": "2025-09-11T00:15:31.300Z",
     "read": true,
     "status": "inbox",
-    "favorited": true
+    "favorited": false
   },
   {
     "id": "1757592898756-x0qqdho",
@@ -72,7 +72,7 @@
     "receivedAt": "2025-09-12T23:13:49.392Z",
     "read": true,
     "status": "inbox",
-    "favorited": true
+    "favorited": false
   },
   {
     "id": "1757719112333-q6z22sy",
@@ -83,7 +83,7 @@
     "receivedAt": "2025-09-12T23:18:32.333Z",
     "read": true,
     "status": "inbox",
-    "favorited": true
+    "favorited": false
   },
   {
     "id": "1757719361840-ouf3xab",
@@ -105,7 +105,7 @@
     "receivedAt": "2025-09-12T23:25:16.978Z",
     "read": true,
     "status": "inbox",
-    "favorited": true
+    "favorited": false
   },
   {
     "id": "1757719538462-gzr4kmi",
@@ -116,7 +116,7 @@
     "receivedAt": "2025-09-12T23:25:38.463Z",
     "read": true,
     "status": "inbox",
-    "favorited": true
+    "favorited": false
   },
   {
     "id": "1757762010286-shagvww",
@@ -160,7 +160,7 @@
     "receivedAt": "2025-09-14T21:49:04.985Z",
     "read": true,
     "status": "inbox",
-    "favorited": true
+    "favorited": false
   },
   {
     "id": "1757888791703-krrgp40",
@@ -171,7 +171,7 @@
     "receivedAt": "2025-09-14T22:26:31.703Z",
     "read": true,
     "status": "inbox",
-    "favorited": true
+    "favorited": false
   },
   {
     "id": "1757888927843-y28bujo",
@@ -182,6 +182,6 @@
     "receivedAt": "2025-09-14T22:28:47.843Z",
     "read": true,
     "status": "inbox",
-    "favorited": true
+    "favorited": false
   }
 ]
