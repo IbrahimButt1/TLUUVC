@@ -134,22 +134,36 @@ export async function markAllEmailsAsRead() {
     revalidatePath('/admin', 'layout');
 }
 
-export async function deleteEmail(formData: FormData) {
-    const id = formData.get('id') as string;
-    if (!id) return;
-    let emails = await readEmails();
-    const email = emails.find(e => e.id === id);
-    if(email) {
-        await addLogEntry('Deleted Email', `Email from '${email.name}' moved to recycle bin.`);
+export async function deleteEmail(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    try {
+        const id = formData.get('id') as string;
+        if (!id) return { success: false, error: "Email ID not provided." };
+
+        let emails = await readEmails();
+        const email = emails.find(e => e.id === id);
+        
+        if (!email) {
+            return { success: false, error: "Email not found." };
+        }
+
+        if(email) {
+            await addLogEntry('Deleted Email', `Email from '${email.name}' moved to recycle bin.`);
+        }
+
+        const updatedEmails = emails.map(e => e.id === id ? { ...e, status: 'trash' as const } : e);
+        await writeEmails(updatedEmails);
+
+        revalidatePath('/admin/emails');
+        revalidatePath('/admin/emails/trash');
+        revalidatePath('/admin', 'layout');
+        
+        return { success: true };
+    } catch (error) {
+        console.error("Error in deleteEmail:", error);
+        return { success: false, error: "A server error occurred while deleting the email." };
     }
-
-    const updatedEmails = emails.map(e => e.id === id ? { ...e, status: 'trash' as const } : e);
-    await writeEmails(updatedEmails);
-
-    revalidatePath('/admin/emails');
-    revalidatePath('/admin/emails/trash');
-    revalidatePath('/admin', 'layout');
 }
+
 
 export async function permanentlyDeleteEmail(formData: FormData): Promise<{ success: boolean; error?: string }> {
     const id = formData.get('id') as string;

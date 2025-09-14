@@ -1,5 +1,17 @@
 [
   {
+    "id": "1757893883992-onbynk4",
+    "timestamp": "2025-09-14T23:51:23.992Z",
+    "action": "Restored from Backup",
+    "details": "The site was restored from a backup file."
+  },
+  {
+    "id": "1757893748505-uf81igc",
+    "timestamp": "2025-09-14T23:49:08.505Z",
+    "action": "New Inquiry Received",
+    "details": "Email from 'New' with subject 'Work Visas'."
+  },
+  {
     "id": "1757892665072-purrikw",
     "timestamp": "2025-09-14T23:31:05.072Z",
     "action": "New Inquiry Received",

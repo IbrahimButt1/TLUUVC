@@ -194,5 +194,16 @@
     "read": false,
     "status": "inbox",
     "favorited": false
+  },
+  {
+    "id": "1757893748495-velgf6b",
+    "name": "New",
+    "email": "Bk1414551@gmail.com",
+    "subject": "Work Visas",
+    "message": "Hi",
+    "receivedAt": "2025-09-14T23:49:08.495Z",
+    "read": false,
+    "status": "inbox",
+    "favorited": false
   }
 ]
