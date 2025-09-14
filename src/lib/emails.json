@@ -166,7 +166,18 @@
     "subject": "Work Visas",
     "message": "h",
     "receivedAt": "2025-09-14T22:26:31.703Z",
-    "read": false,
+    "read": true,
+    "status": "inbox",
+    "favorited": false
+  },
+  {
+    "id": "1757888927843-y28bujo",
+    "name": "Shoaib Butt",
+    "email": "Bk1414551@gmail.com",
+    "subject": "Student Visas",
+    "message": "k",
+    "receivedAt": "2025-09-14T22:28:47.843Z",
+    "read": true,
     "status": "inbox",
     "favorited": false
   }

@@ -1,5 +1,23 @@
 [
   {
+    "id": "1757888944718-w1o05vh",
+    "timestamp": "2025-09-14T22:29:04.718Z",
+    "action": "Marked Email as Read",
+    "details": "Email ID '1757888927843-y28bujo' marked as read."
+  },
+  {
+    "id": "1757888927848-fguumta",
+    "timestamp": "2025-09-14T22:28:47.848Z",
+    "action": "New Inquiry Received",
+    "details": "Email from 'Shoaib Butt' with subject 'Student Visas'."
+  },
+  {
+    "id": "1757888903957-1giuj3g",
+    "timestamp": "2025-09-14T22:28:23.957Z",
+    "action": "Marked Email as Read",
+    "details": "Email ID '1757888791703-krrgp40' marked as read."
+  },
+  {
     "id": "1757888791706-lzaj2my",
     "timestamp": "2025-09-14T22:26:31.706Z",
     "action": "New Inquiry Received",
