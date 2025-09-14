@@ -35,11 +35,16 @@ export default function InboxClient({ initialEmails }: { initialEmails: Email[] 
     // Poll for new emails every 5 seconds
     const interval = setInterval(async () => {
       const { data: latestEmails } = await getEmails({ page: 1, perPage: 50}); // Fetch a reasonable number for polling
+      
+      // Prevent error if emails is not yet initialized
+      if (!emails) return;
+
       // Only update state if the email lists are different to avoid unnecessary re-renders
       if (JSON.stringify(latestEmails) !== JSON.stringify(emails.filter(e => e.status === 'inbox'))) {
          // This logic ensures existing state (like selections) isn't wiped out
          // by a simple poll update.
          setEmails(currentEmails => {
+            if (!currentEmails) return latestEmails; // Initialize if it was null/undefined
             const currentIds = new Set(currentEmails.map(e => e.id));
             const newEmails = latestEmails.filter(e => !currentIds.has(e.id));
             // Add new emails and also update existing emails with latest data
