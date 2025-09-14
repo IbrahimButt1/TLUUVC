@@ -155,7 +155,7 @@
     "subject": "Student Visas",
     "message": "Hi",
     "receivedAt": "2025-09-14T21:49:04.985Z",
-    "read": false,
+    "read": true,
     "status": "inbox",
     "favorited": false
   }
