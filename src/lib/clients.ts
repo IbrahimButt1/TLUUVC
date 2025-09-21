@@ -73,7 +73,8 @@ export async function getClientById(id: string): Promise<Client | undefined> {
 
 export async function getTrashedClients(): Promise<Client[]> {
     const clients = await readClients();
-    return clients.filter(c => c.status === 'trash');
+    const trashedClients = clients.filter(c => c.status === 'trash');
+    return trashedClients || []; // Ensure an array is always returned
 }
 
 export async function addClient(prevState: any, formData: FormData): Promise<AddClientState> {
