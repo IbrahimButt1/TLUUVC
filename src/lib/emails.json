@@ -202,7 +202,7 @@
     "subject": "Work Visas",
     "message": "Hi",
     "receivedAt": "2025-09-14T23:49:08.495Z",
-    "read": false,
+    "read": true,
     "status": "inbox",
     "favorited": false
   }
