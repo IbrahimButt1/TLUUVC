@@ -13,13 +13,14 @@ export default async function InboxPage({
   const perPage = 10; // emails per page (set as you want)
 
   // ✅ Total emails from DB
-  const initialEmails = await getEmails({ page: currentPage, perPage });
-  const totalPages = initialEmails.totalPages; // make sure your getEmails returns totalPages count
+  const initialEmailsResult = await getEmails({ page: currentPage, perPage });
+  const initialEmails = initialEmailsResult.data || [];
+  const totalPages = initialEmailsResult.totalPages || 1; 
 
   return (
     <div className="flex flex-col h-full space-y-6">
       {/* ✅ List/Inbox */}
-      <InboxClient initialEmails={initialEmails.data} />
+      <InboxClient initialEmails={initialEmails} />
 
       {/* ✅ Pagination Controls */}
       <PaginationControls
