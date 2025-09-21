@@ -45,7 +45,7 @@ export async function getEmails(options?: { page?: number; perPage?: number }): 
         .sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime());
 
     if (!options?.page || !options?.perPage) {
-        return { data: inboxEmails, totalPages: 1 };
+        return { data: inboxEmails, totalPages: Math.ceil(inboxEmails.length / (options?.perPage || 10)) || 1 };
     }
     
     const { page, perPage } = options;
@@ -65,9 +65,9 @@ export async function getFavoritedEmails(): Promise<Email[]> {
 
 export async function getTrashedEmails(): Promise<Email[]> {
     const emails = await readEmails();
-    return emails
-        .filter(e => e.status === 'trash')
-        .sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime());
+    const trashed = emails.filter(e => e.status === 'trash');
+    if (!trashed) return []; // Ensure it returns an empty array if no trashed items
+    return trashed.sort((a, b) => new Date(b.receivedAt).getTime() - new Date(a.receivedAt).getTime());
 }
 
 export async function getUnreadEmailCount(): Promise<number> {
